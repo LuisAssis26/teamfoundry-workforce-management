@@ -4,8 +4,6 @@ import com.teamfoundry.backend.admin.enums.State;
 import com.teamfoundry.backend.admin.model.EmployeeRequest;
 import com.teamfoundry.backend.admin.repository.EmployeeRequestRepository;
 import com.teamfoundry.backend.admin.repository.TeamRequestRepository;
-import com.teamfoundry.backend.account.model.EmployeeAccount;
-import com.teamfoundry.backend.account.repository.EmployeeAccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -17,7 +15,6 @@ import org.springframework.core.annotation.Order;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Configuration
 @Profile("!test")
@@ -28,8 +25,7 @@ public class EmployeeRequestSeeder {
     @Bean
     @Order(6)
     CommandLineRunner seedEmployeeRequests(EmployeeRequestRepository employeeRequestRepository,
-                                           TeamRequestRepository teamRequestRepository,
-                                           EmployeeAccountRepository employeeAccountRepository) {
+                                           TeamRequestRepository teamRequestRepository) {
         return args -> {
             if (employeeRequestRepository.count() > 0) {
                 LOGGER.debug("Employee requests already exist; skipping seeding.");
@@ -46,26 +42,23 @@ public class EmployeeRequestSeeder {
                     continue;
                 }
 
-                EmployeeRequest request = new EmployeeRequest();
-                request.setTeamRequest(team);
-                request.setRequestedRole(seed.requestedRole());
-                request.setState(seed.state());
-                request.setAcceptedDate(seed.acceptedDate());
+                int quantity = Math.max(1, seed.quantity());
+                for (int i = 0; i < quantity; i++) {
+                    EmployeeRequest request = new EmployeeRequest();
+                    request.setTeamRequest(team);
+                    request.setRequestedRole(seed.requestedRole());
+                    request.setState(seed.state());       // INCOMPLETE = pendente
+                    request.setAcceptedDate(null);         // sem aceite
 
-                if (seed.employeeEmail() != null) {
-                    Optional<EmployeeAccount> employee = employeeAccountRepository.findByEmail(seed.employeeEmail());
-                    if (employee.isPresent()) {
-                        request.setEmployee(employee.get());
-                    } else {
-                        LOGGER.warn("Employee {} not found; leaving request {} without employee.", seed.employeeEmail(), seed.teamRequestId());
-                    }
+                    // Sem funcionário atribuído no seed
+                    request.setEmployee(null);
+
+                    toPersist.add(request);
                 }
-
-                toPersist.add(request);
             }
 
             if (toPersist.isEmpty()) {
-                LOGGER.warn("No employee requests were seeded (missing teams/employees).");
+                LOGGER.warn("No employee requests were seeded (missing teams).");
                 return;
             }
 
@@ -75,19 +68,17 @@ public class EmployeeRequestSeeder {
     }
 
     private List<EmployeeRequestSeed> defaultSeeds() {
-        LocalDateTime now = LocalDateTime.now();
+        // Todas pendentes (INCOMPLETE) e sem funcionário
         return List.of(
-                new EmployeeRequestSeed(1, "Electricista Sénior", State.COMPLETE, now.minusDays(12), "joao.silva@teamfoundry.com"),
-                new EmployeeRequestSeed(2, "Soldador MIG/MAG", State.COMPLETE, now.minusDays(8), "ana.martins@teamfoundry.com"),
-                // Requests concluídas com colaborador associado
-                new EmployeeRequestSeed(3, "Técnico de Manutenção", State.COMPLETE, now.minusDays(2), "joao.silva@teamfoundry.com"),
-                new EmployeeRequestSeed(4, "Programador PLC", State.COMPLETE, now.minusDays(4), "carlos.rocha@teamfoundry.com"),
-                new EmployeeRequestSeed(5, "Engenheiro de Automação", State.COMPLETE, now.minusDays(1), null),
-                new EmployeeRequestSeed(6, "Eletricista Industrial", State.COMPLETE, now.minusDays(20), "joao.silva@teamfoundry.com"),
-                new EmployeeRequestSeed(7, "Técnico de SCADA", State.COMPLETE, now.minusDays(15), "joao.silva@teamfoundry.com"),
-                // Requests ainda por concluir e sem funcionário associado (data de aceitação nula)
-                new EmployeeRequestSeed(8, "Responsável de Manutenção", State.INCOMPLETE, null, null),
-                new EmployeeRequestSeed(9, "Caldeireiro Especialista", State.INCOMPLETE, null, null)
+                new EmployeeRequestSeed(1, "Electricista Sénior", State.INCOMPLETE, 3),
+                new EmployeeRequestSeed(2, "Soldador MIG/MAG", State.INCOMPLETE, 2),
+                new EmployeeRequestSeed(3, "Técnico de Manutenção", State.INCOMPLETE, 3),
+                new EmployeeRequestSeed(4, "Programador PLC", State.INCOMPLETE, 2),
+                new EmployeeRequestSeed(5, "Engenheiro de Automação", State.INCOMPLETE, 1),
+                new EmployeeRequestSeed(6, "Eletricista Industrial", State.INCOMPLETE, 3),
+                new EmployeeRequestSeed(7, "Técnico de SCADA", State.INCOMPLETE, 2),
+                new EmployeeRequestSeed(8, "Responsável de Manutenção", State.INCOMPLETE, 3),
+                new EmployeeRequestSeed(9, "Caldeireiro Especialista", State.INCOMPLETE, 2)
         );
     }
 
@@ -95,8 +86,6 @@ public class EmployeeRequestSeeder {
             int teamRequestId,
             String requestedRole,
             State state,
-            LocalDateTime acceptedDate,
-            String employeeEmail
-    ) {
-    }
+            int quantity
+    ) {}
 }

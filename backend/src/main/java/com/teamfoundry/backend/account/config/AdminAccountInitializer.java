@@ -7,12 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
- * Popula a base com administradores padrao usando senha com hash BCrypt.
+ * Popula a base com administradores padrão usando senha com hash BCrypt.
  */
 @Configuration
 @Profile("!test")
@@ -24,10 +24,16 @@ public class AdminAccountInitializer {
     CommandLineRunner seedDefaultAdmins(AdminAccountRepository repository,
                                         PasswordEncoder passwordEncoder) {
         return args -> {
-            createIfMissing(repository, passwordEncoder,
-                    "admin", "admin123", UserType.ADMIN);
-            createIfMissing(repository, passwordEncoder,
-                    "superadmin", "super123", UserType.SUPERADMIN);
+            // já existentes
+            createIfMissing(repository, passwordEncoder, "admin", "admin123", UserType.ADMIN);
+            createIfMissing(repository, passwordEncoder, "superadmin", "super123", UserType.SUPERADMIN);
+
+            // extras para testes de atribuição
+            createIfMissing(repository, passwordEncoder, "admin01", "admin01pass", UserType.ADMIN);
+            createIfMissing(repository, passwordEncoder, "admin02", "admin02pass", UserType.ADMIN);
+            createIfMissing(repository, passwordEncoder, "admin03", "admin03pass", UserType.ADMIN);
+            createIfMissing(repository, passwordEncoder, "admin04", "admin04pass", UserType.ADMIN);
+            createIfMissing(repository, passwordEncoder, "admin05", "admin05pass", UserType.ADMIN);
         };
     }
 

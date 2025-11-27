@@ -151,4 +151,44 @@ public class TeamRequestService {
         return adminAccountRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Administrador não encontrado."));
     }
+
+
+    // atribuir automaticamente o admin com menos requisições ativas - utilizar no forms de request de time
+    @Transactional
+    public TeamRequest createTeamRequestWithAutoAssign(TeamRequest request) {
+        Integer adminId = pickLeastLoadedAdminId();
+        request.setResponsibleAdminId(adminId); // fica null se não houver admins, superadmin pode atribuir depois
+        return teamRequestRepository.save(request);
+    }
+
+    private Integer pickLeastLoadedAdminId() {
+        // mapa adminId -> total atribuições
+        Map<Integer, Long> counts = teamRequestRepository.countAssignmentsGroupedByAdmin()
+                .stream()
+                .filter(row -> row.getAdminId() != null)
+                .collect(Collectors.toMap(
+                        TeamRequestRepository.AdminAssignmentCount::getAdminId,
+                        TeamRequestRepository.AdminAssignmentCount::getTotal));
+
+        // lista de admins elegíveis (role ADMIN)
+        List<AdminAccount> admins = adminAccountRepository.findAll(Sort.by(Sort.Direction.ASC, "username"))
+                .stream()
+                .filter(a -> a.getRole() == UserType.ADMIN)
+                .toList();
+
+        if (admins.isEmpty()) return null;
+
+        // escolhe quem tem menos requisições; desempate por id
+        return admins.stream()
+                .min((a, b) -> {
+                    long ca = counts.getOrDefault(a.getId(), 0L);
+                    long cb = counts.getOrDefault(b.getId(), 0L);
+                    int diff = Long.compare(ca, cb);
+                    return diff != 0 ? diff : Integer.compare(a.getId(), b.getId());
+                })
+                .map(AdminAccount::getId)
+                .orElse(null);
+    }
+
+
 }
