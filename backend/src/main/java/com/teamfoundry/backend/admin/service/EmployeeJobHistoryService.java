@@ -104,6 +104,20 @@ public class EmployeeJobHistoryService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Você já ocupa uma vaga nesta equipa.");
         }
 
+        LocalDateTime startDate = teamRequest != null ? teamRequest.getStartDate() : null;
+        LocalDateTime endDate = teamRequest != null ? teamRequest.getEndDate() : null;
+        if (startDate != null && endDate != null) {
+            long overlapping = employeeRequestRepository.countOverlappingAccepted(
+                    employee.getId(),
+                    request.getId(),
+                    startDate,
+                    endDate
+            );
+            if (overlapping > 0) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Você já tem um trabalho que colide nessas datas.");
+            }
+        }
+
         boolean invited = employeeRequestEmployeeRepository
                 .findActiveInvitesByEmployeeEmail(normalizedEmail)
                 .stream()
@@ -120,6 +134,7 @@ public class EmployeeJobHistoryService {
 
         return toSummary(saved, "ACCEPTED");
     }
+
 
     private EmployeeAccount findEmployee(String normalizedEmail) {
         return employeeAccountRepository.findByEmail(normalizedEmail)

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Modal from "../../../../components/ui/Modal/Modal.jsx";
 import Button from "../../../../components/ui/Button/Button.jsx";
-import { fetchAdminEmployeeProfile } from "../../../../api/adminEmployees.js";
+import { fetchAdminEmployeeProfile } from "../../../../api/admin/adminEmployees.js";
 
 export default function EmployeeProfileModal({ open, onClose, employeeId, fallback }) {
   const [profile, setProfile] = useState(null);

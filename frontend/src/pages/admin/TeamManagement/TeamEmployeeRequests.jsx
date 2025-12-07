@@ -3,12 +3,19 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import TeamRequestHeader from "./components/TeamRequestHeader.jsx";
 import TeamRequestGrid from "./components/TeamRequestGrid.jsx";
 import AdminNavbar from "../components/AdminNavbar.jsx";
-import { teamRequestsAPI } from "../../../api/teamRequests.js";
+import { useAdminData } from "../AdminDataContext.jsx";
 
 export default function TeamEmployeeRequests() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const teamId = searchParams.get("team");
+
+  const {
+    requests: {
+      details: { refresh: refreshDetails },
+      roles: { refresh: refreshRoles },
+    },
+  } = useAdminData();
 
   const [teamName, setTeamName] = useState("Equipa");
   const [requests, setRequests] = useState([]);
@@ -20,7 +27,7 @@ export default function TeamEmployeeRequests() {
 
     async function load() {
       if (!teamId) {
-        setError("Selecione uma requisição para montar a equipa.");
+        setError("Selecione uma requisicao para montar a equipa.");
         setIsLoading(false);
         return;
       }
@@ -29,8 +36,8 @@ export default function TeamEmployeeRequests() {
       setError("");
       try {
         const [details, roles] = await Promise.all([
-          teamRequestsAPI.getAssignedRequest(teamId),
-          teamRequestsAPI.getRoleSummaries(teamId),
+          refreshDetails(teamId),
+          refreshRoles(teamId),
         ]);
 
         if (canceled) return;
@@ -55,7 +62,7 @@ export default function TeamEmployeeRequests() {
 
         setRequests(mapped);
       } catch (err) {
-        if (!canceled) setError(err.message || "Erro ao carregar funções da equipa.");
+        if (!canceled) setError(err.message || "Erro ao carregar funcoes da equipa.");
       } finally {
         if (!canceled) setIsLoading(false);
       }
@@ -65,7 +72,7 @@ export default function TeamEmployeeRequests() {
     return () => {
       canceled = true;
     };
-  }, [teamId]);
+  }, [teamId, refreshDetails, refreshRoles]);
 
   const handleSelect = (request) => {
     if (!teamId) return;
@@ -96,11 +103,11 @@ export default function TeamEmployeeRequests() {
 
           {isLoading ? (
               <div className="rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center text-base-content/70 shadow">
-                Carregando funções requisitadas...
+                Carregando funcoes requisitadas...
               </div>
           ) : requests.length === 0 ? (
               <div className="alert alert-info shadow">
-                <span>Não há funções requisitadas para esta equipa.</span>
+                <span>Nao ha funcoes requisitadas para esta equipa.</span>
               </div>
           ) : (
               <TeamRequestGrid requests={requests} onSelect={handleSelect} />

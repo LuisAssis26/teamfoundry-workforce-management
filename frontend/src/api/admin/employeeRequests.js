@@ -1,4 +1,4 @@
-import { API_URL } from './config/config.js';
+import { API_URL } from '../config/config.js';
 
 const BASE_URL = `${API_URL}/api/employee-requests`;
 

@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Vagas (EmployeeRequest): consultas para convites, contagens e histórico.
+ * Vagas (EmployeeRequest): consultas para convites, contagens e hist┴ico.
  */
 public interface EmployeeRequestRepository extends JpaRepository<EmployeeRequest, Integer> {
 
@@ -51,6 +52,24 @@ public interface EmployeeRequestRepository extends JpaRepository<EmployeeRequest
               AND er.employee.id = :employeeId
             """)
     long countAcceptedForTeam(@Param("teamId") Integer teamId, @Param("employeeId") Integer employeeId);
+
+    @Query("""
+            SELECT COUNT(er)
+            FROM EmployeeRequest er
+            JOIN er.teamRequest tr
+            WHERE er.employee.id = :employeeId
+              AND er.id <> :currentRequestId
+              AND tr.startDate IS NOT NULL
+              AND tr.endDate IS NOT NULL
+              AND tr.startDate <= :endDate
+              AND tr.endDate >= :startDate
+            """)
+    long countOverlappingAccepted(
+            @Param("employeeId") Integer employeeId,
+            @Param("currentRequestId") Integer currentRequestId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
 
     @EntityGraph(attributePaths = {"teamRequest", "teamRequest.company"})
     List<EmployeeRequest> findByEmployee_IdOrderByAcceptedDateDesc(Integer employeeId);

@@ -1,4 +1,4 @@
-import { httpGet, httpPost } from "./config/http.js";
+import { httpGet, httpPost } from "../config/http.js";
 
 /**
  * Obtém opções utilizadas no registo de empresa (setores e países).
