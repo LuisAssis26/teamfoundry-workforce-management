@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import Button from "../../../components/ui/Button/Button.jsx";
-import { registerCompany } from "../../../api/company.js";
+import { registerCompany } from "../../../api/company/company.js";
 
 /**
  * Passo 4 do registo de empresa: confirmação e submissão.

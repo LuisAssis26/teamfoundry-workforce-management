@@ -20,7 +20,7 @@ import {
   deleteGeoArea,
   createActivitySector,
   deleteActivitySector,
-} from "../../../../api/siteManagement.js";
+} from "../../../../api/site/siteManagement.js";
 import Modal from "../../../../components/ui/Modal/Modal.jsx";
 import DropZone from "../../../../components/ui/Upload/DropZone.jsx";
 import { clearTokens } from "../../../../auth/tokenStorage.js";

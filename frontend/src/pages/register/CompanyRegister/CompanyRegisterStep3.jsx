@@ -3,7 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import InputField from "../../../components/ui/Input/InputField.jsx";
 import Button from "../../../components/ui/Button/Button.jsx";
 import MultiSelectDropdown from "../../../components/ui/MultiSelect/MultiSelectDropdown.jsx";
-import { fetchCompanyOptions } from "../../../api/company.js";
+import { fetchCompanyOptions } from "../../../api/company/company.js";
 
 const DESCRIPTION_MAX_CHARS = 600;
 

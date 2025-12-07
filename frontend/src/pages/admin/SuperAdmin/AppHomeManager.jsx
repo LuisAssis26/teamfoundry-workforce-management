@@ -7,7 +7,7 @@ import {
   deleteAppMetric,
   toggleAppMetric,
   reorderAppMetrics,
-} from "../../../api/siteManagement.js";
+} from "../../../api/site/siteManagement.js";
 import Modal from "/src/components/ui/Modal/Modal.jsx";
 import { useSuperAdminData } from "./SuperAdminDataContext.jsx";
 import { moveItemInList, sortByOrder } from "./VariableManagement/utils.js";

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import WorkRequestCard from "./components/WorkRequestCard.jsx";
 import AssignAdminModal from "./components/AssignAdminModal.jsx";
-import { teamRequestsAPI } from "../../../../api/teamRequests.js";
+import { teamRequestsAPI } from "../../../../api/admin/teamRequests.js";
 import { useSuperAdminData } from "../SuperAdminDataContext.jsx";
 
 const STATUS_FILTERS = [
@@ -147,20 +147,6 @@ export default function GestaoTrabalho() {
             <h2 className="text-3xl md:text-4xl font-extrabold text-primary">Requisicoes</h2>
 
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4 w-full md:w-auto md:justify-end">
-              <div className="flex items-center gap-2">
-                <label className="input input-bordered flex items-center gap-2 w-full md:w-64">
-                  <input
-                      type="search"
-                      className="grow text-sm"
-                      placeholder="Equipe ou empresa"
-                      value={searchTerm}
-                      onChange={(event) => setSearchTerm(event.target.value)}
-                  />
-                  <span className="btn btn-ghost btn-circle btn-sm pointer-events-none">
-                  <i className="bi bi-search" aria-hidden="true" />
-                </span>
-                </label>
-              </div>
 
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-base-content">Status:</span>
@@ -232,6 +218,21 @@ export default function GestaoTrabalho() {
                       </div>
                   )}
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label className="input input-bordered flex items-center gap-2 w-full md:w-64">
+                  <input
+                      type="search"
+                      className="grow text-sm"
+                      placeholder="Equipe ou empresa"
+                      value={searchTerm}
+                      onChange={(event) => setSearchTerm(event.target.value)}
+                  />
+                  <span className="btn btn-ghost btn-circle btn-sm pointer-events-none">
+                  <i className="bi bi-search" aria-hidden="true" />
+                </span>
+                </label>
               </div>
             </div>
           </header>

@@ -1,4 +1,4 @@
-import { apiFetch } from "./auth/client.js";
+import { apiFetch } from "../auth/client.js";
 
 async function parseJson(resp) {
     try { return await resp.json(); } catch { return null; }

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { apiFetch } from "../../../api/auth/client.js";
-import { teamRequestsAPI } from "../../../api/teamRequests.js";
+import { teamRequestsAPI } from "../../../api/admin/teamRequests.js";
 import {
   fetchActivitySectors,
   fetchAppHomeConfig,
@@ -10,7 +10,7 @@ import {
   fetchGeoAreas,
   fetchHomepageConfig,
   fetchWeeklyTipsAdmin,
-} from "../../../api/siteManagement.js";
+} from "../../../api/site/siteManagement.js";
 import {
   normalizeAppHomeConfig,
   normalizeHomepageConfig,
