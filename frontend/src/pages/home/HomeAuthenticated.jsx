@@ -4,7 +4,7 @@ import Navbar from "../../components/sections/Navbar.jsx";
 import Footer from "../../components/sections/Footer.jsx";
 import { useAuthContext } from "../../auth/AuthContext.jsx";
 import { useEmployeeProfile } from "../profile/Employee/EmployeeProfileContext.jsx";
-import { fetchAppHomePublic, fetchWeeklyTipsPage } from "../../api/siteManagement.js";
+import { fetchAppHomePublic, fetchWeeklyTipsPage } from "../../api/site/siteManagement.js";
 
 const FALLBACK_METRICS = [
   { label: "Equipas concluidas", value: "8" },

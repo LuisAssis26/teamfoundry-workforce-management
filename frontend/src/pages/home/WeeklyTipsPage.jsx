@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import Navbar from "../../components/sections/Navbar.jsx";
 import Footer from "../../components/sections/Footer.jsx";
 import { useAuthContext } from "../../auth/AuthContext.jsx";
-import { fetchWeeklyTipsPage } from "../../api/siteManagement.js";
+import { fetchWeeklyTipsPage } from "../../api/site/siteManagement.js";
 
 const FALLBACK_TIP_OF_WEEK = {
   category: "Seguranca",
