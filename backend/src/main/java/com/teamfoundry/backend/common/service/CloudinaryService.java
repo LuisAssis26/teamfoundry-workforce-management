@@ -21,7 +21,7 @@ public class CloudinaryService {
     private static final String RESOURCE_SEPARATOR = "::";
     private final Cloudinary cloudinary;
 
-        public UploadResult uploadBase64(String rawBase64Payload, String folder, String originalName) {
+    public UploadResult uploadBase64(String rawBase64Payload, String folder, String originalName) {
         ensureConfigured();
         if (!StringUtils.hasText(rawBase64Payload)) {
             throw new IllegalArgumentException("Payload vazio.");
@@ -69,6 +69,52 @@ public class CloudinaryService {
             return;
         }
         deleteForType(parsed.publicId(), parsed.resourceType());
+    }
+
+    /**
+     * Tenta apagar um recurso Cloudinary a partir do URL seguro.
+     * Utilizado para imagens de indústrias/parceiros onde apenas o URL foi guardado.
+     * Se o URL não parecer ser do Cloudinary desta aplicação, não faz nada.
+     */
+    public void deleteByUrl(String url) {
+        if (!StringUtils.hasText(url)) {
+            return;
+        }
+        if (!url.contains("res.cloudinary.com")) {
+            return;
+        }
+        // Procura o segmento "/upload/" típico das URLs do Cloudinary
+        int uploadIdx = url.indexOf("/upload/");
+        if (uploadIdx < 0) {
+            return;
+        }
+
+        String path = url.substring(uploadIdx + "/upload/".length());
+        int queryIdx = path.indexOf('?');
+        if (queryIdx >= 0) {
+            path = path.substring(0, queryIdx);
+        }
+
+        // Remove prefixo de versão (ex: v123456789/...)
+        if (path.startsWith("v")) {
+            int slashAfterVersion = path.indexOf('/');
+            if (slashAfterVersion > 0) {
+                path = path.substring(slashAfterVersion + 1);
+            }
+        }
+
+        // Remove extensão do ficheiro (ex: .jpg, .png)
+        int dotIdx = path.lastIndexOf('.');
+        if (dotIdx > 0) {
+            path = path.substring(0, dotIdx);
+        }
+
+        if (!StringUtils.hasText(path)) {
+            return;
+        }
+
+        String storedId = "image" + RESOURCE_SEPARATOR + path;
+        delete(storedId);
     }
 
     private void deleteForType(String publicId, String resourceType) {
