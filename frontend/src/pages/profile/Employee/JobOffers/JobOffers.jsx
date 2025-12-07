@@ -83,15 +83,13 @@ export default function JobOffers() {
   return (
       <section className="w-full">
         <div className="flex items-center gap-4 mb-6">
-          <i className="bi bi-bell-fill text-4xl text-primary" aria-hidden="true" />
           <h2 className="text-3xl font-semibold">Ofertas de Trabalho</h2>
         </div>
-
-        <div className="rounded-xl border border-base-300 bg-base-100 shadow min-h-[55vh]">
-          <div className="p-4 md:p-6 space-y-4">
+        
+          <div className="space-y-4">
             {/* Filtros */}
-            <div className="flex flex-wrap gap-3">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-wrap gap-3 justify-start w-full px-0">
+              <div className="flex items-center gap-2 px-1">
                 <span className="text-sm font-medium">Status:</span>
                 <select
                     className="select select-sm select-ghost bg-base-100"
@@ -140,14 +138,13 @@ export default function JobOffers() {
             ) : filteredOffers.length === 0 ? (
                 <EmptyState />
             ) : (
-                <div className="space-y-4 max-w-3xl mx-auto">
+                <div className="space-y-4 max-w-3xl">
                   {filteredOffers.map((offer) => (
                       <JobOfferCard key={offer.requestId ?? offer.id} offer={offer} onAccept={handleAccept} />
                   ))}
                 </div>
             )}
           </div>
-        </div>
       </section>
   );
 }

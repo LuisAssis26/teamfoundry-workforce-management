@@ -1,7 +1,7 @@
 /**
  * Cartão reutilizável para exibir participação do colaborador numa equipa/projeto.
  */
-export default function RecentJobCard({ job, showAccepted = true, actionSlot = null }) {
+export default function JobCard({ job, showAccepted = true, actionSlot = null }) {
   const {
     teamName,
     companyName,
@@ -17,7 +17,6 @@ export default function RecentJobCard({ job, showAccepted = true, actionSlot = n
     <div className="rounded-xl border border-base-300 bg-base-100 shadow-sm overflow-hidden">
       <div className="flex items-start justify-between px-4 py-3">
         <div className="flex items-center gap-3">
-          <i className="bi bi-people text-lg" aria-hidden="true" />
           <div className="flex flex-col">
             <span className="font-semibold">{teamName || "Equipa sem nome"}</span>
             <span className="text-sm text-base-content/70">

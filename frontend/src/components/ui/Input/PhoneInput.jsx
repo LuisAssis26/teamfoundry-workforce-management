@@ -15,6 +15,7 @@ export default function PhoneInput({
   error,
   placeholder = "912 345 678",
   className = "",
+  disabled = false,
 }) {
   const initialCountry = useMemo(() => {
     if (value?.startsWith("+")) {
@@ -29,6 +30,7 @@ export default function PhoneInput({
   const [localValue, setLocalValue] = useState(extractLocal(value, initialCountry?.dialCode));
 
   const handleSelect = (c) => {
+    if (disabled) return;
     setCountry(c);
     const next = formatE164(c.dialCode, localValue);
     onChange?.(next);
@@ -36,6 +38,7 @@ export default function PhoneInput({
   };
 
   const handleLocalChange = (e) => {
+    if (disabled) return;
     const digits = e.target.value.replace(/\D/g, "");
     setLocalValue(digits);
     const next = formatE164(country.dialCode, digits);
@@ -49,12 +52,12 @@ export default function PhoneInput({
           <span className="label-text font-medium">{label}</span>
         </label>
       )}
-      <div className="relative flex h-10 w-full items-stretch input input-bordered p-0 focus-within:border-primary focus-within:ring-0 focus-within:outline-none transition">
+      <div className={`relative flex h-10 w-full items-stretch input input-bordered p-0 focus-within:border-primary focus-within:ring-0 focus-within:outline-none transition ${disabled ? "pointer-events-none opacity-60" : ""}`}>
         <div className="relative inline-block">
           <button
             type="button"
-            className="flex justify-between h-full min-w-[100px] items-center gap-2 border-r border-base-300 px-4 bg-transparent focus:outline-none"
-            onClick={() => setOpen((o) => !o)}
+            className="flex justify-between h-full min-w-[64px] items-center gap-2 border-r border-base-300 pl-4 pr-2 bg-transparent focus:outline-none"
+            onClick={() => !disabled && setOpen((o) => !o)}
             aria-label="Selecionar indicativo telefónico"
           >
             <span className="font-semibold text-base">+{country.dialCode}</span>
@@ -79,10 +82,11 @@ export default function PhoneInput({
         </div>
         <input
           type="tel"
-          className="h-full w-full bg-transparent px-4 outline-none"
+          className="h-full w-full bg-transparent px-2 outline-none"
           placeholder={placeholder}
           value={localValue}
           onChange={handleLocalChange}
+          disabled={disabled}
           aria-label="Número de telefone"
         />
       </div>
@@ -106,6 +110,7 @@ PhoneInput.propTypes = {
   error: PropTypes.string,
   placeholder: PropTypes.string,
   className: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 function formatE164(dialCode, localDigits) {

@@ -14,9 +14,18 @@ const DEFAULT_NAMES = {
   idBack: "documento-verso.pdf",
 };
 
+const ALLOWED_DOC_TYPES = [
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+];
+const MAX_DOC_MB = 5;
+
 const DOC_ITEMS = [
-  { key: "idFront", label: "Documento de Identificacao (frente)", type: "IDENTIFICATION_FRONT" },
-  { key: "idBack", label: "Documento de Identificacao (verso)", type: "IDENTIFICATION_BACK" },
+  { key: "idFront", label: "Documento de Identificação (frente)", type: "IDENTIFICATION_FRONT" },
+  { key: "idBack", label: "Documento de Identificação (verso)", type: "IDENTIFICATION_BACK" },
   { key: "cv", label: "Curriculo" },
 ];
 
@@ -147,13 +156,11 @@ export default function Documentos() {
   return (
     <section className="w-full">
       <div className="flex items-center gap-3 mb-6">
-        <i className="bi bi-file-earmark-text text-3xl text-primary" />
-        <h2 className="text-2xl font-semibold">Documentos</h2>
+        <h2 className="text-3xl font-semibold">Upload de Documentos</h2>
       </div>
 
       <div className="rounded-xl border border-base-300 bg-base-100 shadow p-6">
-        <h3 className="text-lg font-semibold mb-4">Upload de documentos</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
           {DOC_ITEMS.map((item) => {
             const doc = docs[item.key];
             const isCv = item.key === "cv";
@@ -178,6 +185,9 @@ export default function Documentos() {
                     : undefined
                 }
                 disabled={disabled}
+                allowedTypes={ALLOWED_DOC_TYPES}
+                maxSizeMB={MAX_DOC_MB}
+                onError={setError}
               />
             );
           })}

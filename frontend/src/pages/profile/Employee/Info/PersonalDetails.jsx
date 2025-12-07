@@ -5,6 +5,7 @@ import InfoLayout from "./InfoLayout.jsx";
 import { updateEmployeeProfile } from "../../../../api/profile/employeeProfile.js";
 import { useEmployeeProfile } from "../EmployeeProfileContext.jsx";
 import { formatName } from "../utils/profileUtils.js";
+import PhoneInput from "../../../../components/ui/Input/PhoneInput.jsx";
 
 const genderOptions = [
   { value: "MALE", label: "Masculino" },
@@ -67,6 +68,12 @@ export default function PersonalDetails() {
   const handleChange = (field) => (event) => {
     const { value } = event.target;
     setFormData((prev) => ({ ...prev, [field]: value }));
+    if (feedback) setFeedback("");
+    if (error) setError("");
+  };
+
+  const handlePhoneChange = (value) => {
+    setFormData((prev) => ({ ...prev, phone: value }));
     if (feedback) setFeedback("");
     if (error) setError("");
   };
@@ -151,15 +158,14 @@ export default function PersonalDetails() {
               onChange={handleChange("nif")}
               disabled={loading || saving}
             />
-            <div className="md:col-span-2">
-              <InputField
-                label="Contacto"
-                placeholder="Email ou telefone"
-                value={formData.phone}
-                onChange={handleChange("phone")}
-                disabled={loading || saving}
-              />
-            </div>
+            <PhoneInput
+              label="Contacto"
+              placeholder="912 345 678"
+              value={formData.phone}
+              onChange={handlePhoneChange}
+              disabled={loading || saving}
+              className="md:col-span-2"
+            />
           </div>
 
           <div className="px-6 pb-6 flex flex-col items-center gap-3">

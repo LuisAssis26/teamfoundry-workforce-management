@@ -10,6 +10,8 @@ const formatName = (first, last) => {
   return `${first ?? ""} ${last ?? ""}`.trim();
 };
 
+const MAX_IMAGE_MB = 3;
+
 export default function ProfileHeader({ name }) {
   const { profile, loadingProfile, setProfile } = useEmployeeProfile();
   const [uploading, setUploading] = useState(false);
@@ -37,6 +39,14 @@ export default function ProfileHeader({ name }) {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Apenas imagens são permitidas.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
+      setError(`Imagem demasiado grande (>${MAX_IMAGE_MB}MB).`);
+      return;
+    }
     setError("");
     setUploading(true);
     try {

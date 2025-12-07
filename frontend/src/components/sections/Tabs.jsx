@@ -86,8 +86,8 @@ export default function Tabs({ tabs, className = "", activeKey, onTabChange }) {
             }}
             className={({ isActive: navActive }) => {
               const state = navActive
-                ? "text-base-content font-semibold"
-                : "text-base-content/70 hover:text-base-content";
+                ? "text-base-content font-semibold text-center"
+                : "text-base-content/70 hover:text-base-content text-center";
               return `${baseClasses} ${state} cursor-pointer`;
             }}
             draggable={false}

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import Button from "../../../../components/ui/Button/Button.jsx";
-import RecentJobCard from "../Info/components/RecentJobCard.jsx";
+import JobCard from "./JobCard.jsx";
 
 export default function JobOfferCard({ offer, onAccept }) {
     const status = (offer.status || "").toUpperCase();
@@ -48,7 +48,7 @@ export default function JobOfferCard({ offer, onAccept }) {
 
     return (
         <div className="rounded-xl border border-base-300 bg-base-100 shadow-sm overflow-hidden">
-            <RecentJobCard job={offer} showAccepted={false} actionSlot={actionSlot} />
+            <JobCard job={offer} showAccepted={false} actionSlot={actionSlot} />
         </div>
     );
 }
