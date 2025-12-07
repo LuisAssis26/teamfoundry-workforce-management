@@ -14,6 +14,7 @@ import com.teamfoundry.backend.site.repository.HomepageSectionRepository;
 import com.teamfoundry.backend.site.repository.IndustryShowcaseRepository;
 import com.teamfoundry.backend.site.repository.PartnerShowcaseRepository;
 import com.teamfoundry.backend.site.repository.WeeklyTipRepository;
+import com.teamfoundry.backend.common.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class SiteContentService {
     private final HomeLoginMetricRepository appHomeMetrics;
     private final WeeklyTipRepository weeklyTips;
     private final NewsApiService newsApiService;
+    private final CloudinaryService cloudinaryService;
 
     /*
      * PUBLIC QUERIES
@@ -180,11 +182,15 @@ public class SiteContentService {
         IndustryShowcase entity = industries.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Industry not found"));
 
+        String previousImageUrl = entity.getImageUrl();
         entity.setName(request.name());
         entity.setDescription(request.description());
         entity.setImageUrl(request.imageUrl());
         entity.setLinkUrl(request.linkUrl());
         entity.setActive(Boolean.TRUE.equals(request.active()));
+        if (previousImageUrl != null && !previousImageUrl.equals(request.imageUrl())) {
+            cloudinaryService.deleteByUrl(previousImageUrl);
+        }
 
         return mapIndustry(industries.save(entity));
     }
@@ -212,6 +218,7 @@ public class SiteContentService {
     public void deleteIndustry(Long id) {
         IndustryShowcase entity = industries.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Industry not found"));
+        cloudinaryService.deleteByUrl(entity.getImageUrl());
         industries.delete(entity);
     }
 
@@ -242,11 +249,15 @@ public class SiteContentService {
         PartnerShowcase entity = partners.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Partner not found"));
 
+        String previousImageUrl = entity.getImageUrl();
         entity.setName(request.name());
         entity.setDescription(request.description());
         entity.setImageUrl(request.imageUrl());
         entity.setWebsiteUrl(request.websiteUrl());
         entity.setActive(Boolean.TRUE.equals(request.active()));
+        if (previousImageUrl != null && !previousImageUrl.equals(request.imageUrl())) {
+            cloudinaryService.deleteByUrl(previousImageUrl);
+        }
 
         return mapPartner(partners.save(entity));
     }
@@ -274,6 +285,7 @@ public class SiteContentService {
     public void deletePartner(Long id) {
         PartnerShowcase entity = partners.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Partner not found"));
+        cloudinaryService.deleteByUrl(entity.getImageUrl());
         partners.delete(entity);
     }
 
