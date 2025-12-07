@@ -1,20 +1,14 @@
 package com.teamfoundry.backend.site.service;
 
-import com.teamfoundry.backend.site.config.SiteMediaProperties;
+import com.teamfoundry.backend.common.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Locale;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -22,8 +16,9 @@ import java.util.UUID;
 public class SiteMediaService {
 
     private static final long MAX_FILE_BYTES = 5 * 1024 * 1024; // 5MB
+    private static final String CLOUDINARY_FOLDER = "home";
 
-    private final SiteMediaProperties properties;
+    private final CloudinaryService cloudinaryService;
 
     public String storeImage(MultipartFile file) {
         if (file == null || file.isEmpty()) {
@@ -38,30 +33,20 @@ public class SiteMediaService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Apenas imagens são permitidas.");
         }
 
-        String filename = buildFilename(file.getOriginalFilename(), contentType);
-        Path target = properties.getStorageDir().resolve(filename);
-
         try {
-            Files.createDirectories(properties.getStorageDir());
-            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException ex) {
-            log.error("Falha ao guardar imagem da homepage", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Não foi possível guardar o ficheiro.");
+            CloudinaryService.UploadResult result = cloudinaryService.uploadBytes(
+                    file.getBytes(),
+                    CLOUDINARY_FOLDER,
+                    file.getOriginalFilename()
+            );
+            return result.getUrl();
+        } catch (Exception ex) {
+            log.error("Falha ao guardar imagem da homepage no Cloudinary", ex);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Não foi possível guardar o ficheiro na cloud."
+            );
         }
-
-        return properties.getPublicPath() + "/" + filename;
-    }
-
-    private String buildFilename(String originalName, String contentType) {
-        String extension = null;
-        if (StringUtils.hasText(originalName)) {
-            extension = StringUtils.getFilenameExtension(originalName);
-        }
-        if (!StringUtils.hasText(extension) && StringUtils.hasText(contentType)) {
-            extension = contentType.substring(contentType.lastIndexOf('/') + 1);
-        }
-        String normalizedExtension = (StringUtils.hasText(extension) ? extension.trim().toLowerCase(Locale.ROOT) : "png")
-                .replaceAll("[^a-z0-9]", "");
-        return UUID.randomUUID() + "." + normalizedExtension;
     }
 }
+
