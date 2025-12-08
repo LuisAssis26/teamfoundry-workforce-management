@@ -7,9 +7,17 @@ import { deactivateEmployeeAccount } from "../../../api/profile/employeeProfile.
 import Modal from "../../../components/ui/Modal/Modal.jsx";
 import { listEmployeeJobs } from "../../../api/profile/profileJobs.js";
 
-export default function Settings() {
-  const { profile } = useEmployeeProfile();
-  const { logout } = useAuthContext();
+/**
+ * Vista base de definições (comportamento varia por tipo de conta).
+ */
+function SettingsView({
+  profileEmail,
+  showReceiveOffers = true,
+  allowDeactivate = false,
+  onValidateDeactivate,
+  onDeactivate,
+}) {
+  const { logout, userType } = useAuthContext();
   const [receiveOffers, setReceiveOffers] = useState(true);
   const [theme, setTheme] = useState(() => {
     const stored = localStorage.getItem("tf-theme-mode");
@@ -45,18 +53,20 @@ export default function Settings() {
           <div className="space-y-3">
             <h3 className="text-xl font-semibold text-center md:text-left">Conta</h3>
 
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-base-200 bg-base-200/60 px-4 py-3">
-              <div>
-                <p className="font-medium">Receber ofertas</p>
-                <p className="text-xs text-base-content/70">Ativar ou desativar notificações de novas ofertas.</p>
+            {showReceiveOffers && (
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-base-200 bg-base-200/60 px-4 py-3">
+                <div>
+                  <p className="font-medium">Receber ofertas</p>
+                  <p className="text-xs text-base-content/70">Ativar ou desativar notificações de novas ofertas.</p>
+                </div>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={receiveOffers}
+                  onChange={() => setReceiveOffers((v) => !v)}
+                />
               </div>
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={receiveOffers}
-                onChange={() => setReceiveOffers((v) => !v)}
-              />
-            </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="rounded-lg border border-base-200 bg-base-200/60 px-4 py-3 flex flex-col gap-2">
@@ -72,38 +82,45 @@ export default function Settings() {
                 />
               </div>
 
-              <div className="rounded-lg border border-base-200 bg-base-200/60 px-4 py-3 flex flex-col gap-2">
-                <div>
-                  <p className="font-medium text-error">Excluir conta</p>
-                  <p className="text-xs text-base-content/70">Eliminar a conta e dados associados.</p>
-                </div>
-                <Button
-                  label="Excluir conta"
-                  variant="outline"
-                  className="w-full sm:w-auto btn-error"
-                  onClick={async () => {
-                    setDeactivateBlockMessage("");
-                    try {
-                      const history = await listEmployeeJobs();
-                      const hasActive =
-                        Array.isArray(history) &&
-                        history.some((job) => {
-                          const status = (job.status || "").toUpperCase();
-                          const endDate = job.endDate ? new Date(job.endDate) : null;
-                          const inProgress = endDate ? endDate >= new Date() : true;
-                          return status !== "CLOSED" || inProgress;
-                        });
-                      if (hasActive) {
-                        setDeactivateBlockMessage("Não é possível desativar a conta com serviços aceites/ativos.");
-                        return;
+              {allowDeactivate ? (
+                <div className="rounded-lg border border-base-200 bg-base-200/60 px-4 py-3 flex flex-col gap-2">
+                  <div>
+                    <p className="font-medium text-error">Excluir conta</p>
+                    <p className="text-xs text-base-content/70">Eliminar a conta e dados associados.</p>
+                  </div>
+                  <Button
+                    label="Excluir conta"
+                    variant="outline"
+                    className="w-full sm:w-auto btn-error"
+                    onClick={async () => {
+                      setDeactivateBlockMessage("");
+                      if (onValidateDeactivate) {
+                        try {
+                          const blockedMessage = await onValidateDeactivate();
+                          if (blockedMessage) {
+                            setDeactivateBlockMessage(blockedMessage);
+                            return;
+                          }
+                        } catch (err) {
+                          setDeactivateBlockMessage(err.message || "Não foi possível verificar os serviços.");
+                          return;
+                        }
                       }
                       setShowDeactivateModal(true);
-                    } catch (err) {
-                      setDeactivateBlockMessage(err.message || "Não foi possível verificar os serviços.");
-                    }
-                  }}
-                />
-              </div>
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="rounded-lg border border-base-200 bg-base-200/60 px-4 py-3 flex flex-col gap-2 opacity-60 cursor-not-allowed">
+                  <div>
+                    <p className="font-medium text-base-content/80">Excluir conta</p>
+                    <p className="text-xs text-base-content/60">
+                      Disponível em breve com validação específica para {userType === "COMPANY" ? "empresas" : "contas"}.
+                    </p>
+                  </div>
+                  <Button label="Em breve" variant="outline" className="w-full sm:w-auto btn-disabled pointer-events-none" />
+                </div>
+              )}
             </div>
           </div>
 
@@ -139,7 +156,7 @@ export default function Settings() {
       <ForgotPassword
         open={showPasswordModal}
         onClose={() => setShowPasswordModal(false)}
-        initialEmail={profile?.email || ""}
+        initialEmail={profileEmail || ""}
       />
       <Modal
         open={showDeactivateModal}
@@ -200,9 +217,11 @@ export default function Settings() {
                 }
                 try {
                   setDeactivateError("");
-                  await deactivateEmployeeAccount(deactivatePassword.trim());
-                  logout();
-                  window.location.href = "/";
+                  if (onDeactivate) {
+                    await onDeactivate(deactivatePassword.trim());
+                    logout();
+                    window.location.href = "/";
+                  }
                 } catch (err) {
                   setDeactivateError(err.message || "Não foi possível desativar a conta.");
                 }
@@ -216,3 +235,33 @@ export default function Settings() {
     </>
   );
 }
+
+/**
+ * Wrapper default para funcionário (mantém lógica anterior).
+ */
+export default function Settings() {
+  const { profile } = useEmployeeProfile();
+
+  return (
+    <SettingsView
+      profileEmail={profile?.email}
+      showReceiveOffers
+      allowDeactivate
+      onValidateDeactivate={async () => {
+        const history = await listEmployeeJobs();
+        const hasActive =
+          Array.isArray(history) &&
+          history.some((job) => {
+            const status = (job.status || "").toUpperCase();
+            const endDate = job.endDate ? new Date(job.endDate) : null;
+            const inProgress = endDate ? endDate >= new Date() : true;
+            return status !== "CLOSED" || inProgress;
+          });
+        return hasActive ? "Não é possível desativar a conta com serviços aceites/ativos." : "";
+      }}
+      onDeactivate={(password) => deactivateEmployeeAccount(password)}
+    />
+  );
+}
+
+export { SettingsView };

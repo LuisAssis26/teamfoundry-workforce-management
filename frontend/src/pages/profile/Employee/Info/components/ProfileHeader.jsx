@@ -40,8 +40,9 @@ export default function ProfileHeader({ name }) {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      setError("Apenas imagens são permitidas.");
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+    if (!allowedTypes.includes(file.type)) {
+      setError("Apenas fotografias (jpg, png, webp) são permitidas.");
       return;
     }
     if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
@@ -108,7 +109,7 @@ export default function ProfileHeader({ name }) {
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
           className="hidden"
           onChange={handleFileChange}
         />

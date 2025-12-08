@@ -3,7 +3,7 @@
   <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.53">
     <root id="1">
       <DateStyle>mdy</DateStyle>
-      <IntrospectionStateNumber>3630</IntrospectionStateNumber>
+      <IntrospectionStateNumber>3829</IntrospectionStateNumber>
       <ServerVersion>16.10</ServerVersion>
       <StartupTime>1765203884</StartupTime>
       <TimeZones>true ACDT
@@ -699,7 +699,7 @@ false posixrules
 13276||10|C|G
 13276||-9223372036854775808|U|G
 13276||10|U|G</Grants>
-      <IntrospectionStateNumber>3630</IntrospectionStateNumber>
+      <IntrospectionStateNumber>3829</IntrospectionStateNumber>
       <ObjectId>16384</ObjectId>
       <OwnerName>teamfoundry_user</OwnerName>
     </database>
@@ -4123,203 +4123,2308 @@ false posixrules
     <schema id="264" parent="2" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>3630</IntrospectionStateNumber>
-      <LastIntrospectionLocalTimestamp>2025-12-08.18:39:48</LastIntrospectionLocalTimestamp>
+      <IntrospectionStateNumber>3829</IntrospectionStateNumber>
+      <LastIntrospectionLocalTimestamp>2025-12-08.19:37:29</LastIntrospectionLocalTimestamp>
       <ObjectId>2200</ObjectId>
       <StateNumber>524</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
     </schema>
     <sequence id="265" parent="264" name="admins_id_seq">
-      <ObjectId>140246</ObjectId>
+      <ObjectId>140625</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3496</StateNumber>
+      <StateNumber>3685</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="266" parent="264" name="area_funcionario_id_seq">
-      <ObjectId>140255</ObjectId>
+      <ObjectId>140634</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3497</StateNumber>
+      <StateNumber>3686</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="267" parent="264" name="area_geografica_id_seq">
-      <ObjectId>140261</ObjectId>
+      <ObjectId>140640</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3498</StateNumber>
+      <StateNumber>3687</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="268" parent="264" name="competencia_id_seq">
-      <ObjectId>140272</ObjectId>
+      <ObjectId>140651</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3500</StateNumber>
+      <StateNumber>3689</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="269" parent="264" name="competencias_funcionario_id_seq">
-      <ObjectId>140278</ObjectId>
+      <ObjectId>140657</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3501</StateNumber>
+      <StateNumber>3690</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="270" parent="264" name="employee_document_id_seq">
-      <ObjectId>140298</ObjectId>
+      <ObjectId>140677</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3504</StateNumber>
+      <StateNumber>3693</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="271" parent="264" name="formacao_id_seq">
-      <ObjectId>140307</ObjectId>
+      <ObjectId>140686</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3505</StateNumber>
+      <StateNumber>3694</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="272" parent="264" name="funcao_id_seq">
-      <ObjectId>140315</ObjectId>
+      <ObjectId>140694</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3506</StateNumber>
+      <StateNumber>3695</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="273" parent="264" name="funcoes_funcionario_id_seq">
-      <ObjectId>140321</ObjectId>
+      <ObjectId>140700</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3507</StateNumber>
+      <StateNumber>3696</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="274" parent="264" name="ligacao_funcionario_id_seq">
-      <ObjectId>140327</ObjectId>
+      <ObjectId>140706</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3508</StateNumber>
+      <StateNumber>3697</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="275" parent="264" name="logs_admin_id_seq">
-      <ObjectId>140339</ObjectId>
+      <ObjectId>140718</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3510</StateNumber>
+      <StateNumber>3699</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="276" parent="264" name="logs_id_seq">
-      <ObjectId>140333</ObjectId>
+      <ObjectId>140712</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3509</StateNumber>
+      <StateNumber>3698</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="277" parent="264" name="request_equipa_id_seq">
-      <ObjectId>140350</ObjectId>
+      <ObjectId>140729</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3512</StateNumber>
+      <StateNumber>3701</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="278" parent="264" name="request_funcionario_id_seq">
-      <ObjectId>140359</ObjectId>
+      <ObjectId>140738</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3513</StateNumber>
+      <StateNumber>3702</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="279" parent="264" name="setor_atividade_id_seq">
-      <ObjectId>140372</ObjectId>
+      <ObjectId>140751</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3515</StateNumber>
+      <StateNumber>3704</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="280" parent="264" name="setores_atividade_empresa_id_seq">
-      <ObjectId>140378</ObjectId>
+      <ObjectId>140757</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3516</StateNumber>
+      <StateNumber>3705</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="281" parent="264" name="site_home_login_metric_id_seq">
-      <ObjectId>140384</ObjectId>
+      <ObjectId>140763</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3517</StateNumber>
+      <StateNumber>3706</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="282" parent="264" name="site_home_login_section_id_seq">
-      <ObjectId>140392</ObjectId>
+      <ObjectId>140771</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3518</StateNumber>
+      <StateNumber>3707</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="283" parent="264" name="site_homepage_section_id_seq">
-      <ObjectId>140401</ObjectId>
+      <ObjectId>140780</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3519</StateNumber>
+      <StateNumber>3708</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="284" parent="264" name="site_industry_showcase_id_seq">
-      <ObjectId>140410</ObjectId>
+      <ObjectId>140789</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3520</StateNumber>
+      <StateNumber>3709</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="285" parent="264" name="site_partner_showcase_id_seq">
-      <ObjectId>140418</ObjectId>
+      <ObjectId>140797</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3521</StateNumber>
+      <StateNumber>3710</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="286" parent="264" name="site_weekly_tip_id_seq">
-      <ObjectId>140426</ObjectId>
+      <ObjectId>140805</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3522</StateNumber>
+      <StateNumber>3711</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="287" parent="264" name="token_id_seq">
-      <ObjectId>140434</ObjectId>
+      <ObjectId>140813</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3523</StateNumber>
+      <StateNumber>3712</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
     <sequence id="288" parent="264" name="utilizador_id_seq">
-      <ObjectId>140440</ObjectId>
+      <ObjectId>140591</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>3524</StateNumber>
+      <StateNumber>3644</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>teamfoundry_user</OwnerName>
     </sequence>
+    <table id="289" parent="264" name="admins">
+      <ObjectId>140626</ObjectId>
+      <StateNumber>3747</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="290" parent="264" name="area_funcionario">
+      <ObjectId>140635</ObjectId>
+      <StateNumber>3733</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="291" parent="264" name="area_geografica">
+      <ObjectId>140641</ObjectId>
+      <StateNumber>3734</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="292" parent="264" name="auth_token">
+      <ObjectId>140646</ObjectId>
+      <StateNumber>3735</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="293" parent="264" name="competencia">
+      <ObjectId>140652</ObjectId>
+      <StateNumber>3736</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="294" parent="264" name="competencias_funcionario">
+      <ObjectId>140658</ObjectId>
+      <StateNumber>3736</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="295" parent="264" name="conta_empresa">
+      <ObjectId>140663</ObjectId>
+      <StateNumber>3738</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="296" parent="264" name="conta_funcionario">
+      <ObjectId>140670</ObjectId>
+      <StateNumber>3733</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="297" parent="264" name="employee_document">
+      <ObjectId>140678</ObjectId>
+      <StateNumber>3740</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="298" parent="264" name="formacao">
+      <ObjectId>140687</ObjectId>
+      <StateNumber>3741</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="299" parent="264" name="funcao">
+      <ObjectId>140695</ObjectId>
+      <StateNumber>3743</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="300" parent="264" name="funcoes_funcionario">
+      <ObjectId>140701</ObjectId>
+      <StateNumber>3742</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="301" parent="264" name="ligacao_funcionario">
+      <ObjectId>140707</ObjectId>
+      <StateNumber>3744</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="302" parent="264" name="logs">
+      <ObjectId>140713</ObjectId>
+      <StateNumber>3746</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="303" parent="264" name="logs_admin">
+      <ObjectId>140719</ObjectId>
+      <StateNumber>3747</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="304" parent="264" name="password_reset_token">
+      <ObjectId>140724</ObjectId>
+      <StateNumber>3748</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="305" parent="264" name="request_equipa">
+      <ObjectId>140730</ObjectId>
+      <StateNumber>3749</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="306" parent="264" name="request_funcionario">
+      <ObjectId>140739</ObjectId>
+      <StateNumber>3745</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="307" parent="264" name="responsavel_conta_empresa">
+      <ObjectId>140744</ObjectId>
+      <StateNumber>3752</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="308" parent="264" name="setor_atividade">
+      <ObjectId>140752</ObjectId>
+      <StateNumber>3754</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="309" parent="264" name="setores_atividade_empresa">
+      <ObjectId>140758</ObjectId>
+      <StateNumber>3753</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="310" parent="264" name="site_home_login_metric">
+      <ObjectId>140764</ObjectId>
+      <StateNumber>3706</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="311" parent="264" name="site_home_login_section">
+      <ObjectId>140772</ObjectId>
+      <StateNumber>3707</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="312" parent="264" name="site_homepage_section">
+      <ObjectId>140781</ObjectId>
+      <StateNumber>3708</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="313" parent="264" name="site_industry_showcase">
+      <ObjectId>140790</ObjectId>
+      <StateNumber>3709</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="314" parent="264" name="site_partner_showcase">
+      <ObjectId>140798</ObjectId>
+      <StateNumber>3710</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="315" parent="264" name="site_weekly_tip">
+      <ObjectId>140806</ObjectId>
+      <StateNumber>3711</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="316" parent="264" name="token">
+      <ObjectId>140814</ObjectId>
+      <StateNumber>3735</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <table id="317" parent="264" name="utilizador">
+      <ObjectId>140592</ObjectId>
+      <StateNumber>3651</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>teamfoundry_user</OwnerName>
+    </table>
+    <check id="318" parent="289" name="admins_role_check">
+      <ColNames>role</ColNames>
+      <ObjectId>140629</ObjectId>
+      <Predicate>(role)::text = ANY ((ARRAY[&apos;COMPANY&apos;::character varying, &apos;EMPLOYEE&apos;::character varying, &apos;ADMIN&apos;::character varying, &apos;SUPERADMIN&apos;::character varying])::text[])</Predicate>
+      <StateNumber>3685</StateNumber>
+    </check>
+    <column id="319" parent="289" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3685</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140625</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="320" parent="289" name="password">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3685</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="321" parent="289" name="role">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3685</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="322" parent="289" name="username">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3685</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="323" parent="289" name="admins_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140632</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3685</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="324" parent="289" name="ukmi8vkhus4xbdbqcac2jm4spvd">
+      <ColNames>username</ColNames>
+      <ObjectId>140819</ObjectId>
+      <StateNumber>3714</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="325" parent="289" name="admins_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140633</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3685</StateNumber>
+      <UnderlyingIndexId>140632</UnderlyingIndexId>
+    </key>
+    <key id="326" parent="289" name="ukmi8vkhus4xbdbqcac2jm4spvd">
+      <ObjectId>140820</ObjectId>
+      <StateNumber>3714</StateNumber>
+      <UnderlyingIndexId>140819</UnderlyingIndexId>
+    </key>
+    <column id="327" parent="290" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3686</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140634</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="328" parent="290" name="id_funcionario">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3686</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="329" parent="290" name="id_area_geo">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3686</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="330" parent="290" name="fk54y4kibsqkylevhqddlj5tn95">
+      <ColNames>id_funcionario</ColNames>
+      <ObjectId>140839</ObjectId>
+      <StateNumber>3733</StateNumber>
+      <RefKeyColPositions>8</RefKeyColPositions>
+      <RefTableId>140670</RefTableId>
+    </foreign-key>
+    <foreign-key id="331" parent="290" name="fkcb2vu65oxueywkirfbyadjqmr">
+      <ColNames>id_area_geo</ColNames>
+      <ObjectId>140844</ObjectId>
+      <StateNumber>3734</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140641</RefTableId>
+    </foreign-key>
+    <index id="332" parent="290" name="area_funcionario_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140638</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3686</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="333" parent="290" name="area_funcionario_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140639</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3686</StateNumber>
+      <UnderlyingIndexId>140638</UnderlyingIndexId>
+    </key>
+    <column id="334" parent="291" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3687</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140640</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="335" parent="291" name="name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3687</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="336" parent="291" name="area_geografica_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140644</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3687</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="337" parent="291" name="uki4r41bdn0ycnws3osledfs92m">
+      <ColNames>name</ColNames>
+      <ObjectId>140821</ObjectId>
+      <StateNumber>3716</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="338" parent="291" name="area_geografica_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140645</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3687</StateNumber>
+      <UnderlyingIndexId>140644</UnderlyingIndexId>
+    </key>
+    <key id="339" parent="291" name="uki4r41bdn0ycnws3osledfs92m">
+      <ObjectId>140822</ObjectId>
+      <StateNumber>3716</StateNumber>
+      <UnderlyingIndexId>140821</UnderlyingIndexId>
+    </key>
+    <column id="340" parent="292" name="id">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3688</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <TypeId>20</TypeId>
+    </column>
+    <foreign-key id="341" parent="292" name="fk7ouqldheot7pwfcmod0hnhosf">
+      <ColNames>id</ColNames>
+      <ObjectId>140849</ObjectId>
+      <StateNumber>3735</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140814</RefTableId>
+    </foreign-key>
+    <index id="342" parent="292" name="auth_token_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140649</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3688</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="343" parent="292" name="auth_token_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140650</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3688</StateNumber>
+      <UnderlyingIndexId>140649</UnderlyingIndexId>
+    </key>
+    <column id="344" parent="293" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3689</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140651</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="345" parent="293" name="name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3689</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="346" parent="293" name="competencia_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140655</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3689</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="347" parent="293" name="uk5i2qxkjgh8jv28g6ct7te7ky1">
+      <ColNames>name</ColNames>
+      <ObjectId>140823</ObjectId>
+      <StateNumber>3718</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="348" parent="293" name="competencia_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140656</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3689</StateNumber>
+      <UnderlyingIndexId>140655</UnderlyingIndexId>
+    </key>
+    <key id="349" parent="293" name="uk5i2qxkjgh8jv28g6ct7te7ky1">
+      <ObjectId>140824</ObjectId>
+      <StateNumber>3718</StateNumber>
+      <UnderlyingIndexId>140823</UnderlyingIndexId>
+    </key>
+    <column id="350" parent="294" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3690</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140657</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="351" parent="294" name="id_competencia">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3690</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="352" parent="294" name="id_funcionario">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3690</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="353" parent="294" name="fk8nc3ayw8w20y464gp6fwq461a">
+      <ColNames>id_competencia</ColNames>
+      <ObjectId>140854</ObjectId>
+      <StateNumber>3736</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140652</RefTableId>
+    </foreign-key>
+    <foreign-key id="354" parent="294" name="fk5bxlrb8raacstcgibigpbbyor">
+      <ColNames>id_funcionario</ColNames>
+      <ObjectId>140859</ObjectId>
+      <StateNumber>3737</StateNumber>
+      <RefKeyColPositions>8</RefKeyColPositions>
+      <RefTableId>140670</RefTableId>
+    </foreign-key>
+    <index id="355" parent="294" name="competencias_funcionario_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140661</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3690</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="356" parent="294" name="competencias_funcionario_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140662</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3690</StateNumber>
+      <UnderlyingIndexId>140661</UnderlyingIndexId>
+    </key>
+    <column id="357" parent="295" name="address">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3691</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="358" parent="295" name="country">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3691</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="359" parent="295" name="description">
+      <Position>3</Position>
+      <StateNumber>3691</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="360" parent="295" name="name">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3691</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="361" parent="295" name="phone">
+      <Position>5</Position>
+      <StateNumber>3691</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="362" parent="295" name="status">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>3691</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="363" parent="295" name="website">
+      <Position>7</Position>
+      <StateNumber>3691</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="364" parent="295" name="id">
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StateNumber>3691</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="365" parent="295" name="fkskec1q2wn00008x8quh0bkk4u">
+      <ColNames>id</ColNames>
+      <ObjectId>140864</ObjectId>
+      <StateNumber>3738</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140592</RefTableId>
+    </foreign-key>
+    <index id="366" parent="295" name="conta_empresa_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140668</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3691</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="367" parent="295" name="conta_empresa_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140669</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3691</StateNumber>
+      <UnderlyingIndexId>140668</UnderlyingIndexId>
+    </key>
+    <column id="368" parent="296" name="birth_date">
+      <Position>1</Position>
+      <StateNumber>3692</StateNumber>
+      <StoredType>date|0s</StoredType>
+      <TypeId>1082</TypeId>
+    </column>
+    <column id="369" parent="296" name="gender">
+      <Position>2</Position>
+      <StateNumber>3692</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="370" parent="296" name="name">
+      <Position>3</Position>
+      <StateNumber>3692</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="371" parent="296" name="nationality">
+      <Position>4</Position>
+      <StateNumber>3692</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="372" parent="296" name="phone">
+      <Position>5</Position>
+      <StateNumber>3692</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="373" parent="296" name="profile_picture_public_id">
+      <Position>6</Position>
+      <StateNumber>3692</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="374" parent="296" name="surname">
+      <Position>7</Position>
+      <StateNumber>3692</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="375" parent="296" name="id">
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StateNumber>3692</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="376" parent="296" name="fk2yehkmi66663dt5oliaxv4fob">
+      <ColNames>id</ColNames>
+      <ObjectId>140869</ObjectId>
+      <StateNumber>3739</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140592</RefTableId>
+    </foreign-key>
+    <index id="377" parent="296" name="conta_funcionario_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140675</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3692</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="378" parent="296" name="conta_funcionario_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140676</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3692</StateNumber>
+      <UnderlyingIndexId>140675</UnderlyingIndexId>
+    </key>
+    <check id="379" parent="297" name="employee_document_doc_type_check">
+      <ColNames>doc_type</ColNames>
+      <ObjectId>140681</ObjectId>
+      <Predicate>(doc_type)::text = ANY ((ARRAY[&apos;CURRICULUM&apos;::character varying, &apos;IDENTIFICATION_FRONT&apos;::character varying, &apos;IDENTIFICATION_BACK&apos;::character varying])::text[])</Predicate>
+      <StateNumber>3693</StateNumber>
+    </check>
+    <column id="380" parent="297" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3693</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140677</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="381" parent="297" name="file_name">
+      <Position>2</Position>
+      <StateNumber>3693</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="382" parent="297" name="public_id">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3693</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="383" parent="297" name="doc_type">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3693</StateNumber>
+      <StoredType>varchar(32)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="384" parent="297" name="employee_id">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>3693</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="385" parent="297" name="fkiha3bwavt95kaabj41rebsdbh">
+      <ColNames>employee_id</ColNames>
+      <ObjectId>140874</ObjectId>
+      <StateNumber>3740</StateNumber>
+      <RefKeyColPositions>8</RefKeyColPositions>
+      <RefTableId>140670</RefTableId>
+    </foreign-key>
+    <index id="386" parent="297" name="employee_document_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140684</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3693</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="387" parent="297" name="uk2l6ye0fpicyrb2oasqxd8cm01">
+      <ColNames>employee_id
+doc_type</ColNames>
+      <ObjectId>140825</ObjectId>
+      <StateNumber>3720</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationIds>
+100</CollationIds>
+      <CollationParentNames>
+pg_catalog</CollationParentNames>
+      <CollationNames>
+default</CollationNames>
+    </index>
+    <key id="388" parent="297" name="employee_document_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140685</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3693</StateNumber>
+      <UnderlyingIndexId>140684</UnderlyingIndexId>
+    </key>
+    <key id="389" parent="297" name="uk2l6ye0fpicyrb2oasqxd8cm01">
+      <ObjectId>140826</ObjectId>
+      <StateNumber>3720</StateNumber>
+      <UnderlyingIndexId>140825</UnderlyingIndexId>
+    </key>
+    <column id="390" parent="298" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3694</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140686</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="391" parent="298" name="certificate_public_id">
+      <Position>2</Position>
+      <StateNumber>3694</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="392" parent="298" name="completion_date">
+      <Position>3</Position>
+      <StateNumber>3694</StateNumber>
+      <StoredType>date|0s</StoredType>
+      <TypeId>1082</TypeId>
+    </column>
+    <column id="393" parent="298" name="description">
+      <Position>4</Position>
+      <StateNumber>3694</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="394" parent="298" name="institution">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>3694</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="395" parent="298" name="location">
+      <Position>6</Position>
+      <StateNumber>3694</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="396" parent="298" name="name">
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StateNumber>3694</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="397" parent="298" name="id_funcionario">
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StateNumber>3694</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="398" parent="298" name="fkbmew9cr8xx6p5fl4o3d8s2ita">
+      <ColNames>id_funcionario</ColNames>
+      <ObjectId>140879</ObjectId>
+      <StateNumber>3741</StateNumber>
+      <RefKeyColPositions>8</RefKeyColPositions>
+      <RefTableId>140670</RefTableId>
+    </foreign-key>
+    <index id="399" parent="298" name="formacao_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140692</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3694</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="400" parent="298" name="formacao_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140693</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3694</StateNumber>
+      <UnderlyingIndexId>140692</UnderlyingIndexId>
+    </key>
+    <column id="401" parent="299" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3695</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140694</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="402" parent="299" name="name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3695</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="403" parent="299" name="funcao_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140698</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3695</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="404" parent="299" name="ukfku6h5453l5e7sop4a9op1fsd">
+      <ColNames>name</ColNames>
+      <ObjectId>140827</ObjectId>
+      <StateNumber>3722</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="405" parent="299" name="funcao_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140699</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3695</StateNumber>
+      <UnderlyingIndexId>140698</UnderlyingIndexId>
+    </key>
+    <key id="406" parent="299" name="ukfku6h5453l5e7sop4a9op1fsd">
+      <ObjectId>140828</ObjectId>
+      <StateNumber>3722</StateNumber>
+      <UnderlyingIndexId>140827</UnderlyingIndexId>
+    </key>
+    <column id="407" parent="300" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3696</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140700</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="408" parent="300" name="id_funcionario">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3696</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="409" parent="300" name="id_funcao">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3696</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="410" parent="300" name="fkof9r12k7ytqakr8s6kcgr82h4">
+      <ColNames>id_funcionario</ColNames>
+      <ObjectId>140884</ObjectId>
+      <StateNumber>3742</StateNumber>
+      <RefKeyColPositions>8</RefKeyColPositions>
+      <RefTableId>140670</RefTableId>
+    </foreign-key>
+    <foreign-key id="411" parent="300" name="fkpmjk210ay8a1prfdnv409euf7">
+      <ColNames>id_funcao</ColNames>
+      <ObjectId>140889</ObjectId>
+      <StateNumber>3743</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140695</RefTableId>
+    </foreign-key>
+    <index id="412" parent="300" name="funcoes_funcionario_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140704</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3696</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="413" parent="300" name="funcoes_funcionario_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140705</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3696</StateNumber>
+      <UnderlyingIndexId>140704</UnderlyingIndexId>
+    </key>
+    <column id="414" parent="301" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3697</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140706</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="415" parent="301" name="active">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3697</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="416" parent="301" name="id_funcionario">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3697</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="417" parent="301" name="id_request">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3697</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="418" parent="301" name="fkol6462kygla1gur90jekng8w4">
+      <ColNames>id_funcionario</ColNames>
+      <ObjectId>140894</ObjectId>
+      <StateNumber>3744</StateNumber>
+      <RefKeyColPositions>8</RefKeyColPositions>
+      <RefTableId>140670</RefTableId>
+    </foreign-key>
+    <foreign-key id="419" parent="301" name="fklkjx7dqabi0puv4xyit6lbc4c">
+      <ColNames>id_request</ColNames>
+      <ObjectId>140899</ObjectId>
+      <StateNumber>3745</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140739</RefTableId>
+    </foreign-key>
+    <index id="420" parent="301" name="ligacao_funcionario_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140710</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3697</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="421" parent="301" name="ligacao_funcionario_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140711</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3697</StateNumber>
+      <UnderlyingIndexId>140710</UnderlyingIndexId>
+    </key>
+    <column id="422" parent="302" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3698</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140712</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="423" parent="302" name="action">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3698</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="424" parent="302" name="timestamp">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3698</StateNumber>
+      <StoredType>timestamp(6)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="425" parent="302" name="id_user">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3698</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="426" parent="302" name="fkjvwntuifimbl9vp27k9k03mh7">
+      <ColNames>id_user</ColNames>
+      <ObjectId>140904</ObjectId>
+      <StateNumber>3746</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140592</RefTableId>
+    </foreign-key>
+    <index id="427" parent="302" name="logs_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140716</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3698</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="428" parent="302" name="logs_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140717</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3698</StateNumber>
+      <UnderlyingIndexId>140716</UnderlyingIndexId>
+    </key>
+    <column id="429" parent="303" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3699</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140718</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="430" parent="303" name="action">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3699</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="431" parent="303" name="timestamp">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3699</StateNumber>
+      <StoredType>timestamp(6)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="432" parent="303" name="id_admin">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3699</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="433" parent="303" name="fkpnxji68nt20nsfg57obi4o1b9">
+      <ColNames>id_admin</ColNames>
+      <ObjectId>140909</ObjectId>
+      <StateNumber>3747</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140626</RefTableId>
+    </foreign-key>
+    <index id="434" parent="303" name="logs_admin_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140722</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3699</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="435" parent="303" name="logs_admin_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140723</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3699</StateNumber>
+      <UnderlyingIndexId>140722</UnderlyingIndexId>
+    </key>
+    <column id="436" parent="304" name="id">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3700</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <TypeId>20</TypeId>
+    </column>
+    <foreign-key id="437" parent="304" name="fkri9g6njpisvtpqe430bynv4lq">
+      <ColNames>id</ColNames>
+      <ObjectId>140914</ObjectId>
+      <StateNumber>3748</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140814</RefTableId>
+    </foreign-key>
+    <index id="438" parent="304" name="password_reset_token_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140727</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3700</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="439" parent="304" name="password_reset_token_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140728</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3700</StateNumber>
+      <UnderlyingIndexId>140727</UnderlyingIndexId>
+    </key>
+    <check id="440" parent="305" name="request_equipa_state_check">
+      <ColNames>state</ColNames>
+      <ObjectId>140733</ObjectId>
+      <Predicate>(state)::text = ANY ((ARRAY[&apos;COMPLETE&apos;::character varying, &apos;INCOMPLETE&apos;::character varying])::text[])</Predicate>
+      <StateNumber>3701</StateNumber>
+    </check>
+    <column id="441" parent="305" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3701</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140729</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="442" parent="305" name="created_at">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3701</StateNumber>
+      <StoredType>timestamp(6)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="443" parent="305" name="description">
+      <Position>3</Position>
+      <StateNumber>3701</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="444" parent="305" name="end_date">
+      <Position>4</Position>
+      <StateNumber>3701</StateNumber>
+      <StoredType>timestamp(6)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="445" parent="305" name="location">
+      <Position>5</Position>
+      <StateNumber>3701</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="446" parent="305" name="id_responsible_admin">
+      <Position>6</Position>
+      <StateNumber>3701</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="447" parent="305" name="start_date">
+      <Position>7</Position>
+      <StateNumber>3701</StateNumber>
+      <StoredType>timestamp(6)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="448" parent="305" name="state">
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StateNumber>3701</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="449" parent="305" name="team_name">
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+      <StateNumber>3701</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="450" parent="305" name="id_empresa">
+      <NotNull>1</NotNull>
+      <Position>10</Position>
+      <StateNumber>3701</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="451" parent="305" name="fkfpdrgkq0n8sbqpuhebrtjy8cr">
+      <ColNames>id_empresa</ColNames>
+      <ObjectId>140919</ObjectId>
+      <StateNumber>3749</StateNumber>
+      <RefKeyColPositions>8</RefKeyColPositions>
+      <RefTableId>140663</RefTableId>
+    </foreign-key>
+    <index id="452" parent="305" name="request_equipa_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140736</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3701</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="453" parent="305" name="request_equipa_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140737</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3701</StateNumber>
+      <UnderlyingIndexId>140736</UnderlyingIndexId>
+    </key>
+    <column id="454" parent="306" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3702</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140738</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="455" parent="306" name="date_accepted">
+      <Position>2</Position>
+      <StateNumber>3702</StateNumber>
+      <StoredType>timestamp(6)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="456" parent="306" name="created_at">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3702</StateNumber>
+      <StoredType>timestamp(6)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="457" parent="306" name="requested_role">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3702</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="458" parent="306" name="salary">
+      <Position>5</Position>
+      <StateNumber>3702</StateNumber>
+      <StoredType>numeric(38,2 digit)|0s</StoredType>
+      <TypeId>1700</TypeId>
+    </column>
+    <column id="459" parent="306" name="id_funcionario">
+      <Position>6</Position>
+      <StateNumber>3702</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="460" parent="306" name="id_team_request">
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StateNumber>3702</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="461" parent="306" name="fk13w4rar7vd45110y818e3ymx4">
+      <ColNames>id_funcionario</ColNames>
+      <ObjectId>140924</ObjectId>
+      <StateNumber>3750</StateNumber>
+      <RefKeyColPositions>8</RefKeyColPositions>
+      <RefTableId>140670</RefTableId>
+    </foreign-key>
+    <foreign-key id="462" parent="306" name="fksi2xvuxkn5303b28mev1plola">
+      <ColNames>id_team_request</ColNames>
+      <ObjectId>140929</ObjectId>
+      <StateNumber>3751</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140730</RefTableId>
+    </foreign-key>
+    <index id="463" parent="306" name="request_funcionario_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140742</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3702</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="464" parent="306" name="request_funcionario_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140743</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3702</StateNumber>
+      <UnderlyingIndexId>140742</UnderlyingIndexId>
+    </key>
+    <column id="465" parent="307" name="id_empresa">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3703</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="466" parent="307" name="email">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3703</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="467" parent="307" name="name">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3703</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="468" parent="307" name="phone">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3703</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="469" parent="307" name="position">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>3703</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <foreign-key id="470" parent="307" name="fkj9r3vje5dnq2w1wpurylh7qmd">
+      <ColNames>id_empresa</ColNames>
+      <ObjectId>140934</ObjectId>
+      <StateNumber>3752</StateNumber>
+      <RefKeyColPositions>8</RefKeyColPositions>
+      <RefTableId>140663</RefTableId>
+    </foreign-key>
+    <index id="471" parent="307" name="responsavel_conta_empresa_pkey">
+      <ColNames>id_empresa</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140749</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3703</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="472" parent="307" name="ukfmjo2uc0jskcggbceecy2imau">
+      <ColNames>email</ColNames>
+      <ObjectId>140829</ObjectId>
+      <StateNumber>3724</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="473" parent="307" name="responsavel_conta_empresa_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140750</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3703</StateNumber>
+      <UnderlyingIndexId>140749</UnderlyingIndexId>
+    </key>
+    <key id="474" parent="307" name="ukfmjo2uc0jskcggbceecy2imau">
+      <ObjectId>140830</ObjectId>
+      <StateNumber>3724</StateNumber>
+      <UnderlyingIndexId>140829</UnderlyingIndexId>
+    </key>
+    <column id="475" parent="308" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3704</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140751</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="476" parent="308" name="name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3704</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="477" parent="308" name="setor_atividade_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140755</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3704</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="478" parent="308" name="uk3edgbnippgi6tmuxf96a2gv8h">
+      <ColNames>name</ColNames>
+      <ObjectId>140831</ObjectId>
+      <StateNumber>3726</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="479" parent="308" name="setor_atividade_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140756</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3704</StateNumber>
+      <UnderlyingIndexId>140755</UnderlyingIndexId>
+    </key>
+    <key id="480" parent="308" name="uk3edgbnippgi6tmuxf96a2gv8h">
+      <ObjectId>140832</ObjectId>
+      <StateNumber>3726</StateNumber>
+      <UnderlyingIndexId>140831</UnderlyingIndexId>
+    </key>
+    <column id="481" parent="309" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3705</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140757</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="482" parent="309" name="id_empresa">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3705</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="483" parent="309" name="id_setor">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3705</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="484" parent="309" name="fkbrhjx46mxprbdt1h271ieckha">
+      <ColNames>id_empresa</ColNames>
+      <ObjectId>140939</ObjectId>
+      <StateNumber>3753</StateNumber>
+      <RefKeyColPositions>8</RefKeyColPositions>
+      <RefTableId>140663</RefTableId>
+    </foreign-key>
+    <foreign-key id="485" parent="309" name="fklsheroem2jj0qdxdnsouh7wb8">
+      <ColNames>id_setor</ColNames>
+      <ObjectId>140944</ObjectId>
+      <StateNumber>3754</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140752</RefTableId>
+    </foreign-key>
+    <index id="486" parent="309" name="setores_atividade_empresa_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140761</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3705</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="487" parent="309" name="setores_atividade_empresa_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140762</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3705</StateNumber>
+      <UnderlyingIndexId>140761</UnderlyingIndexId>
+    </key>
+    <column id="488" parent="310" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3706</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <SequenceId>140763</SequenceId>
+      <TypeId>20</TypeId>
+    </column>
+    <column id="489" parent="310" name="active">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3706</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="490" parent="310" name="description">
+      <Position>3</Position>
+      <StateNumber>3706</StateNumber>
+      <StoredType>varchar(500)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="491" parent="310" name="display_order">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3706</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="492" parent="310" name="label">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>3706</StateNumber>
+      <StoredType>varchar(120)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="493" parent="310" name="value">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>3706</StateNumber>
+      <StoredType>varchar(60)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="494" parent="310" name="site_home_login_metric_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140769</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3706</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="495" parent="310" name="site_home_login_metric_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140770</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3706</StateNumber>
+      <UnderlyingIndexId>140769</UnderlyingIndexId>
+    </key>
+    <check id="496" parent="311" name="site_home_login_section_type_check">
+      <ColNames>type</ColNames>
+      <ObjectId>140775</ObjectId>
+      <Predicate>(type)::text = ANY ((ARRAY[&apos;HERO&apos;::character varying, &apos;METRICS&apos;::character varying, &apos;WEEKLY_TIP&apos;::character varying, &apos;NEWS&apos;::character varying])::text[])</Predicate>
+      <StateNumber>3707</StateNumber>
+    </check>
+    <column id="497" parent="311" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <SequenceId>140771</SequenceId>
+      <TypeId>20</TypeId>
+    </column>
+    <column id="498" parent="311" name="active">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="499" parent="311" name="api_enabled">
+      <Position>3</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="500" parent="311" name="api_max_items">
+      <Position>4</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="501" parent="311" name="api_token">
+      <Position>5</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>varchar(500)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="502" parent="311" name="api_url">
+      <Position>6</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>varchar(500)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="503" parent="311" name="content">
+      <Position>7</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>varchar(2000)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="504" parent="311" name="display_order">
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="505" parent="311" name="primary_cta_label">
+      <Position>9</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>varchar(80)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="506" parent="311" name="primary_cta_url">
+      <Position>10</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>varchar(300)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="507" parent="311" name="subtitle">
+      <Position>11</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>varchar(500)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="508" parent="311" name="title">
+      <NotNull>1</NotNull>
+      <Position>12</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>varchar(120)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="509" parent="311" name="type">
+      <NotNull>1</NotNull>
+      <Position>13</Position>
+      <StateNumber>3707</StateNumber>
+      <StoredType>varchar(40)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="510" parent="311" name="site_home_login_section_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140778</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3707</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="511" parent="311" name="uk8lcdu26mm0eayb26edmjb1ev0">
+      <ColNames>type</ColNames>
+      <ObjectId>140833</ObjectId>
+      <StateNumber>3728</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="512" parent="311" name="site_home_login_section_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140779</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3707</StateNumber>
+      <UnderlyingIndexId>140778</UnderlyingIndexId>
+    </key>
+    <key id="513" parent="311" name="uk8lcdu26mm0eayb26edmjb1ev0">
+      <ObjectId>140834</ObjectId>
+      <StateNumber>3728</StateNumber>
+      <UnderlyingIndexId>140833</UnderlyingIndexId>
+    </key>
+    <check id="514" parent="312" name="site_homepage_section_type_check">
+      <ColNames>type</ColNames>
+      <ObjectId>140784</ObjectId>
+      <Predicate>(type)::text = ANY ((ARRAY[&apos;HERO&apos;::character varying, &apos;INDUSTRIES&apos;::character varying, &apos;PARTNERS&apos;::character varying])::text[])</Predicate>
+      <StateNumber>3708</StateNumber>
+    </check>
+    <column id="515" parent="312" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3708</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <SequenceId>140780</SequenceId>
+      <TypeId>20</TypeId>
+    </column>
+    <column id="516" parent="312" name="active">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3708</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="517" parent="312" name="display_order">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3708</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="518" parent="312" name="primary_cta_label">
+      <Position>4</Position>
+      <StateNumber>3708</StateNumber>
+      <StoredType>varchar(80)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="519" parent="312" name="primary_cta_url">
+      <Position>5</Position>
+      <StateNumber>3708</StateNumber>
+      <StoredType>varchar(300)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="520" parent="312" name="secondary_cta_label">
+      <Position>6</Position>
+      <StateNumber>3708</StateNumber>
+      <StoredType>varchar(80)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="521" parent="312" name="secondary_cta_url">
+      <Position>7</Position>
+      <StateNumber>3708</StateNumber>
+      <StoredType>varchar(300)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="522" parent="312" name="subtitle">
+      <Position>8</Position>
+      <StateNumber>3708</StateNumber>
+      <StoredType>varchar(500)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="523" parent="312" name="title">
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+      <StateNumber>3708</StateNumber>
+      <StoredType>varchar(120)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="524" parent="312" name="type">
+      <NotNull>1</NotNull>
+      <Position>10</Position>
+      <StateNumber>3708</StateNumber>
+      <StoredType>varchar(30)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="525" parent="312" name="site_homepage_section_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140787</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3708</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="526" parent="312" name="uk720e3866yspkeky7nextnd01">
+      <ColNames>type</ColNames>
+      <ObjectId>140835</ObjectId>
+      <StateNumber>3730</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="527" parent="312" name="site_homepage_section_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140788</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3708</StateNumber>
+      <UnderlyingIndexId>140787</UnderlyingIndexId>
+    </key>
+    <key id="528" parent="312" name="uk720e3866yspkeky7nextnd01">
+      <ObjectId>140836</ObjectId>
+      <StateNumber>3730</StateNumber>
+      <UnderlyingIndexId>140835</UnderlyingIndexId>
+    </key>
+    <column id="529" parent="313" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3709</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <SequenceId>140789</SequenceId>
+      <TypeId>20</TypeId>
+    </column>
+    <column id="530" parent="313" name="active">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3709</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="531" parent="313" name="description">
+      <Position>3</Position>
+      <StateNumber>3709</StateNumber>
+      <StoredType>varchar(800)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="532" parent="313" name="display_order">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3709</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="533" parent="313" name="image_url">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>3709</StateNumber>
+      <StoredType>varchar(500)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="534" parent="313" name="link_url">
+      <Position>6</Position>
+      <StateNumber>3709</StateNumber>
+      <StoredType>varchar(500)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="535" parent="313" name="name">
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StateNumber>3709</StateNumber>
+      <StoredType>varchar(120)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="536" parent="313" name="site_industry_showcase_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140795</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3709</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="537" parent="313" name="site_industry_showcase_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140796</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3709</StateNumber>
+      <UnderlyingIndexId>140795</UnderlyingIndexId>
+    </key>
+    <column id="538" parent="314" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3710</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <SequenceId>140797</SequenceId>
+      <TypeId>20</TypeId>
+    </column>
+    <column id="539" parent="314" name="active">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3710</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="540" parent="314" name="description">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3710</StateNumber>
+      <StoredType>varchar(800)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="541" parent="314" name="display_order">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3710</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="542" parent="314" name="image_url">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>3710</StateNumber>
+      <StoredType>varchar(500)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="543" parent="314" name="name">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>3710</StateNumber>
+      <StoredType>varchar(150)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="544" parent="314" name="website_url">
+      <Position>7</Position>
+      <StateNumber>3710</StateNumber>
+      <StoredType>varchar(500)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="545" parent="314" name="site_partner_showcase_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140803</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3710</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="546" parent="314" name="site_partner_showcase_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140804</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3710</StateNumber>
+      <UnderlyingIndexId>140803</UnderlyingIndexId>
+    </key>
+    <column id="547" parent="315" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3711</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <SequenceId>140805</SequenceId>
+      <TypeId>20</TypeId>
+    </column>
+    <column id="548" parent="315" name="active">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3711</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="549" parent="315" name="category">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3711</StateNumber>
+      <StoredType>varchar(80)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="550" parent="315" name="description">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3711</StateNumber>
+      <StoredType>varchar(2000)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="551" parent="315" name="display_order">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>3711</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="552" parent="315" name="featured">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>3711</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="553" parent="315" name="published_at">
+      <Position>7</Position>
+      <StateNumber>3711</StateNumber>
+      <StoredType>date|0s</StoredType>
+      <TypeId>1082</TypeId>
+    </column>
+    <column id="554" parent="315" name="title">
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StateNumber>3711</StateNumber>
+      <StoredType>varchar(160)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="555" parent="315" name="site_weekly_tip_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140811</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3711</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="556" parent="315" name="site_weekly_tip_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140812</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3711</StateNumber>
+      <UnderlyingIndexId>140811</UnderlyingIndexId>
+    </key>
+    <column id="557" parent="316" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3712</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <SequenceId>140813</SequenceId>
+      <TypeId>20</TypeId>
+    </column>
+    <column id="558" parent="316" name="created_at">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>3712</StateNumber>
+      <StoredType>timestamp(6)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="559" parent="316" name="expire_at">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3712</StateNumber>
+      <StoredType>timestamp(6)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="560" parent="316" name="token">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3712</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="561" parent="316" name="id_user">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>3712</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="562" parent="316" name="fk7taslk9oinwkfrnfs9y089c8m">
+      <ColNames>id_user</ColNames>
+      <ObjectId>140949</ObjectId>
+      <StateNumber>3755</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>140592</RefTableId>
+    </foreign-key>
+    <index id="563" parent="316" name="token_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140817</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3712</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="564" parent="316" name="ukpddrhgwxnms2aceeku9s2ewy5">
+      <ColNames>token</ColNames>
+      <ObjectId>140837</ObjectId>
+      <StateNumber>3732</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="565" parent="316" name="token_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140818</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3712</StateNumber>
+      <UnderlyingIndexId>140817</UnderlyingIndexId>
+    </key>
+    <key id="566" parent="316" name="ukpddrhgwxnms2aceeku9s2ewy5">
+      <ObjectId>140838</ObjectId>
+      <StateNumber>3732</StateNumber>
+      <UnderlyingIndexId>140837</UnderlyingIndexId>
+    </key>
+    <check id="567" parent="317" name="utilizador_registration_status_check">
+      <ColNames>registration_status</ColNames>
+      <ObjectId>140595</ObjectId>
+      <Predicate>(registration_status)::text = ANY ((ARRAY[&apos;PENDING&apos;::character varying, &apos;COMPLETED&apos;::character varying])::text[])</Predicate>
+      <StateNumber>3644</StateNumber>
+    </check>
+    <check id="568" parent="317" name="utilizador_role_check">
+      <ColNames>role</ColNames>
+      <ObjectId>140596</ObjectId>
+      <Predicate>(role)::text = ANY ((ARRAY[&apos;COMPANY&apos;::character varying, &apos;EMPLOYEE&apos;::character varying, &apos;ADMIN&apos;::character varying, &apos;SUPERADMIN&apos;::character varying])::text[])</Predicate>
+      <StateNumber>3644</StateNumber>
+    </check>
+    <column id="569" parent="317" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>3644</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>140591</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="570" parent="317" name="created_at">
+      <Position>2</Position>
+      <StateNumber>3644</StateNumber>
+      <StoredType>timestamp(6) with time zone|0s</StoredType>
+      <TypeId>1184</TypeId>
+    </column>
+    <column id="571" parent="317" name="deactivated">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>3644</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="572" parent="317" name="email">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>3644</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="573" parent="317" name="nif">
+      <Position>5</Position>
+      <StateNumber>3644</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="574" parent="317" name="password">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>3644</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="575" parent="317" name="registration_status">
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StateNumber>3644</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="576" parent="317" name="role">
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StateNumber>3644</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="577" parent="317" name="verified">
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+      <StateNumber>3644</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <index id="578" parent="317" name="utilizador_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140599</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3644</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="579" parent="317" name="ukeougu510uft70icifeafv6cll">
+      <ColNames>email</ColNames>
+      <ObjectId>140601</ObjectId>
+      <StateNumber>3646</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <index id="580" parent="317" name="uklf7e5fo2kx4tiwcio6uu08dvs">
+      <ColNames>nif</ColNames>
+      <ObjectId>140603</ObjectId>
+      <StateNumber>3648</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="581" parent="317" name="utilizador_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>140600</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>3644</StateNumber>
+      <UnderlyingIndexId>140599</UnderlyingIndexId>
+    </key>
+    <key id="582" parent="317" name="ukeougu510uft70icifeafv6cll">
+      <ObjectId>140602</ObjectId>
+      <StateNumber>3646</StateNumber>
+      <UnderlyingIndexId>140601</UnderlyingIndexId>
+    </key>
+    <key id="583" parent="317" name="uklf7e5fo2kx4tiwcio6uu08dvs">
+      <ObjectId>140604</ObjectId>
+      <StateNumber>3648</StateNumber>
+      <UnderlyingIndexId>140603</UnderlyingIndexId>
+    </key>
   </database-model>
 </dataSource>

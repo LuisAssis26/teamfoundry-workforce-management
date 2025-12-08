@@ -105,7 +105,7 @@ export default function Navbar({
             ))}
           </div>
         ) : (
-          <div className="relative" ref={profileRef}>
+          <div className="relative " ref={profileRef}>
             <button
               type="button"
               className="btn btn-ghost btn-circle h-12 w-12 text-3xl text-primary-content hover:bg-transparent active:bg-transparent focus:bg-transparent"

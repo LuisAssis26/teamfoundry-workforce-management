@@ -1,19 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import Tabs from "../../../components/sections/Tabs.jsx";
 import Button from "../../../components/ui/Button/Button.jsx";
 import { useCompanyProfile } from "./CompanyProfileContext.jsx";
 import CompanyRequestCard from "./components/CompanyRequestCard.jsx";
 import { createCompanyRequest } from "../../../api/profile/companyRequests.js";
 import CompanyRequestModal from "./components/CompanyRequestModal.jsx";
-
-const TABS = [
-  { key: "ACTIVE", label: "Ativas" },
-  { key: "PENDING", label: "Pendentes" },
-  { key: "PAST", label: "Passadas" },
-];
+import FilterDropdown from "../../../components/ui/Dropdown/FilterDropdown.jsx";
 
 /**
- * Página de requisições da empresa: tabs + botão para criar requisição.
+ * Página de requisições da empresa: filtros + botão para criar requisição.
  */
 export default function CompanyRequests() {
   const {
@@ -24,7 +18,8 @@ export default function CompanyRequests() {
     setRequestsLoaded,
   } = useCompanyProfile();
 
-  const [activeTab, setActiveTab] = useState("ACTIVE");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [orderBy, setOrderBy] = useState("START_DESC");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -56,10 +51,24 @@ export default function CompanyRequests() {
     };
   }, [refreshRequests, requestsLoaded, setRequestsData]);
 
-  const filteredRequests = useMemo(
-    () => (requestsData || []).filter((req) => req.computedStatus === activeTab),
-    [requestsData, activeTab]
-  );
+  const filteredRequests = useMemo(() => {
+    const list = Array.isArray(requestsData) ? [...requestsData] : [];
+    const filtered =
+      statusFilter === "ALL"
+        ? list
+        : list.filter((req) => (req.computedStatus || "").toUpperCase() === statusFilter);
+
+    const comparator = (a, b) => {
+      const aDate = a.startDate ? new Date(a.startDate) : a.createdAt ? new Date(a.createdAt) : null;
+      const bDate = b.startDate ? new Date(b.startDate) : b.createdAt ? new Date(b.createdAt) : null;
+      const aTime = aDate ? aDate.getTime() : 0;
+      const bTime = bDate ? bDate.getTime() : 0;
+      if (orderBy === "START_ASC") return aTime - bTime;
+      return bTime - aTime;
+    };
+
+    return filtered.sort(comparator);
+  }, [requestsData, statusFilter, orderBy]);
 
   const handleCreate = async (payload) => {
     setSaving(true);
@@ -72,9 +81,8 @@ export default function CompanyRequests() {
       setRequestsLoaded(true);
       setFeedback("Requisição criada com sucesso.");
       setModalOpen(false);
-      // muda para tab coerente com o status calculado
       if (created?.computedStatus) {
-        setActiveTab(created.computedStatus);
+        setStatusFilter(created.computedStatus);
       }
     } catch (err) {
       setError(err.message || "Não foi possível criar a requisição.");
@@ -84,11 +92,10 @@ export default function CompanyRequests() {
   };
 
   return (
-    <div className="space-y-6">
-      <header className="flex items-center justify-between flex-wrap gap-3">
+    <div className="w-full">
+      <header className="flex items-center gap-4 mb-6 justify-between">
         <div>
-          <p className="text-sm text-base-content/70">Gestão de requisições</p>
-          <h1 className="text-3xl font-semibold">Requisições</h1>
+          <h1 className="text-3xl font-semibold text-center sm:text-center md:text-left w-full">Requisições</h1>
         </div>
         <Button
           label="Fazer requisição"
@@ -98,11 +105,32 @@ export default function CompanyRequests() {
         />
       </header>
 
-      <Tabs
-        tabs={TABS.map((tab) => ({ key: tab.key, label: tab.label }))}
-        activeKey={activeTab}
-        onTabChange={setActiveTab}
-      />
+      <div className="space-y-4">
+        <div className="flex flex-wrap gap-3 justify-center md:justify-start w-full px-0">
+          <FilterDropdown
+            label="Estado:"
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={[
+              { value: "ALL", label: "Todos" },
+              { value: "ACTIVE", label: "Ativas" },
+              { value: "PENDING", label: "Pendentes" },
+              { value: "PAST", label: "Passadas" },
+            ]}
+            selectClassName="w-30 bg-base-200 h-10"
+          />
+          <FilterDropdown
+            label="Data:"
+            value={orderBy}
+            onChange={setOrderBy}
+            options={[
+              { value: "START_ASC", label: "Mais antiga" },
+              { value: "START_DESC", label: "Mais recente" },
+            ]}
+            selectClassName="w-30 bg-base-200 h-10"
+          />
+        </div>
+      
 
       {error && (
         <div className="alert alert-error text-sm" role="alert">
@@ -115,20 +143,18 @@ export default function CompanyRequests() {
         </div>
       )}
 
-      <section className="rounded-xl border border-base-300 bg-base-100 shadow p-5 min-h-[50vh]">
         {loading ? (
           <SkeletonList />
         ) : filteredRequests.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {filteredRequests.map((req) => (
               <CompanyRequestCard key={req.id} request={req} />
             ))}
           </div>
         )}
-      </section>
-
+      </div>
       <CompanyRequestModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}

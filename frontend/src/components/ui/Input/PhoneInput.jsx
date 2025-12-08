@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import phoneCountries from "./data/phoneCountries.js";
 
@@ -28,6 +28,15 @@ export default function PhoneInput({
   const [open, setOpen] = useState(false);
   const [country, setCountry] = useState(initialCountry);
   const [localValue, setLocalValue] = useState(extractLocal(value, initialCountry?.dialCode));
+
+  // Atualiza seleção e número local quando o valor vindo de fora mudar (ex.: carregamento assíncrono).
+  useEffect(() => {
+    const nextCountry = value?.startsWith("+")
+      ? countries.find((c) => value.startsWith(`+${c.dialCode}`)) || countries[0] || FALLBACK_COUNTRY
+      : countries[0] || FALLBACK_COUNTRY;
+    setCountry(nextCountry);
+    setLocalValue(extractLocal(value, nextCountry?.dialCode));
+  }, [value, countries]);
 
   const handleSelect = (c) => {
     if (disabled) return;

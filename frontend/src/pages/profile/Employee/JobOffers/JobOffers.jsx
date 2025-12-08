@@ -134,8 +134,8 @@ export default function JobOffers() {
                       value: opt,
                       label: opt === "ALL" ? "Todas" : opt,
                   }))}
-                  className="hidden md:block"
-                  selectClassName="w-30 bg-base-200 h-10"
+                  className="hidden md:block px-1 "
+                  selectClassName="w-30 bg-base-200 h-10 ml-2"
               />
             </div>
 
@@ -157,7 +157,7 @@ export default function JobOffers() {
             ) : filteredOffers.length === 0 ? (
                 <EmptyState />
             ) : (
-                <div className="space-y-4 max-w-3xl">
+                <div className="space-y-4">
                   {filteredOffers.map((offer) => (
                       <JobOfferCard key={offer.requestId ?? offer.id} offer={offer} onAccept={handleAccept} />
                   ))}
