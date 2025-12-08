@@ -25,15 +25,14 @@ export default function EmployeeCard({
     : selected
     ? "bg-[#60678E]"
     : "bg-[#1F2959]";
+  const borderColor = selected ? "border-[#1CA74F]" : "border-[#111827]";
 
   return (
     <>
       <article
-        className={`flex h-full flex-col items-center gap-4 rounded-2xl border ${
-          accepted ? "border-[#1CA74F]" : selected ? "border-[#1CA74F]" : "border-[#31A15F]"
-        } bg-[#F5F5F5] p-5 shadow text-center`}
+        className={`flex h-full flex-col items-start gap-4 rounded-2xl border ${borderColor} bg-[#F5F5F5] p-5 shadow`}
       >
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex items-center gap-3">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1F2959] text-white shadow-inner text-2xl">
             <i className="bi bi-person-fill" aria-hidden="true"></i>
           </div>
@@ -101,7 +100,7 @@ export default function EmployeeCard({
 
 function InfoLine({ label, value }) {
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="flex flex-col items-start gap-1">
       <dt className="font-semibold text-[#1F2959]">{label}:</dt>
       <dd className="text-[#111827]">{value}</dd>
     </div>
