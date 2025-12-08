@@ -20,6 +20,8 @@ export function EmployeeProfileProvider({ children }) {
   const [jobsData, setJobsData] = useState(null);
   const [offersData, setOffersData] = useState(null);
   const [offersLoaded, setOffersLoaded] = useState(false);
+  const [documentsData, setDocumentsData] = useState(null);
+  const [documentsLoaded, setDocumentsLoaded] = useState(false);
   const { isAuthenticated, userType } = useAuthContext();
 
   const refreshProfile = useCallback(async () => {
@@ -28,6 +30,8 @@ export function EmployeeProfileProvider({ children }) {
       setProfile(null);
       setOffersData(null);
       setOffersLoaded(false);
+      setDocumentsData(null);
+      setDocumentsLoaded(false);
       return null;
     }
     setLoadingProfile(true);
@@ -91,6 +95,10 @@ export function EmployeeProfileProvider({ children }) {
       setOffersData,
       offersLoaded,
       setOffersLoaded,
+      documentsData,
+      setDocumentsData,
+      documentsLoaded,
+      setDocumentsLoaded,
     }),
     [
       profile,
@@ -106,6 +114,8 @@ export function EmployeeProfileProvider({ children }) {
       profileOptionsData,
       offersData,
       offersLoaded,
+      documentsData,
+      documentsLoaded,
     ]
   );
 

@@ -16,6 +16,7 @@ export default function ProfileHeader({ name }) {
   const { profile, loadingProfile, setProfile } = useEmployeeProfile();
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
   const inputRef = useRef(null);
 
   const displayName = name || formatName(profile?.firstName, profile?.lastName);
@@ -67,15 +68,7 @@ export default function ProfileHeader({ name }) {
     event.stopPropagation();
     if (!imageUrl || uploading) return;
     setError("");
-    setUploading(true);
-    try {
-      await deleteEmployeeProfilePicture();
-      setProfile((prev) => (prev ? { ...prev, profilePictureUrl: null } : prev));
-    } catch (err) {
-      setError(err.message || "Falha ao remover a foto.");
-    } finally {
-      setUploading(false);
-    }
+    setShowConfirm(true);
   };
 
   return (
@@ -105,7 +98,7 @@ export default function ProfileHeader({ name }) {
         {imageUrl && (
           <button
             type="button"
-            className="btn btn-ghost btn-xs absolute -right-2 -top-2"
+            className="btn btn-ghost btn-xs absolute -right-2 -top-2 hover:bg-transparent active:bg-transparent focus:bg-transparent"
             onClick={handleRemove}
             disabled={uploading}
           >
@@ -129,6 +122,49 @@ export default function ProfileHeader({ name }) {
         {imageUrl ? "Alterar foto" : "Adicionar foto"}
       </button>
       {error && <p className="text-error text-sm mt-1">{error}</p>}
+      {showConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setShowConfirm(false)}
+            aria-hidden="true"
+          />
+          <div className="relative bg-base-100 rounded-xl shadow-lg p-5 w-full max-w-sm">
+            <h4 className="text-lg font-semibold mb-2">Remover foto?</h4>
+            <p className="text-sm text-base-content/70 mb-4">
+              Tem a certeza que quer eliminar a foto de perfil?
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                onClick={() => setShowConfirm(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="btn btn-error btn-sm"
+                onClick={async () => {
+                  if (!imageUrl) return;
+                  setUploading(true);
+                  try {
+                    await deleteEmployeeProfilePicture();
+                    setProfile((prev) => (prev ? { ...prev, profilePictureUrl: null } : prev));
+                    setShowConfirm(false);
+                  } catch (err) {
+                    setError(err.message || "Falha ao remover a foto.");
+                  } finally {
+                    setUploading(false);
+                  }
+                }}
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <h1 className="mt-4 text-2xl md:text-3xl font-semibold min-h-[1.5rem]">
         {showPlaceholder ? (
           <span

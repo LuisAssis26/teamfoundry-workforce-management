@@ -199,9 +199,11 @@ const EMPLOYEE_MENU = [
   { to: "/candidato/ofertas", label: "Ofertas", icon: "bi-bell" },
   { to: "/candidato/documentos", label: "Documentos", icon: "bi-file-earmark-text" },
   { to: "/candidato/proximos-passos", label: "Próximos passos", icon: "bi-flag" },
+  { to: "/candidato/definicoes", label: "Definições", icon: "bi-gear" },
 ];
 
 const COMPANY_MENU = [
   { to: "/empresa/informacoes", label: "Informações", icon: "bi-buildings" },
   { to: "/empresa/requisicoes", label: "Requisições", icon: "bi-list-check" },
+  { to: "/empresa/definicoes", label: "Definições", icon: "bi-gear" },
 ];

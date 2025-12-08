@@ -52,19 +52,19 @@ export default function PhoneInput({
           <span className="label-text font-medium">{label}</span>
         </label>
       )}
-      <div className={`relative flex h-10 w-full items-stretch input input-bordered p-0 focus-within:border-primary focus-within:ring-0 focus-within:outline-none transition ${disabled ? "pointer-events-none opacity-60" : ""}`}>
+      <div className={`relative flex h-10 w-full items-stretch input input-bordered p-0 focus-within:border-primary focus-within:ring-0 focus-within:outline-none transition   ${disabled ? "pointer-events-none opacity-60" : ""}`}>
         <div className="relative inline-block">
           <button
             type="button"
-            className="flex justify-between h-full min-w-[64px] items-center gap-2 border-r border-base-300 pl-4 pr-2 bg-transparent focus:outline-none"
+            className="flex justify-between h-full min-w-[64px] items-center gap-2 border-r border-base-300 pl-4 pr-2 bg-transparent focus:outline-none cursor-pointer"
             onClick={() => !disabled && setOpen((o) => !o)}
             aria-label="Selecionar indicativo telefónico"
           >
             <span className="font-semibold text-base">+{country.dialCode}</span>
-            <i className={`bi bi-chevron-${open ? "up" : "down"} text-xs`} />
+            <i className={`bi bi-chevron-${open ? "down" : "up"} text-xs`} />
           </button>
           {open && (
-            <ul className="absolute z-50 max-h-60 w-56 overflow-auto rounded-lg border border-base-300 bg-base-100 shadow-lg top-full right-0 mt-1 text-base-content">
+            <ul className="absolute z-50 max-h-60 w-56 overflow-auto rounded-lg border border-base-300 bg-base-100 shadow-lg bottom-full left-0 mb-1 text-base-content">
               {countries.map((c) => (
                 <li key={c.code}>
                   <button

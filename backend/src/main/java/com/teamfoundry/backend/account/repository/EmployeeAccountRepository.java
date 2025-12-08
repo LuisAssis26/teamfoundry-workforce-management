@@ -20,7 +20,7 @@ public interface EmployeeAccountRepository extends JpaRepository<EmployeeAccount
             LEFT JOIN ega.geoArea ga
             LEFT JOIN com.teamfoundry.backend.account_options.model.employee.EmployeeCompetence ec ON ec.employee = e
             LEFT JOIN ec.competence c
-            WHERE e.active = true
+            WHERE e.verified = true AND e.deactivated = false
               AND (:role IS NULL OR LOWER(f.name) = LOWER(:role))
               AND (:areasEmpty = true OR LOWER(ga.name) IN :areas)
               AND (:skillsEmpty = true OR LOWER(c.name) IN :skills)

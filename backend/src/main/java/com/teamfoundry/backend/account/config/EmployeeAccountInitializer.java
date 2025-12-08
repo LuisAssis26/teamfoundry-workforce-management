@@ -54,13 +54,13 @@ public class EmployeeAccountInitializer {
                 boolean changed = false;
                 for (var acc : all) {
                     boolean updated = false;
-                    if (!acc.isActive()) { acc.setActive(true); updated = true; }
+                    if (!acc.isVerified()) { acc.setVerified(true); updated = true; }
                     if (acc.getRegistrationStatus() != RegistrationStatus.COMPLETED) { acc.setRegistrationStatus(RegistrationStatus.COMPLETED); updated = true; }
                     changed = changed || updated;
                 }
                 if (changed) {
                     accountRepository.saveAll(all);
-                    LOGGER.info("Updated existing accounts to active=true and registrationStatus=COMPLETED where needed.");
+                    LOGGER.info("Updated existing accounts to verified=true and registrationStatus=COMPLETED where needed.");
                 }
             } catch (Exception e) {
                 LOGGER.warn("Could not normalize existing accounts defaults: {}", e.getMessage());
@@ -152,7 +152,7 @@ public class EmployeeAccountInitializer {
                 employee.setNationality(seed.nationality());
                 employee.setGender(seed.gender());
                 employee.setBirthDate(seed.birthDate());
-                employee.setActive(true);
+                employee.setVerified(true);
                 employee.setRegistrationStatus(RegistrationStatus.COMPLETED);
 
                 EmployeeAccount savedEmployee = accountRepository.save(employee);

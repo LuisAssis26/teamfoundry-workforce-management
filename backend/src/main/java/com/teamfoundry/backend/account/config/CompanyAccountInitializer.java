@@ -57,7 +57,7 @@ public class CompanyAccountInitializer {
                 company.setWebsite(seed.website());
                 company.setDescription(seed.description());
                 company.setStatus(seed.status());
-                company.setActive(true);
+                company.setVerified(true);
                 company.setRegistrationStatus(RegistrationStatus.COMPLETED);
 
                 CompanyAccount saved = accountRepository.save(company);
@@ -78,7 +78,7 @@ public class CompanyAccountInitializer {
             boolean changed = false;
             for (Account acc : all) {
                 boolean updated = false;
-                if (!acc.isActive()) { acc.setActive(true); updated = true; }
+                if (!acc.isVerified()) { acc.setVerified(true); updated = true; }
                 if (acc.getRegistrationStatus() != RegistrationStatus.COMPLETED) {
                     acc.setRegistrationStatus(RegistrationStatus.COMPLETED);
                     updated = true;

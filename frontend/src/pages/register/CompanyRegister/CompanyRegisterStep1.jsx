@@ -84,21 +84,23 @@ export default function CompanyRegisterStep1() {
           icon={<i className="bi bi-envelope" />}
           value={credentialEmail}
           onChange={(event) => setCredentialEmail(event.target.value)}
+          autoComplete="email"
           error={errors.credentialEmail}
         />
 
         <div className="relative">
           <InputField
-            label="Password"
-            type="password"
-            placeholder="Crie uma password"
-            icon={<i className="bi bi-lock" />}
-            value={password}
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
-            onFocus={() => setPasswordFocused(true)}
-            onBlur={() => setPasswordFocused(false)}
+          label="Password"
+          type="password"
+          placeholder="Crie uma password"
+          icon={<i className="bi bi-lock" />}
+          value={password}
+          autoComplete="new-password"
+          onChange={(event) => {
+            setPassword(event.target.value);
+          }}
+          onFocus={() => setPasswordFocused(true)}
+          onBlur={() => setPasswordFocused(false)}
             error={errors.password}
           />
 
@@ -126,6 +128,7 @@ export default function CompanyRegisterStep1() {
           placeholder="Repita a password"
           icon={<i className="bi bi-shield-lock" />}
           value={confirmPassword}
+          autoComplete="new-password"
           onChange={(event) => setConfirmPassword(event.target.value)}
           error={errors.confirmPassword}
         />

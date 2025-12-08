@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import InfoLayout from "./InfoLayout.jsx";
 import Button from "../../../../components/ui/Button/Button.jsx";
 import InputField from "../../../../components/ui/Input/InputField.jsx";
@@ -12,6 +12,7 @@ import {
 } from "../../../../api/profile/employeeCertifications.js";
 import { useEmployeeProfile } from "../EmployeeProfileContext.jsx";
 import { formatName } from "../utils/profileUtils.js";
+import DropZone from "../../../../components/ui/Upload/DropZone.jsx";
 
 const initialForm = {
   name: "",
@@ -21,6 +22,15 @@ const initialForm = {
   description: "",
   file: null,
 };
+
+const ALLOWED_CERT_TYPES = [
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+];
+const MAX_CERT_MB = 5;
 
 export default function Certificates() {
   const [open, setOpen] = useState(false);
@@ -35,7 +45,6 @@ export default function Certificates() {
   const [successMessage, setSuccessMessage] = useState("");
   const { profile, refreshProfile, educationData, setEducationData } = useEmployeeProfile();
   const [displayName, setDisplayName] = useState("");
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -77,22 +86,6 @@ export default function Certificates() {
     setForm((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
-
-  const handleFileSelect = (event) => {
-    // Guarda o ficheiro escolhido pelo utilizador.
-    const file = event.target.files?.[0] || null;
-    setForm((prev) => ({ ...prev, file }));
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files?.[0] || null;
-    if (file) {
-      setForm((prev) => ({ ...prev, file }));
-    }
-  };
-
-  const prevent = (event) => event.preventDefault();
 
   const validateForm = () => {
     // Validação mínima antes do upload.
@@ -169,9 +162,6 @@ export default function Certificates() {
     setEditingId(null);
     setForm(initialForm);
     setErrors({});
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   };
 
   const openModal = () => {
@@ -181,9 +171,6 @@ export default function Certificates() {
     setEditingId(null);
     setErrors({});
     setOpen(true);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   };
 
   return (
@@ -274,6 +261,7 @@ export default function Certificates() {
             name="completionDate"
             type="date"
             value={form.completionDate}
+            max={new Date().toISOString().split("T")[0]}
             onChange={handleChange}
             error={errors.completionDate}
           />
@@ -288,31 +276,22 @@ export default function Certificates() {
           />
 
           <div>
-            <label className="label">
-              <span className="label-text font-medium">Certificado</span>
-            </label>
-            <div
-              className={`border border-dashed rounded-xl p-6 text-center cursor-pointer bg-base-50 ${
-                errors.file ? "border-error" : "border-base-300"
-              }`}
-              onDragOver={prevent}
-              onDragEnter={prevent}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <div className="flex flex-col items-center gap-2 text-base-content/80">
-                <i className="bi bi-plus-square text-2xl" />
-                <span>Arraste o certificado aqui ou procure no dispositivo.</span>
-                {form.file && <span className="text-sm mt-1">Selecionado: {form.file.name}</span>}
-              </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,.png,.jpg,.jpeg"
-                className="hidden"
-                onChange={handleFileSelect}
-              />
-            </div>
+            <DropZone
+              label="Certificado"
+              onSelect={(file) => {
+                setForm((prev) => ({ ...prev, file }));
+                setErrors((prev) => ({ ...prev, file: "" }));
+              }}
+              onRemove={() => {
+                setForm((prev) => ({ ...prev, file: null }));
+              }}
+              hasFile={Boolean(form.file)}
+              fileName={form.file?.name}
+              disabled={saving || deleting}
+              allowedTypes={ALLOWED_CERT_TYPES}
+              maxSizeMB={MAX_CERT_MB}
+              onError={(msg) => setErrors((prev) => ({ ...prev, file: msg }))}
+            />
             {errors.file && <p className="mt-2 text-sm text-error">{errors.file}</p>}
           </div>
         </div>
@@ -341,6 +320,10 @@ function EmptyState() {
 
 async function buildPayload(form) {
   const certificateFile = form.file ? await fileToBase64(form.file) : null;
+  const fileName =
+    form.file?.name && form.file.name.trim()
+      ? form.file.name
+      : (form.name ? `${form.name.trim().replace(/\s+/g, "_")}` : "certificado") + ".pdf";
   return {
     name: form.name.trim(),
     institution: form.institution.trim(),
@@ -348,7 +331,7 @@ async function buildPayload(form) {
     completionDate: form.completionDate,
     description: form.description?.trim() || null,
     certificateFile,
-    certificateFileName: form.file?.name ?? null,
+    certificateFileName: fileName,
   };
 }
 

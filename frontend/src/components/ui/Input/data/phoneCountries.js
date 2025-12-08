@@ -1,9 +1,7 @@
 // Lista de países com indicativo e emoji, ordenada por indicativo crescente.
 const phoneCountries = [
-  { code: "US", name: "Estados Unidos", dialCode: "1", flag: "🇺🇸" },
-  { code: "CA", name: "Canadá", dialCode: "1", flag: "🇨🇦" },
-  { code: "RU", name: "Rússia", dialCode: "7", flag: "🇷🇺" },
-  { code: "KZ", name: "Cazaquistão", dialCode: "7", flag: "🇰🇿" },
+  { code: "US", name: "Estados Unidos/Canadá", dialCode: "1", flag: "🇺🇸" },
+  { code: "RU", name: "Rússia/Cazaquistão", dialCode: "7", flag: "🇷🇺" },
   { code: "EG", name: "Egito", dialCode: "20", flag: "🇪🇬" },
   { code: "ZA", name: "África do Sul", dialCode: "27", flag: "🇿🇦" },
   { code: "GR", name: "Grécia", dialCode: "30", flag: "🇬🇷" },

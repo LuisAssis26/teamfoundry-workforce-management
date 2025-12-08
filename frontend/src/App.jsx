@@ -30,12 +30,14 @@ import RecentJobs from "./pages/profile/Employee/Info/RecentJobs.jsx";
 import Preferences from "./pages/profile/Employee/Info/Preferences.jsx";
 import JobOffers from "./pages/profile/Employee/JobOffers/JobOffers.jsx";
 import Documentos from "./pages/profile/Employee/Documents/Documentos.jsx";
-import ProximosPassos from "./pages/profile/Employee/NextSteps/ProximosPassos.jsx";
+import NextSteps from "./pages/profile/Employee/NextSteps/NextSteps.jsx";
+import Settings from "./pages/profile/Settings/Settings.jsx";
 
 // Profile - Company
 import CompanyLayout, { CompanyIndexRedirect } from "./pages/profile/company/CompanyLayout.jsx";
 import CompanyInfo from "./pages/profile/company/CompanyInfo.jsx";
 import CompanyRequests from "./pages/profile/company/CompanyRequests.jsx";
+import CompanySettings from "./pages/profile/company/CompanySettings.jsx";
 
 // Admin / SuperAdmin
 import AdminLayout from "./pages/admin/AdminLayout.jsx";
@@ -99,13 +101,15 @@ function App() {
         <Route path="preferencias" element={<Preferences />} />
         <Route path="ofertas" element={<JobOffers />} />
         <Route path="documentos" element={<Documentos />} />
-        <Route path="proximos-passos" element={<ProximosPassos />} />
+        <Route path="proximos-passos" element={<NextSteps />} />
+        <Route path="definicoes" element={<Settings />} />
       </Route>
 
       <Route path="/empresa" element={<CompanyLayout />}>
         <Route index element={<CompanyIndexRedirect />} />
         <Route path="informacoes" element={<CompanyInfo />} />
         <Route path="requisicoes" element={<CompanyRequests />} />
+        <Route path="definicoes" element={<CompanySettings />} />
       </Route>
     </Routes>
   );

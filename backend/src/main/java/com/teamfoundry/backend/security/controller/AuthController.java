@@ -34,13 +34,15 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         LoginResult result = authService.login(request);
         if (result.refreshToken() != null) {
-            ResponseCookie cookie = ResponseCookie.from("refresh_token", result.refreshToken())
+            ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from("refresh_token", result.refreshToken())
                     .httpOnly(true)
                     .secure(false) // defina true em produção com HTTPS
                     .path("/")
-                    .sameSite("Lax")
-                    .maxAge(result.refreshMaxAgeSeconds())
-                    .build();
+                    .sameSite("Lax");
+            if (result.refreshMaxAgeSeconds() >= 0) {
+                builder.maxAge(result.refreshMaxAgeSeconds());
+            }
+            ResponseCookie cookie = builder.build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         } else {
             // Garantir que admins/super-admins não ficam com refresh cookie antigo

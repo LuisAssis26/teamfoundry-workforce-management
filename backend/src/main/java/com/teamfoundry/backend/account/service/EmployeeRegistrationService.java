@@ -90,7 +90,7 @@ public class EmployeeRegistrationService {
         EmployeeAccount account = existingAccountOpt.orElseGet(EmployeeAccount::new);
 
         if (existingAccountOpt.isPresent()) {
-            if (Boolean.TRUE.equals(account.isActive()) || RegistrationStatus.COMPLETED.equals(account.getRegistrationStatus())) {
+            if (Boolean.TRUE.equals(account.isVerified()) || RegistrationStatus.COMPLETED.equals(account.getRegistrationStatus())) {
                 throw new DuplicateEmailException("O email informado já está associado a uma conta ativa.");
             }
             resetAccountForRestart(account);
@@ -101,7 +101,7 @@ public class EmployeeRegistrationService {
 
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         account.setRegistrationStatus(RegistrationStatus.PENDING);
-        account.setActive(false);
+        account.setVerified(false);
 
         try {
             employeeAccountRepository.save(account);
@@ -164,7 +164,7 @@ public class EmployeeRegistrationService {
             throw new EmployeeRegistrationException("O código de verificação expirou.", HttpStatus.BAD_REQUEST);
         }
 
-        account.setActive(true);
+        account.setVerified(true);
         account.setRegistrationStatus(RegistrationStatus.COMPLETED);
         employeeAccountRepository.save(account);
 

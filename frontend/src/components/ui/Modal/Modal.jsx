@@ -4,13 +4,13 @@ export default function Modal({ open, title, onClose, children, actions, classNa
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto px-4 py-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto px-4 py-6">
       <div
         className="absolute inset-0 bg-[#111827]/80 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className={`relative bg-base-100 text-base-content rounded-2xl shadow-xl w-full max-w-3xl mx-4 p-6 ${className}`}>
+      <div className={`relative bg-base-100 text-base-content rounded-2xl shadow-xl w-full max-w-xl mx-4 p-5 ${className}`}>
         {title && (
           <h3 className="text-3xl font-semibold mb-4 text-primary">{title}</h3>
         )}

@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import InputField from "../../../components/ui/Input/InputField.jsx";
 import Button from "../../../components/ui/Button/Button.jsx";
 import { login } from "../../../api/auth/auth.js";
-import ForgotPassword from "./ForgotPassword.jsx";
+import ForgotPassword from "../../../components/ui/Modal/ForgotPassword.jsx";
 import { useAuthContext } from "../../../auth/AuthContext.jsx";
 
 /**
@@ -68,6 +68,7 @@ export default function LoginCandidate() {
                         icon={<i className="bi bi-envelope"></i>}
                         type="email"
                         value={email}
+                        autoComplete="email"
                         onChange={(e) => setEmail(e.target.value)}
                     />
 
@@ -76,10 +77,11 @@ export default function LoginCandidate() {
                             label="Password"
                             placeholder="Insira a sua password"
                             icon={<i className="bi bi-lock"></i>}
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                        type="password"
+                        value={password}
+                        autoComplete="current-password"
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
                         {/* Lembrar-me */}
                         <div className="flex items-center justify-center text-xs mt-0 space-x-1">
                             <label className="label cursor-pointer gap-2">
@@ -111,20 +113,20 @@ export default function LoginCandidate() {
                         />
 
                         {/* Registe-se */}
-                        <div className="flex flex-wrap justify-center items-center text-xs mt-2 gap-2 text-center">
+                        <div className="flex flex-wrap justify-center items-center text-xs mt-2 text-center">
                             <span className="text-gray-500">Registe-se como</span>
                             <Link
                                 to="/employee-register/step1"
                                 className="text-accent font-medium hover:underline"
                             >
-                                Funcionário
+                            &nbsp;Funcionário&nbsp;
                             </Link>
                             <span className="text-gray-500">ou</span>
                             <Link
                                 to="/company-register/step1"
                                 className="text-accent font-medium hover:underline"
                             >
-                                Empresa
+                            &nbsp;Empresa&nbsp;
                             </Link>
                         </div>
                     </div>

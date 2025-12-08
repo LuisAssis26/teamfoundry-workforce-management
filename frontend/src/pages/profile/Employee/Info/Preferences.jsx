@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import InfoLayout from "./InfoLayout.jsx";
 import Button from "../../../../components/ui/Button/Button.jsx";
-import MultiSelectDropdown from "../../../../components/ui/MultiSelect/MultiSelectDropdown.jsx";
+import MultiSelectDropdown from "../../../../components/ui/Dropdown/MultiSelectDropdown.jsx";
 import { fetchProfileOptions } from "../../../../api/profile/profileOptions.js";
 import { updateEmployeePreferences } from "../../../../api/profile/employeePreferences.js";
 import { useEmployeeProfile } from "../EmployeeProfileContext.jsx";

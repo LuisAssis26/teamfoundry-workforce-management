@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AdminNavbar from "../components/AdminNavbar.jsx";
 import EmployeeCard from "./components/EmployeeCard.jsx";
-import MultiSelectDropdown from "../../../components/ui/MultiSelect/MultiSelectDropdown.jsx";
+import MultiSelectDropdown from "../../../components/ui/Dropdown/MultiSelectDropdown.jsx";
 import { searchCandidates } from "../../../api/admin/candidates.js";
 import { sendInvites, listInvitedIds, listAcceptedIds } from "../../../api/admin/invitations.js";
 import { useAdminData } from "../AdminDataContext.jsx";

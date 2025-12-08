@@ -5,6 +5,7 @@ import com.teamfoundry.backend.account_options.dto.employee.EmployeeProfileUpdat
 import com.teamfoundry.backend.account_options.dto.employee.CurriculumUploadRequest;
 import com.teamfoundry.backend.account_options.dto.employee.IdentificationDocumentUploadRequest;
 import com.teamfoundry.backend.account_options.dto.employee.ProfilePictureUploadRequest;
+import com.teamfoundry.backend.account_options.dto.employee.DeactivateAccountRequest;
 import com.teamfoundry.backend.account_options.enums.DocumentType;
 import com.teamfoundry.backend.account_options.service.employee.EmployeeProfileService;
 import jakarta.validation.Valid;
@@ -105,6 +106,13 @@ public class EmployeeProfileController {
     @DeleteMapping("/photo")
     public void deleteProfilePicture(Authentication authentication) {
         employeeProfileService.deleteProfilePicture(resolveEmail(authentication));
+    }
+
+    @PostMapping(value = "/deactivate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void deactivateAccount(
+            @Valid @RequestBody DeactivateAccountRequest request,
+            Authentication authentication) {
+        employeeProfileService.deactivateAccount(resolveEmail(authentication), request);
     }
 
     private String resolveEmail(Authentication authentication) {

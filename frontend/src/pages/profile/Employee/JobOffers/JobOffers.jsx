@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { listEmployeeOffers, acceptEmployeeOffer, listEmployeeJobs } from "../../../../api/profile/profileJobs.js";
 import { useEmployeeProfile } from "../EmployeeProfileContext.jsx";
 import JobOfferCard from "./JobOfferCard.jsx";
+import FilterDropdown from "../../../../components/ui/Dropdown/FilterDropdown.jsx";
 
 const STATUS_FILTERS = [
   { value: "ALL", label: "Todas" },
@@ -10,20 +11,31 @@ const STATUS_FILTERS = [
   { value: "CLOSED", label: "Esgotadas" },
 ];
 
+const DATE_ORDER_OPTIONS = [
+  { value: "DESC", label: "Mais recentes" },
+  { value: "ASC", label: "Mais antigas" },
+];
+
 export default function JobOffers() {
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [feedback, setFeedback] = useState("");
 
-  const { setJobsData, jobsData, setOffersData, setOffersLoaded } = useEmployeeProfile();
+  const { setJobsData, jobsData, offersData, offersLoaded, setOffersData, setOffersLoaded } = useEmployeeProfile();
 
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [companyFilter, setCompanyFilter] = useState("ALL");
+  const [startDateOrder, setStartDateOrder] = useState("DESC");
 
   useEffect(() => {
     let isMounted = true;
     async function loadOffers() {
+      if (offersLoaded && Array.isArray(offersData)) {
+        setOffers(offersData);
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       setError("");
       try {
@@ -39,11 +51,11 @@ export default function JobOffers() {
         if (isMounted) setLoading(false);
       }
     }
-    loadOffers();
-    return () => {
-      isMounted = false;
-    };
-  }, [setOffersData, setOffersLoaded]);
+        loadOffers();
+        return () => {
+            isMounted = false;
+        };
+    }, [offersData, offersLoaded, setOffersData, setOffersLoaded]);
 
   const companyOptions = useMemo(() => {
     const names = new Set();
@@ -54,14 +66,21 @@ export default function JobOffers() {
   }, [offers]);
 
   const filteredOffers = useMemo(() => {
-    return offers.filter((offer) => {
+    const list = offers.filter((offer) => {
       const status = (offer.status || "").toUpperCase();
       const companyName = offer.companyName || "";
       const statusOk = statusFilter === "ALL" ? true : status === statusFilter;
       const companyOk = companyFilter === "ALL" ? true : companyName === companyFilter;
       return statusOk && companyOk;
     });
-  }, [offers, statusFilter, companyFilter]);
+
+    return [...list].sort((a, b) => {
+      const aDate = a.startDate ? new Date(a.startDate).getTime() : 0;
+      const bDate = b.startDate ? new Date(b.startDate).getTime() : 0;
+      if (aDate === bDate) return 0;
+      return startDateOrder === "ASC" ? aDate - bDate : bDate - aDate;
+    });
+  }, [offers, statusFilter, companyFilter, startDateOrder]);
 
   const handleAccept = async (id) => {
     setError("");
@@ -82,42 +101,42 @@ export default function JobOffers() {
 
   return (
       <section className="w-full">
-        <div className="flex items-center gap-4 mb-6">
-          <h2 className="text-3xl font-semibold">Ofertas de Trabalho</h2>
+        <div className="flex items-center gap-4 mb-6 justify-start sm:justify-start md:justify-start">
+          <h2 className="text-3xl font-semibold text-center sm:text-center md:text-left w-full">Ofertas de Trabalho</h2>
         </div>
         
           <div className="space-y-4">
             {/* Filtros */}
-            <div className="flex flex-wrap gap-3 justify-start w-full px-0">
-              <div className="flex items-center gap-2 px-1">
-                <span className="text-sm font-medium">Status:</span>
-                <select
-                    className="select select-sm select-ghost bg-base-100"
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                >
-                  {STATUS_FILTERS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                  ))}
-                </select>
-              </div>
+            <div className="flex flex-wrap gap-3 justify-center md:justify-start w-full px-0">
+              <FilterDropdown
+                  label="Status:"
+                  value={statusFilter}
+                  onChange={setStatusFilter}
+                  options={STATUS_FILTERS}
+                  className="px-1"
+                  selectClassName="w-30 bg-base-200 h-10"
+              />
 
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">Empresa:</span>
-                <select
-                    className="select select-sm select-ghost bg-base-100"
-                    value={companyFilter}
-                    onChange={(e) => setCompanyFilter(e.target.value)}
-                >
-                  {companyOptions.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt === "ALL" ? "Todas" : opt}
-                      </option>
-                  ))}
-                </select>
-              </div>
+              <FilterDropdown
+                  label="Data:"
+                  value={startDateOrder}
+                  onChange={setStartDateOrder}
+                  options={DATE_ORDER_OPTIONS}
+                  className="px-1"
+                  selectClassName="w-30 bg-base-200 h-10"
+              />
+
+              <FilterDropdown
+                  label="Empresa:"
+                  value={companyFilter}
+                  onChange={setCompanyFilter}
+                  options={companyOptions.map((opt) => ({
+                      value: opt,
+                      label: opt === "ALL" ? "Todas" : opt,
+                  }))}
+                  className="hidden md:block"
+                  selectClassName="w-30 bg-base-200 h-10"
+              />
             </div>
 
             {/* Mensagens */}

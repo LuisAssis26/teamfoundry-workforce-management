@@ -40,6 +40,7 @@ public class AccountDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         List<GrantedAuthority> authorities =
                 List.of(new SimpleGrantedAuthority("ROLE_" + acc.getRole().name()));
-        return new User(acc.getEmail(), acc.getPassword(), acc.isActive(), true, true, true, authorities);
+        boolean enabled = acc.isVerified() && !acc.isDeactivated();
+        return new User(acc.getEmail(), acc.getPassword(), enabled, true, true, true, authorities);
     }
 }
