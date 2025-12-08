@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from "react
 import PropTypes from "prop-types";
 import { useAuthContext } from "../../auth/AuthContext.jsx";
 import { teamRequestsAPI } from "../../api/admin/teamRequests.js";
-import { fetchGeoAreas, fetchCompetences } from "../../api/site/siteManagement.js";
+import { fetchGeoAreas, fetchCompetences, fetchFunctions } from "../../api/site/siteManagement.js";
 
 const AdminDataContext = createContext(null);
 
@@ -22,7 +22,7 @@ export function AdminDataProvider({ children }) {
     const [rolesLoading, setRolesLoading] = useState({});
     const [rolesError, setRolesError] = useState(null);
 
-    const [options, setOptions] = useState({ geoAreas: [], competences: [] });
+    const [options, setOptions] = useState({ geoAreas: [], competences: [], functions: [] });
     const [optionsLoading, setOptionsLoading] = useState(false);
     const [optionsLoaded, setOptionsLoaded] = useState(false);
     const [optionsError, setOptionsError] = useState(null);
@@ -108,12 +108,17 @@ export function AdminDataProvider({ children }) {
             setOptionsLoading(true);
             setOptionsError(null);
             try {
-                const [geoAreas, competences] = await Promise.all([fetchGeoAreas(), fetchCompetences()]);
+                const [geoAreas, competences, functions] = await Promise.all([
+                    fetchGeoAreas(),
+                    fetchCompetences(),
+                    fetchFunctions(),
+                ]);
                 const payload = {
                     geoAreas: Array.isArray(geoAreas) ? geoAreas.map((item) => item.name).filter(Boolean) : [],
                     competences: Array.isArray(competences)
                         ? competences.map((item) => item.name).filter(Boolean)
                         : [],
+                    functions: Array.isArray(functions) ? functions.map((item) => item.name).filter(Boolean) : [],
                 };
                 setOptions(payload);
                 setOptionsLoaded(true);
