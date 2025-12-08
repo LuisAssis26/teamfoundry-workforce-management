@@ -50,13 +50,22 @@ export default function Preferences() {
 
         // Reutiliza cache de preferências se já carregadas.
         if (preferencesData && (preferencesLoaded || hasLoadedOnce.current)) {
-          setForm({
-            roles: normalizeSelection(preferencesData?.roles?.length ? preferencesData.roles : preferencesData?.role ? [preferencesData.role] : []),
-            areas: normalizeSelection(preferencesData?.areas),
-            skills: normalizeSelection(preferencesData?.skills),
-          });
-          setLoading(false);
-          hasLoadedOnce.current = true;
+          const optionsSource = profileOptionsData || (await fetchProfileOptions());
+          if (isMounted) {
+            setOptions({
+              functions: Array.isArray(optionsSource?.functions) ? optionsSource.functions : [],
+              geoAreas: Array.isArray(optionsSource?.geoAreas) ? optionsSource.geoAreas : [],
+              competences: Array.isArray(optionsSource?.competences) ? optionsSource.competences : [],
+            });
+            if (!profileOptionsData) setProfileOptionsData(optionsSource);
+            setForm({
+              roles: normalizeSelection(preferencesData?.roles?.length ? preferencesData.roles : preferencesData?.role ? [preferencesData.role] : []),
+              areas: normalizeSelection(preferencesData?.areas),
+              skills: normalizeSelection(preferencesData?.skills),
+            });
+            setLoading(false);
+            hasLoadedOnce.current = true;
+          }
           return;
         }
 
@@ -96,7 +105,7 @@ export default function Preferences() {
     return () => {
       isMounted = false;
     };
-  }, [profile, refreshProfile, preferencesData, setPreferencesData]);
+  }, [profile, refreshProfile, preferencesData, setPreferencesData, profileOptionsData, setProfileOptionsData]);
 
   const functionOptions = useMemo(() => {
     // Garante que funções já escolhidas continuam visíveis mesmo que não venham da API.
@@ -174,9 +183,6 @@ export default function Preferences() {
                   placeholder="Selecione a função"
                   disabled={loading || saving || functionOptions.length === 0}
                 />
-                {fieldErrors.roles && (
-                  <p className="mt-2 text-sm text-error">{fieldErrors.roles}</p>
-                )}
               </div>
 
               <div>
@@ -203,9 +209,6 @@ export default function Preferences() {
                   disabled={loading || saving}
                   maxVisibleChips={3}
                 />
-                {fieldErrors.skills && (
-                  <p className="mt-2 text-sm text-error">{fieldErrors.skills}</p>
-                )}
               </div>
             </div>
           </div>

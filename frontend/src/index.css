@@ -259,3 +259,17 @@ body.toastify-alerts .alert + .alert {
         translate: 0 -6px;
     }
 }
+
+/* Animação genérica para chevrons em dropdowns */
+.chevron-rotate {
+    transition: transform 240ms ease;
+}
+.chevron-rotate.open {
+    transform: rotate(180deg);
+}
+
+/* Remove setas nativas quando queremos usar ícone custom */
+.no-native-chevron {
+    appearance: none;
+    background-image: none !important;
+}

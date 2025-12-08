@@ -107,14 +107,13 @@ export default function JobOffers() {
         
           <div className="space-y-4">
             {/* Filtros */}
-            <div className="flex flex-wrap gap-3 justify-center md:justify-start w-full px-0">
+            <div className="flex flex-wrap items-center gap-4 justify-start w-full px-0">
               <FilterDropdown
                   label="Status:"
                   value={statusFilter}
                   onChange={setStatusFilter}
                   options={STATUS_FILTERS}
-                  className="px-1"
-                  selectClassName="w-30 bg-base-200 h-10"
+                  selectClassName="bg-base-200 h-10"
               />
 
               <FilterDropdown
@@ -122,8 +121,7 @@ export default function JobOffers() {
                   value={startDateOrder}
                   onChange={setStartDateOrder}
                   options={DATE_ORDER_OPTIONS}
-                  className="px-1"
-                  selectClassName="w-30 bg-base-200 h-10"
+                  selectClassName="bg-base-200 h-10"
               />
 
               <FilterDropdown
@@ -134,8 +132,8 @@ export default function JobOffers() {
                       value: opt,
                       label: opt === "ALL" ? "Todas" : opt,
                   }))}
-                  className="hidden md:block px-1 "
-                  selectClassName="w-30 bg-base-200 h-10 ml-2"
+                  className="hidden md:flex"
+                  selectClassName="bg-base-200 h-10"
               />
             </div>
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
+import { DropdownChevron, DROPDOWN_TRIGGER_CLASS, DropdownPanel } from "./Dropdown.jsx";
 
 const MAX_VISIBLE_CHIPS = 2;
 
@@ -44,7 +45,7 @@ export default function MultiSelectDropdown({
     const visible = selectedOptions.slice(0, maxVisibleChips);
     const hidden = selectedOptions.slice(maxVisibleChips);
     return { visibleChips: visible, hiddenChips: hidden };
-  }, [selectedOptions, shouldCollapse, maxVisibleChips]);
+  }, [selectedOptions, maxVisibleChips]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -122,14 +123,14 @@ export default function MultiSelectDropdown({
 
         <div className="relative">
           <div
-              role="button"
-              tabIndex={0}
-              className={`input input-bordered w-full px-2 flex items-center justify-between gap-2 ${disabled ? "opacity-60 cursor-not-allowed" : ""} ${
-                  selectedOptions.length === 0 ? "text-base-content/70" : ""
-              }`}
-              onClick={() => !disabled && setIsOpen((prev) => !prev)}
-              onKeyDown={handleTriggerKeyDown}
-              aria-disabled={disabled}
+            role="button"
+            tabIndex={0}
+            className={`${DROPDOWN_TRIGGER_CLASS} ${disabled ? "opacity-60 cursor-not-allowed" : ""} ${
+              selectedOptions.length === 0 ? "text-base-content/70" : ""
+            }`}
+            onClick={() => !disabled && setIsOpen((prev) => !prev)}
+            onKeyDown={handleTriggerKeyDown}
+            aria-disabled={disabled}
           >
             <div
                 ref={chipsRef}
@@ -165,48 +166,30 @@ export default function MultiSelectDropdown({
               </span>
               )}
             </div>
-            <i
-                className={`bi bi-chevron-${isOpen ? "up" : "down"} text-base-content/60`}
-                aria-hidden
-            ></i>
+            <DropdownChevron open={isOpen} />
           </div>
-          {isOpen && !disabled && (
-              <div className="absolute left-0 right-0 z-20 mt-2 rounded-box border border-base-200 bg-base-100 shadow">
-                <div className="p-2">
-                  <input
-                      type="text"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder="Pesquisar..."
-                      className="input input-bordered input-sm w-full"
-                  />
-                </div>
-                <ul className="menu menu-sm p-2 max-h-64 overflow-auto">
-                  {filteredOptions.length === 0 ? (
-                      <li className="text-sm text-base-content/60 px-2 py-2">Nenhuma opção</li>
-                  ) : (
-                      filteredOptions.map(({ value, label: optionLabel }) => (
-                          <li key={value}>
-                            <button
-                                type="button"
-                                className="btn btn-ghost justify-start"
-                                onClick={() => toggleOption(value)}
-                            >
-                              <i
-                                  className={`bi mr-2 ${
-                                      selectedOptions.includes(value)
-                                          ? "bi-check-circle-fill text-success"
-                                          : "bi-plus-circle text-base-content/60"
-                                  }`}
-                              ></i>
-                              {optionLabel}
-                            </button>
-                          </li>
-                      ))
-                  )}
-                </ul>
-              </div>
-          )}
+          <DropdownPanel
+            open={isOpen && !disabled}
+            options={filteredOptions}
+            onSelect={toggleOption}
+            getOptionValue={(opt) => opt.value}
+            getOptionLabel={(opt) => opt.label}
+            showSearch
+            searchQuery={query}
+            onSearchChange={setQuery}
+            renderOption={({ value, label: optionLabel }, select) => (
+              <button type="button" className="btn btn-ghost justify-start" onClick={select}>
+                <i
+                  className={`bi mr-2 ${
+                    selectedOptions.includes(value)
+                      ? "bi-check-circle-fill text-success"
+                      : "bi-plus-circle text-base-content/60"
+                  }`}
+                ></i>
+                {optionLabel}
+              </button>
+            )}
+          />
         </div>
       </div>
   );
