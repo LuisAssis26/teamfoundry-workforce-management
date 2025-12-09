@@ -1,7 +1,7 @@
 package com.teamfoundry.backend.account.controller.employee.profile;
 
 import com.teamfoundry.backend.account.dto.employee.profile.EmployeeProfileResponse;
-import com.teamfoundry.backend.account_options.dto.employee.EmployeeProfileSummaryResponse;
+import com.teamfoundry.backend.account.dto.employee.documents.EmployeeProfileSummaryResponse;
 import com.teamfoundry.backend.account.dto.employee.profile.EmployeeProfileUpdateRequest;
 import com.teamfoundry.backend.account.dto.employee.documents.CurriculumUploadRequest;
 import com.teamfoundry.backend.account.dto.employee.documents.IdentificationDocumentUploadRequest;
@@ -42,7 +42,7 @@ public class EmployeeProfileController {
      */
     @GetMapping("/summary")
     public EmployeeProfileSummaryResponse getProfileSummary(Authentication authentication) {
-        return employeeProfileService.getProfileSummary(resolveEmail(authentication));
+        return employeeProfileAndDocumentsService.getProfileSummary(resolveEmail(authentication));
     }
 
     /**

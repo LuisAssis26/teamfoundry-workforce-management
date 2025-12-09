@@ -14,7 +14,6 @@ import com.teamfoundry.backend.superadmin.dto.other.WeeklyTipsPageResponse;
 import com.teamfoundry.backend.superadmin.enums.HomeLoginSectionType;
 import com.teamfoundry.backend.superadmin.model.home.*;
 import com.teamfoundry.backend.superadmin.model.other.WeeklyTip;
-import com.teamfoundry.backend.superadmin.repository.home.HomeLoginMetricRepository;
 import com.teamfoundry.backend.superadmin.repository.home.HomeLoginSectionRepository;
 import com.teamfoundry.backend.superadmin.repository.home.HomeNoLoginSectionRepository;
 import com.teamfoundry.backend.superadmin.repository.home.IndustryShowcaseRepository;

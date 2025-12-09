@@ -31,6 +31,8 @@ spring:
           auth: true
           starttls:
             enable: true
+  flyway:
+    enabled: false
 
 app:
   mail:
@@ -113,6 +115,8 @@ spring:
     username: teamfoundry_user
     password: teamfoundry_pass
     driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: false
   jpa:
     hibernate:
       ddl-auto: update

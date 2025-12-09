@@ -3,6 +3,7 @@ package com.teamfoundry.backend.account.service.employee;
 import com.teamfoundry.backend.account.dto.employee.documents.CurriculumUploadRequest;
 import com.teamfoundry.backend.account.dto.employee.profile.EmployeeProfileResponse;
 import com.teamfoundry.backend.account.dto.employee.profile.EmployeeProfileUpdateRequest;
+import com.teamfoundry.backend.account.dto.employee.documents.EmployeeProfileSummaryResponse;
 import com.teamfoundry.backend.account.dto.employee.documents.IdentificationDocumentUploadRequest;
 import com.teamfoundry.backend.account.dto.employee.documents.ProfilePictureUploadRequest;
 import com.teamfoundry.backend.account.dto.employee.profile.EmployeeDeactivateAccountRequest;
@@ -11,9 +12,12 @@ import com.teamfoundry.backend.account.enums.DocumentType;
 import com.teamfoundry.backend.account.model.employee.documents.EmployeeDocument;
 import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
 import com.teamfoundry.backend.account.repository.employee.documents.EmployeeDocumentRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeGeoAreaRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeRoleRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeSkillRepository;
 import com.teamfoundry.backend.common.service.CloudinaryService;
 import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
-import com.teamfoundry.backend.admin.service.EmployeeJobHistoryService;
+import com.teamfoundry.backend.teamRequests.service.EmployeeJobHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,9 +32,8 @@ public class EmployeeProfileAndDocumentsService {
 
     private final EmployeeAccountRepository employeeAccountRepository;
     private final EmployeeDocumentRepository employeeDocumentRepository;
-    private final DocumentRepository documentRepository;
-    private final EmployeeFunctionRepository employeeFunctionRepository;
-    private final EmployeeCompetenceRepository employeeCompetenceRepository;
+    private final EmployeeRoleRepository employeeRoleRepository;
+    private final EmployeeSkillRepository employeeSkillRepository;
     private final EmployeeGeoAreaRepository employeeGeoAreaRepository;
     private final EmployeeJobHistoryService employeeJobHistoryService;
     private final CloudinaryService cloudinaryService;
@@ -74,13 +77,13 @@ public class EmployeeProfileAndDocumentsService {
     public EmployeeProfileSummaryResponse getProfileSummary(String email) {
         EmployeeAccount account = findByEmailOrThrow(email);
 
-        boolean hasCv = documentRepository.findByEmployeeAndType(account, DocumentType.CURRICULUM)
+        boolean hasCv = employeeDocumentRepository.findByEmployeeAndType(account, DocumentType.CURRICULUM)
                 .map(EmployeeDocument::getPublicId)
                 .map(StringUtils::hasText)
                 .orElse(false);
         boolean hasPhoto = StringUtils.hasText(account.getProfilePicturePublicId());
-        boolean hasRole = employeeFunctionRepository.findFirstByEmployee(account).isPresent();
-        boolean hasCompetences = !employeeCompetenceRepository.findByEmployee(account).isEmpty();
+        boolean hasRole = employeeRoleRepository.findFirstByEmployee(account).isPresent();
+        boolean hasCompetences = !employeeSkillRepository.findByEmployee(account).isEmpty();
         boolean hasGeoAreas = !employeeGeoAreaRepository.findByEmployee(account).isEmpty();
 
         int totalChecks = 5;

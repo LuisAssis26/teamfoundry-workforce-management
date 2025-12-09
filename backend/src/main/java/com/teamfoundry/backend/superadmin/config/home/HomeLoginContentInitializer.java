@@ -1,15 +1,14 @@
 package com.teamfoundry.backend.superadmin.config.home;
 
 import com.teamfoundry.backend.superadmin.enums.HomeLoginSectionType;
-import com.teamfoundry.backend.superadmin.model.home.HomeLoginMetric;
 import com.teamfoundry.backend.superadmin.model.home.HomeLoginSection;
 import com.teamfoundry.backend.superadmin.model.other.WeeklyTip;
-import com.teamfoundry.backend.superadmin.repository.home.HomeLoginMetricRepository;
 import com.teamfoundry.backend.superadmin.repository.home.HomeLoginSectionRepository;
 import com.teamfoundry.backend.superadmin.repository.other.WeeklyTipRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
