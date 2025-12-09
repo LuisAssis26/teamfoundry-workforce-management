@@ -37,3 +37,7 @@ export async function uploadEmployeeProfilePicture(payload) {
 export async function deleteEmployeeProfilePicture() {
   return httpDelete(`${PROFILE_ENDPOINT}/photo`);
 }
+
+export async function fetchEmployeeProfileSummary() {
+  return httpGet(`${PROFILE_ENDPOINT}/summary`);
+}

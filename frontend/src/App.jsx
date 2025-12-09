@@ -47,6 +47,7 @@ import Metrics from "./pages/admin/SuperAdmin/Metrics/Metrics.jsx";
 import TeamManagement from "./pages/admin/TeamManagement/TeamManagement.jsx";
 import BuildTeamSearch from "./pages/admin/TeamManagement/BuildTeamSearch.jsx";
 import TeamEmployeeRequests from "./pages/admin/TeamManagement/TeamEmployeeRequests.jsx";
+import ProtectedRoute from "./auth/ProtectedRoute.jsx";
 
 function App() {
   return (
@@ -78,12 +79,25 @@ function App() {
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="login" replace />} />
         <Route path="login" element={<AdminLogin />} />
-        <Route path="team-management" element={<TeamManagement />} />
-        <Route path="team-management/build" element={<BuildTeamSearch />} />
-        <Route path="team-management/requests" element={<TeamEmployeeRequests />} />
+        <Route
+          element={
+          <ProtectedRoute redirectTo="/admin/login" allowedTypes={["ADMIN", "SUPERADMIN"]} />
+          }
+        >
+          <Route path="team-management" element={<TeamManagement />} />
+          <Route path="team-management/build" element={<BuildTeamSearch />} />
+          <Route path="team-management/requests" element={<TeamEmployeeRequests />} />
+        </Route>
       </Route>
 
-      <Route path="/admin/super" element={<SuperAdminLayout />}>
+      <Route
+        path="/admin/super"
+        element={
+          <ProtectedRoute redirectTo="/admin/login" allowedTypes={["SUPERADMIN"]}>
+            <SuperAdminLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<Navigate to="credenciais" replace />} />
         <Route path="credenciais" element={<Credentials />} />
         <Route path="gestao-trabalho" element={<Staffing />} />
@@ -91,7 +105,14 @@ function App() {
         <Route path="metricas" element={<Metrics />} />
       </Route>
 
-      <Route path="/candidato" element={<EmployeeLayout />}>
+      <Route
+        path="/candidato"
+        element={
+          <ProtectedRoute redirectTo="/login" allowedTypes={["EMPLOYEE"]}>
+            <EmployeeLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<CandidateIndexRedirect />} />
         <Route path="dados-pessoais" element={<PersonalDetails />} />
         <Route path="certificacoes" element={<Certificates />} />
@@ -102,7 +123,14 @@ function App() {
         <Route path="proximos-passos" element={<ProximosPassos />} />
       </Route>
 
-      <Route path="/empresa" element={<CompanyLayout />}>
+      <Route
+        path="/empresa"
+        element={
+          <ProtectedRoute redirectTo="/login" allowedTypes={["COMPANY"]}>
+            <CompanyLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<CompanyIndexRedirect />} />
         <Route path="informacoes" element={<CompanyInfo />} />
         <Route path="requisicoes" element={<CompanyRequests />} />

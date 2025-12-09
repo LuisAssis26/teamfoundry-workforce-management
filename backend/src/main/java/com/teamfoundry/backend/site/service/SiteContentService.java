@@ -2,13 +2,11 @@ package com.teamfoundry.backend.site.service;
 
 import com.teamfoundry.backend.site.dto.*;
 import com.teamfoundry.backend.site.enums.HomeLoginSectionType;
-import com.teamfoundry.backend.site.model.HomeLoginMetric;
 import com.teamfoundry.backend.site.model.HomeLoginSection;
 import com.teamfoundry.backend.site.model.HomepageSection;
 import com.teamfoundry.backend.site.model.IndustryShowcase;
 import com.teamfoundry.backend.site.model.PartnerShowcase;
 import com.teamfoundry.backend.site.model.WeeklyTip;
-import com.teamfoundry.backend.site.repository.HomeLoginMetricRepository;
 import com.teamfoundry.backend.site.repository.HomeLoginSectionRepository;
 import com.teamfoundry.backend.site.repository.HomepageSectionRepository;
 import com.teamfoundry.backend.site.repository.IndustryShowcaseRepository;
@@ -36,7 +34,6 @@ public class SiteContentService {
     private final IndustryShowcaseRepository industries;
     private final PartnerShowcaseRepository partners;
     private final HomeLoginSectionRepository appHomeSections;
-    private final HomeLoginMetricRepository appHomeMetrics;
     private final WeeklyTipRepository weeklyTips;
     private final NewsApiService newsApiService;
     private final CloudinaryService cloudinaryService;
@@ -310,6 +307,12 @@ public class SiteContentService {
         section.setApiUrl(request.apiUrl());
         section.setApiToken(request.apiToken());
         section.setApiMaxItems(request.apiMaxItems());
+        section.setGreetingPrefix(request.greetingPrefix());
+        if (request.profileBarVisible() != null) {
+            section.setProfileBarVisible(request.profileBarVisible());
+        }
+        section.setLabelCurrentCompany(request.labelCurrentCompany());
+        section.setLabelOffers(request.labelOffers());
 
         return mapHomeLoginSection(appHomeSections.save(section), true);
     }
@@ -325,66 +328,6 @@ public class SiteContentService {
                 .sorted(Comparator.comparingInt(HomeLoginSection::getDisplayOrder))
                 .map(section -> mapHomeLoginSection(section, true))
                 .toList();
-    }
-
-    /*
-     * AUTHENTICATED HOME - METRICS
-     */
-    @Transactional(readOnly = true)
-    public List<HomeLoginMetricResponse> listHomeLoginMetrics() {
-        return appHomeMetrics.findAllByOrderByDisplayOrderAsc().stream()
-                .map(this::mapHomeLoginMetric)
-                .toList();
-    }
-
-    public HomeLoginMetricResponse createHomeLoginMetric(HomeLoginMetricRequest request) {
-        HomeLoginMetric metric = new HomeLoginMetric();
-        metric.setLabel(request.label());
-        metric.setValue(request.value());
-        metric.setDescription(request.description());
-        metric.setActive(Boolean.TRUE.equals(request.active()));
-        metric.setDisplayOrder(nextHomeLoginMetricOrder());
-        return mapHomeLoginMetric(appHomeMetrics.save(metric));
-    }
-
-    public HomeLoginMetricResponse updateHomeLoginMetric(Long id, HomeLoginMetricRequest request) {
-        HomeLoginMetric metric = appHomeMetrics.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Metric not found"));
-
-        metric.setLabel(request.label());
-        metric.setValue(request.value());
-        metric.setDescription(request.description());
-        if (request.active() != null) {
-            metric.setActive(request.active());
-        }
-
-        return mapHomeLoginMetric(appHomeMetrics.save(metric));
-    }
-
-    public HomeLoginMetricResponse toggleHomeLoginMetric(Long id, boolean active) {
-        HomeLoginMetric metric = appHomeMetrics.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Metric not found"));
-        metric.setActive(active);
-        return mapHomeLoginMetric(appHomeMetrics.save(metric));
-    }
-
-    public List<HomeLoginMetricResponse> reorderHomeLoginMetrics(List<Long> ids) {
-        List<HomeLoginMetric> current = appHomeMetrics.findAllByOrderByDisplayOrderAsc();
-        ensureSameElements(ids, current, HomeLoginMetric::getId, "app-home metrics");
-
-        applyNewOrder(ids, current, HomeLoginMetric::getId, (item, order) -> item.setDisplayOrder(order));
-        appHomeMetrics.saveAll(current);
-
-        return current.stream()
-                .sorted(Comparator.comparingInt(HomeLoginMetric::getDisplayOrder))
-                .map(this::mapHomeLoginMetric)
-                .toList();
-    }
-
-    public void deleteHomeLoginMetric(Long id) {
-        HomeLoginMetric metric = appHomeMetrics.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Metric not found"));
-        appHomeMetrics.delete(metric);
     }
 
     /*
@@ -529,16 +472,7 @@ public class SiteContentService {
         List<HomeLoginSectionResponse> homeSections = sectionStream
                 .map(section -> mapHomeLoginSection(section, includeSecrets))
                 .toList();
-
-        var metricStream = appHomeMetrics.findAllByOrderByDisplayOrderAsc().stream();
-        if (!includeInactive) {
-            metricStream = metricStream.filter(HomeLoginMetric::isActive);
-        }
-        List<HomeLoginMetricResponse> homeMetrics = metricStream
-                .map(this::mapHomeLoginMetric)
-                .toList();
-
-        return new HomeLoginConfigResponse(homeSections, homeMetrics);
+        return new HomeLoginConfigResponse(homeSections);
     }
 
     private HomeLoginSectionResponse mapHomeLoginSection(HomeLoginSection section, boolean includeSecret) {
@@ -561,18 +495,11 @@ public class SiteContentService {
                 section.getApiUrl(),
                 section.getApiMaxItems(),
                 includeSecret ? section.getApiToken() : null,
-                articles
-        );
-    }
-
-    private HomeLoginMetricResponse mapHomeLoginMetric(HomeLoginMetric metric) {
-        return new HomeLoginMetricResponse(
-                metric.getId(),
-                metric.getLabel(),
-                metric.getValue(),
-                metric.getDescription(),
-                metric.isActive(),
-                metric.getDisplayOrder()
+                articles,
+                section.getGreetingPrefix(),
+                section.isProfileBarVisible(),
+                section.getLabelCurrentCompany(),
+                section.getLabelOffers()
         );
     }
 
@@ -616,13 +543,6 @@ public class SiteContentService {
     private int nextPartnerOrder() {
         return partners.findAll().stream()
                 .mapToInt(PartnerShowcase::getDisplayOrder)
-                .max()
-                .orElse(-1) + 1;
-    }
-
-    private int nextHomeLoginMetricOrder() {
-        return appHomeMetrics.findAll().stream()
-                .mapToInt(HomeLoginMetric::getDisplayOrder)
                 .max()
                 .orElse(-1) + 1;
     }

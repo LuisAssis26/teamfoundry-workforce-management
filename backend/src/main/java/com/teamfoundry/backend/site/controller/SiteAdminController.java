@@ -117,40 +117,6 @@ public class SiteAdminController {
         return service.reorderHomeLoginSections(request.ids());
     }
 
-    @GetMapping("/app-home/metrics")
-    public List<HomeLoginMetricResponse> listAppHomeMetrics() {
-        return service.listHomeLoginMetrics();
-    }
-
-    @PostMapping("/app-home/metrics")
-    @ResponseStatus(HttpStatus.CREATED)
-    public HomeLoginMetricResponse createAppHomeMetric(@Valid @RequestBody HomeLoginMetricRequest request) {
-        return service.createHomeLoginMetric(request);
-    }
-
-    @PutMapping("/app-home/metrics/{id}")
-    public HomeLoginMetricResponse updateAppHomeMetric(@PathVariable Long id,
-                                                       @Valid @RequestBody HomeLoginMetricRequest request) {
-        return service.updateHomeLoginMetric(id, request);
-    }
-
-    @PatchMapping("/app-home/metrics/{id}/visibility")
-    public HomeLoginMetricResponse toggleAppHomeMetric(@PathVariable Long id,
-                                                       @Valid @RequestBody ToggleVisibilityRequest request) {
-        return service.toggleHomeLoginMetric(id, request.active());
-    }
-
-    @PutMapping("/app-home/metrics/reorder")
-    public List<HomeLoginMetricResponse> reorderAppHomeMetrics(@Valid @RequestBody ReorderRequest request) {
-        return service.reorderHomeLoginMetrics(request.ids());
-    }
-
-    @DeleteMapping("/app-home/metrics/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAppHomeMetric(@PathVariable Long id) {
-        service.deleteHomeLoginMetric(id);
-    }
-
     // --- Weekly tips ---
     @GetMapping("/weekly-tips")
     public List<WeeklyTipResponse> listWeeklyTips() {

@@ -1,15 +1,12 @@
 package com.teamfoundry.backend.site.config;
 
 import com.teamfoundry.backend.site.enums.HomeLoginSectionType;
-import com.teamfoundry.backend.site.model.HomeLoginMetric;
 import com.teamfoundry.backend.site.model.HomeLoginSection;
 import com.teamfoundry.backend.site.model.WeeklyTip;
-import com.teamfoundry.backend.site.repository.HomeLoginMetricRepository;
 import com.teamfoundry.backend.site.repository.HomeLoginSectionRepository;
 import com.teamfoundry.backend.site.repository.WeeklyTipRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -25,16 +22,12 @@ import java.util.List;
 public class HomeLoginContentInitializer implements CommandLineRunner {
 
     private final HomeLoginSectionRepository sections;
-    private final HomeLoginMetricRepository metrics;
     private final WeeklyTipRepository weeklyTips;
 
     @Override
     public void run(String... args) {
         if (sections.count() == 0) {
             sections.saveAll(defaultSections());
-        }
-        if (metrics.count() == 0) {
-            metrics.saveAll(defaultMetrics());
         }
         if (weeklyTips.count() == 0) {
             weeklyTips.saveAll(defaultWeeklyTips());
@@ -54,7 +47,11 @@ public class HomeLoginContentInitializer implements CommandLineRunner {
                         false,
                         null,
                         null,
-                        6
+                        6,
+                        "Ola",
+                        true,
+                        "Empresa atual",
+                        "Ofertas disponiveis"
                 ),
                 createSection(
                         HomeLoginSectionType.WEEKLY_TIP,
@@ -67,24 +64,15 @@ public class HomeLoginContentInitializer implements CommandLineRunner {
                         false,
                         null,
                         null,
-                        6
-                ),
-                createSection(
-                        HomeLoginSectionType.METRICS,
-                        2,
-                        "As tuas metricas",
-                        "As metricas mostradas na Home do utilizador autenticado.",
+                        6,
                         null,
+                        true,
                         null,
-                        null,
-                        false,
-                        null,
-                        null,
-                        6
+                        null
                 ),
                 createSection(
                         HomeLoginSectionType.NEWS,
-                        3,
+                        2,
                         "Noticias da NewsAPI",
                         "As manchetes sao sincronizadas automaticamente. Ajuste apenas quantos cards deseja mostrar (maximo de 6).",
                         null,
@@ -93,7 +81,11 @@ public class HomeLoginContentInitializer implements CommandLineRunner {
                         true,
                         null,
                         null,
-                        6
+                        6,
+                        null,
+                        true,
+                        null,
+                        null
                 )
         );
     }
@@ -109,7 +101,11 @@ public class HomeLoginContentInitializer implements CommandLineRunner {
             boolean apiEnabled,
             String apiUrl,
             String apiToken,
-            Integer apiMaxItems
+            Integer apiMaxItems,
+            String greetingPrefix,
+            boolean profileBarVisible,
+            String labelCurrentCompany,
+            String labelOffers
     ) {
         HomeLoginSection section = new HomeLoginSection();
         section.setType(type);
@@ -124,26 +120,11 @@ public class HomeLoginContentInitializer implements CommandLineRunner {
         section.setApiUrl(apiUrl);
         section.setApiToken(apiToken);
         section.setApiMaxItems(apiMaxItems);
+        section.setGreetingPrefix(greetingPrefix);
+        section.setProfileBarVisible(profileBarVisible);
+        section.setLabelCurrentCompany(labelCurrentCompany);
+        section.setLabelOffers(labelOffers);
         return section;
-    }
-
-    private List<HomeLoginMetric> defaultMetrics() {
-        return List.of(
-                createMetric(0, "Equipas concluidas", "8", "Numero total de equipas ja concluidas."),
-                createMetric(1, "Requisicoes em aberto", "15", "Quantidade de requisicoes atualmente em aberto."),
-                createMetric(2, "Horas trabalhadas", "320h", "Horas totais trabalhadas pela equipa."),
-                createMetric(3, "Avaliacao media", "4.7", "Pontuacao media de satisfacao.")
-        );
-    }
-
-    private HomeLoginMetric createMetric(int order, String label, String value, String description) {
-        HomeLoginMetric metric = new HomeLoginMetric();
-        metric.setDisplayOrder(order);
-        metric.setLabel(label);
-        metric.setValue(value);
-        metric.setDescription(description);
-        metric.setActive(true);
-        return metric;
     }
 
     private List<WeeklyTip> defaultWeeklyTips() {

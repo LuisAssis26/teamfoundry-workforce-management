@@ -18,6 +18,10 @@ public record HomeLoginSectionResponse(
         String apiUrl,
         Integer apiMaxItems,
         String apiToken,
-        List<HomeNewsArticleResponse> newsArticles
+        List<HomeNewsArticleResponse> newsArticles,
+        String greetingPrefix,
+        boolean profileBarVisible,
+        String labelCurrentCompany,
+        String labelOffers
 ) {
 }
