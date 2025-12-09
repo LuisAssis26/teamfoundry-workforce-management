@@ -2,12 +2,12 @@ package com.teamfoundry.backend.account.service;
 
 import com.teamfoundry.backend.account.enums.RegistrationStatus;
 import com.teamfoundry.backend.account.model.Account;
-import com.teamfoundry.backend.account.model.CompanyAccount;
-import com.teamfoundry.backend.account.model.EmployeeAccount;
+import com.teamfoundry.backend.account.model.company.CompanyAccount;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.AccountRepository;
-import com.teamfoundry.backend.account.repository.CompanyAccountOwnerRepository;
-import com.teamfoundry.backend.account.repository.CompanyAccountRepository;
-import com.teamfoundry.backend.account_options.repository.company.CompanyActivitySectorsRepository;
+import com.teamfoundry.backend.account.repository.company.CompanyAccountOwnerRepository;
+import com.teamfoundry.backend.account.repository.company.CompanyAccountRepository;
+import com.teamfoundry.backend.account.repository.company.CompanyActivitySectorsRepository;
 import com.teamfoundry.backend.common.util.AccountCleanupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -12,7 +12,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "utilizador")
+@Table(name = "account")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Account {
 

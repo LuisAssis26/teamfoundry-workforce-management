@@ -3,20 +3,20 @@ package com.teamfoundry.backend.account.registration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamfoundry.backend.account.enums.RegistrationStatus;
 import com.teamfoundry.backend.account.enums.UserType;
-import com.teamfoundry.backend.account.model.EmployeeAccount;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.AccountRepository;
-import com.teamfoundry.backend.account.repository.EmployeeAccountRepository;
-import com.teamfoundry.backend.account_options.model.employee.Competence;
-import com.teamfoundry.backend.account_options.model.employee.Function;
-import com.teamfoundry.backend.account_options.model.employee.GeoArea;
-import com.teamfoundry.backend.account_options.repository.employee.CompetenceRepository;
-import com.teamfoundry.backend.account_options.repository.employee.EmployeeCompetenceRepository;
-import com.teamfoundry.backend.account_options.repository.employee.EmployeeFunctionRepository;
-import com.teamfoundry.backend.account_options.repository.employee.EmployeeGeoAreaRepository;
-import com.teamfoundry.backend.account_options.repository.employee.FunctionRepository;
-import com.teamfoundry.backend.account_options.repository.employee.GeoAreaRepository;
-import com.teamfoundry.backend.security.model.AuthToken;
-import com.teamfoundry.backend.security.repository.AuthTokenRepository;
+import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
+import com.teamfoundry.backend.account.model.preferences.PrefSkill;
+import com.teamfoundry.backend.account.model.preferences.PrefRole;
+import com.teamfoundry.backend.account.model.preferences.PrefGeoArea;
+import com.teamfoundry.backend.account.repository.preferences.PrefSkillRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeSkillRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeRoleRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeGeoAreaRepository;
+import com.teamfoundry.backend.account.repository.preferences.PrefRoleRepository;
+import com.teamfoundry.backend.account.repository.preferences.PrefGeoAreaRepository;
+import com.teamfoundry.backend.auth.model.tokens.AuthToken;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -31,9 +31,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
-import com.teamfoundry.backend.account.service.VerificationEmailService;
+import com.teamfoundry.backend.auth.service.VerificationEmailService;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import com.teamfoundry.backend.site.config.HomeLoginContentInitializer;
+import com.teamfoundry.backend.superadmin.config.home.HomeLoginContentInitializer;
 
 
 
@@ -51,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @DisplayName("Employee registration flow")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@SuppressWarnings("removal") // MockBean deprecation warnings in Spring Boot 3.4
 class EmployeeRegistrationIntegrationTest {
 
     @Autowired MockMvc mockMvc;
@@ -61,18 +62,17 @@ class EmployeeRegistrationIntegrationTest {
     @Autowired AuthTokenRepository authTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
 
-    @Autowired FunctionRepository functionRepository;
-    @Autowired GeoAreaRepository geoAreaRepository;
-    @Autowired CompetenceRepository competenceRepository;
-    @Autowired EmployeeFunctionRepository employeeFunctionRepository;
+    @Autowired
+    PrefRoleRepository prefRoleRepository;
+    @Autowired
+    PrefGeoAreaRepository prefGeoAreaRepository;
+    @Autowired
+    PrefSkillRepository prefSkillRepository;
+    @Autowired
+    EmployeeRoleRepository employeeRoleRepository;
     @Autowired EmployeeGeoAreaRepository employeeGeoAreaRepository;
-    @Autowired EmployeeCompetenceRepository employeeCompetenceRepository;
-
-    @MockBean
-    VerificationEmailService verificationEmailService;
-
-    @MockBean
-    HomeLoginContentInitializer homeLoginContentInitializer;
+    @Autowired
+    EmployeeSkillRepository employeeSkillRepository;
 
 
     private final String email = "Candidate@Test.com";
@@ -82,12 +82,12 @@ class EmployeeRegistrationIntegrationTest {
     @BeforeEach
     void setup() {
         authTokenRepository.deleteAll();
-        employeeFunctionRepository.deleteAll();
+        employeeRoleRepository.deleteAll();
         employeeGeoAreaRepository.deleteAll();
-        employeeCompetenceRepository.deleteAll();
-        competenceRepository.deleteAll();
-        geoAreaRepository.deleteAll();
-        functionRepository.deleteAll();
+        employeeSkillRepository.deleteAll();
+        prefSkillRepository.deleteAll();
+        prefGeoAreaRepository.deleteAll();
+        prefRoleRepository.deleteAll();
         employeeAccountRepository.deleteAll();
         accountRepository.deleteAll();
     }
@@ -101,7 +101,7 @@ class EmployeeRegistrationIntegrationTest {
         assertThat(created.getEmail()).isEqualTo(email.toLowerCase());
         assertThat(created.getRole()).isEqualTo(UserType.EMPLOYEE);
         assertThat(created.getRegistrationStatus()).isEqualTo(RegistrationStatus.PENDING);
-        assertThat(created.isActive()).isFalse();
+        assertThat(created.isVerified()).isFalse();
         assertThat(created.getPassword()).isNotEqualTo(password);
         assertThat(passwordEncoder.matches(password, created.getPassword())).isTrue();
     }
@@ -123,7 +123,7 @@ class EmployeeRegistrationIntegrationTest {
 
         // continua PENDING e inativa
         assertThat(second.getRegistrationStatus()).isEqualTo(RegistrationStatus.PENDING);
-        assertThat(second.isActive()).isFalse();
+        assertThat(second.isVerified()).isFalse();
     }
 
 
@@ -156,7 +156,7 @@ class EmployeeRegistrationIntegrationTest {
         performStep3(email, roleName, areaName, skillName, true, status().isOk(), true);
 
         EmployeeAccount account = employeeAccountRepository.findByEmail(email.toLowerCase()).orElseThrow();
-        assertThat(employeeFunctionRepository.findFirstByEmployee(account))
+        assertThat(employeeRoleRepository.findFirstByEmployee(account))
                 .isPresent()
                 .get()
                 .extracting(rel -> rel.getFunction().getName())
@@ -164,8 +164,8 @@ class EmployeeRegistrationIntegrationTest {
         assertThat(employeeGeoAreaRepository.findByEmployee(account))
                 .extracting(rel -> rel.getGeoArea().getName())
                 .containsExactly(areaName);
-        assertThat(employeeCompetenceRepository.findByEmployee(account))
-                .extracting(rel -> rel.getCompetence().getName())
+        assertThat(employeeSkillRepository.findByEmployee(account))
+                .extracting(rel -> rel.getPrefSkill().getName())
                 .containsExactly(skillName);
 
         long tokensForAccount = authTokenRepository.findAll().stream()
@@ -188,9 +188,9 @@ class EmployeeRegistrationIntegrationTest {
         performStep3(email, roleName, areaName, skillName, false, status().isBadRequest(), false);
 
         EmployeeAccount account = employeeAccountRepository.findByEmail(email.toLowerCase()).orElseThrow();
-        assertThat(employeeFunctionRepository.findFirstByEmployee(account)).isEmpty();
+        assertThat(employeeRoleRepository.findFirstByEmployee(account)).isEmpty();
         assertThat(employeeGeoAreaRepository.findByEmployee(account)).isEmpty();
-        assertThat(employeeCompetenceRepository.findByEmployee(account)).isEmpty();
+        assertThat(employeeSkillRepository.findByEmployee(account)).isEmpty();
         assertThat(authTokenRepository.findAll()).isEmpty();
     }
 
@@ -215,7 +215,7 @@ class EmployeeRegistrationIntegrationTest {
         performStep4(email, token.getToken(), status().isOk());
 
         EmployeeAccount activated = employeeAccountRepository.findByEmail(email.toLowerCase()).orElseThrow();
-        assertThat(activated.isActive()).isTrue();
+        assertThat(activated.isVerified()).isTrue();
         assertThat(activated.getRegistrationStatus()).isEqualTo(RegistrationStatus.COMPLETED);
         assertThat(authTokenRepository.findByAccountAndCode(activated, token.getToken())).isEmpty();
     }
@@ -241,7 +241,7 @@ class EmployeeRegistrationIntegrationTest {
         performStep4(email, "000000", status().is4xxClientError());
 
         EmployeeAccount unchanged = employeeAccountRepository.findByEmail(email.toLowerCase()).orElseThrow();
-        assertThat(unchanged.isActive()).isFalse();
+        assertThat(unchanged.isVerified()).isFalse();
         assertThat(unchanged.getRegistrationStatus()).isEqualTo(RegistrationStatus.PENDING);
         assertThat(authTokenRepository.findByAccountAndCode(account, token.getToken())).isPresent();
     }
@@ -311,16 +311,16 @@ class EmployeeRegistrationIntegrationTest {
     }
 
     private void seedOptionData(String functionName, String areaName, String competenceName) {
-        Function function = new Function();
+        var function = new PrefRole();
         function.setName(functionName);
-        functionRepository.save(function);
+        prefRoleRepository.save(function);
 
-        GeoArea area = new GeoArea();
+        var area = new PrefGeoArea();
         area.setName(areaName);
-        geoAreaRepository.save(area);
+        prefGeoAreaRepository.save(area);
 
-        Competence competence = new Competence();
-        competence.setName(competenceName);
-        competenceRepository.save(competence);
+        PrefSkill prefSkill = new PrefSkill();
+        prefSkill.setName(competenceName);
+        prefSkillRepository.save(prefSkill);
     }
 }

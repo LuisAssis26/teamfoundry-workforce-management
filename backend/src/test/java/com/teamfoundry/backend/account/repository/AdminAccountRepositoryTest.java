@@ -1,7 +1,8 @@
 package com.teamfoundry.backend.account.repository;
 
 import com.teamfoundry.backend.account.enums.UserType;
-import com.teamfoundry.backend.account.model.AdminAccount;
+import com.teamfoundry.backend.superadmin.model.credentials.AdminAccount;
+import com.teamfoundry.backend.superadmin.repository.credentials.AdminAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

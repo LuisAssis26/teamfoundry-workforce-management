@@ -2,7 +2,8 @@ package com.teamfoundry.backend.account.repository;
 
 import com.teamfoundry.backend.account.enums.RegistrationStatus;
 import com.teamfoundry.backend.account.enums.UserType;
-import com.teamfoundry.backend.account.model.EmployeeAccount;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
+import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

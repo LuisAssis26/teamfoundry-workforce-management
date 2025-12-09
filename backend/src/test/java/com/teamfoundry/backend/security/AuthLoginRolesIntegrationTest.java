@@ -3,11 +3,11 @@ package com.teamfoundry.backend.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamfoundry.backend.account.enums.RegistrationStatus;
 import com.teamfoundry.backend.account.enums.UserType;
-import com.teamfoundry.backend.account.model.CompanyAccount;
-import com.teamfoundry.backend.account.model.EmployeeAccount;
+import com.teamfoundry.backend.account.model.company.CompanyAccount;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.AccountRepository;
-import com.teamfoundry.backend.account.repository.CompanyAccountRepository;
-import com.teamfoundry.backend.account.repository.EmployeeAccountRepository;
+import com.teamfoundry.backend.account.repository.company.CompanyAccountRepository;
+import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -101,7 +101,7 @@ class AuthLoginRolesIntegrationTest {
         account.setPassword(passwordEncoder.encode(rawPassword));
         account.setNif(123456789);
         account.setRole(UserType.EMPLOYEE);
-        account.setActive(active);
+        account.setVerified(active);
         account.setRegistrationStatus(active ? RegistrationStatus.COMPLETED : RegistrationStatus.PENDING);
         return account;
     }
@@ -112,7 +112,7 @@ class AuthLoginRolesIntegrationTest {
         account.setPassword(passwordEncoder.encode(rawPassword));
         account.setNif(987654321);
         account.setRole(UserType.COMPANY);
-        account.setActive(active);
+        account.setVerified(active);
         account.setRegistrationStatus(active ? RegistrationStatus.COMPLETED : RegistrationStatus.PENDING);
         account.setName("ACME Corp");
         account.setAddress("Rua Principal 123");
