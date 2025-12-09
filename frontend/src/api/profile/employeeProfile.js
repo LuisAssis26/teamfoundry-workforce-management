@@ -38,6 +38,10 @@ export async function deleteEmployeeProfilePicture() {
   return httpDelete(`${PROFILE_ENDPOINT}/photo`);
 }
 
+export async function fetchEmployeeProfileSummary() {
+  return httpGet(`${PROFILE_ENDPOINT}/summary`);
+}
+
 export async function deactivateEmployeeAccount(password) {
   return httpPost(`${PROFILE_ENDPOINT}/deactivate`, { password });
 }

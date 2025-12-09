@@ -116,6 +116,7 @@ public class NewsApiService {
         return queryNewsByKeywords(
                 "[NewsAPI] Empregabilidade news",
                 limit,
+                true,
                 "empregabilidade",
                 "emprego",
                 "mercado de trabalho",
@@ -166,15 +167,34 @@ public class NewsApiService {
             int limit,
             String... keywords
     ) {
+        return queryNewsByKeywords(contextLabel, limit, false, keywords);
+    }
+
+    private List<HomeNewsArticleResponse> queryNewsByKeywords(
+            String contextLabel,
+            int limit,
+            boolean restrictToPortugalAndEurope,
+            String... keywords
+    ) {
+        String topicQuery = buildKeywordQuery(keywords);
+        String finalQuery = restrictToPortugalAndEurope ? buildRegionalQuery(topicQuery) : topicQuery;
         return performRequest(
                 properties.getEverythingPath(),
                 limit,
                 builder -> builder
                         .queryParam("sortBy", "publishedAt")
                         .queryParam("language", properties.getLanguage())
-                        .queryParam("q", buildKeywordQuery(keywords)),
+                        .queryParam("q", finalQuery),
                 contextLabel
         );
+    }
+
+    private String buildRegionalQuery(String topicQuery) {
+        String regionQuery = buildKeywordQuery("Portugal", "Europa", "Europe", "European Union", "Uniao Europeia", "UE");
+        if (!StringUtils.hasText(topicQuery)) {
+            return regionQuery;
+        }
+        return "(" + topicQuery + ") AND (" + regionQuery + ")";
     }
 
     private List<HomeNewsArticleResponse> performRequest(

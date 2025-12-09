@@ -24,9 +24,9 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Ofertas e histórico do colaborador.
- * - listInvitedOffers: convites (ativos/fechados) + aceites do próprio, com status OPEN/ACCEPTED/CLOSED.
- * - acceptOffer: valida convite, evita dupla alocação na mesma equipa e inativa convites da vaga.
+ * Ofertas e historico do colaborador.
+ * - listInvitedOffers: convites (ativos/fechados) + aceites do proprio, com status OPEN/ACCEPTED/CLOSED.
+ * - acceptOffer: valida convite, evita dupla alocacao na mesma equipa e inativa convites da vaga.
  */
 @Service
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class EmployeeJobHistoryService {
     @Transactional(readOnly = true)
     public List<EmployeeJobSummary> listJobsForEmployee(String email) {
         if (!StringUtils.hasText(email)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilizador não autenticado.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilizador nao autenticado.");
         }
         String normalizedEmail = email.trim().toLowerCase();
         List<EmployeeRequest> requests = employeeRequestRepository.findByEmployee_EmailOrderByAcceptedDateDesc(normalizedEmail);
@@ -52,7 +52,7 @@ public class EmployeeJobHistoryService {
     @Transactional(readOnly = true)
     public List<EmployeeJobSummary> listInvitedOffers(String email) {
         if (!StringUtils.hasText(email)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilizador não autenticado.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilizador nao autenticado.");
         }
         String normalized = email.trim().toLowerCase();
         EmployeeAccount employee = findEmployee(normalized);
@@ -76,7 +76,7 @@ public class EmployeeJobHistoryService {
             summaries.put(req.getId(), toSummary(req, status));
         }
 
-        // Garantir que aceites do próprio sempre aparecem
+        // Garantir que aceites do proprio sempre aparecem
         for (EmployeeRequest req : acceptedByUser) {
             if (req.getTeamRequest() == null) continue;
             summaries.put(req.getId(), toSummary(req, "ACCEPTED"));
@@ -87,22 +87,22 @@ public class EmployeeJobHistoryService {
 
     public EmployeeJobSummary acceptOffer(Integer requestId, String email) {
         if (!StringUtils.hasText(email)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilizador não autenticado.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilizador nao autenticado.");
         }
         String normalizedEmail = email.trim().toLowerCase();
         EmployeeAccount employee = findEmployee(normalizedEmail);
 
         EmployeeRequest request = employeeRequestRepository.findById(requestId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Oferta não encontrada."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Oferta nao encontrada."));
 
         if (request.getEmployee() != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Vaga já ocupada.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Vaga ja ocupada.");
         }
 
         TeamRequest teamRequest = request.getTeamRequest();
         Integer teamId = teamRequest != null ? teamRequest.getId() : null;
         if (teamId != null && employeeRequestRepository.countAcceptedForTeam(teamId, employee.getId()) > 0) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Você já ocupa uma vaga nesta equipa.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Voce ja ocupa uma vaga nesta equipa.");
         }
 
         LocalDateTime startDate = teamRequest != null ? teamRequest.getStartDate() : null;
@@ -115,7 +115,7 @@ public class EmployeeJobHistoryService {
                     endDate
             );
             if (overlapping > 0) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Você já tem um trabalho que colide nessas datas.");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Voce ja tem um trabalho que colide nessas datas.");
             }
         }
 
@@ -136,10 +136,35 @@ public class EmployeeJobHistoryService {
         return toSummary(saved, "ACCEPTED");
     }
 
+    @Transactional(readOnly = true)
+    public long countOpenInvites(String email) {
+        return listInvitedOffers(email).stream()
+                .filter(summary -> "OPEN".equalsIgnoreCase(summary.getStatus()))
+                .count();
+    }
+
+    @Transactional(readOnly = true)
+    public String findCurrentCompanyName(String email) {
+        if (!StringUtils.hasText(email)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilizador nao autenticado.");
+        }
+        String normalizedEmail = email.trim().toLowerCase();
+        EmployeeAccount employee = findEmployee(normalizedEmail);
+
+        return employeeRequestRepository.findByEmployee_IdOrderByAcceptedDateDesc(employee.getId())
+                .stream()
+                .findFirst()
+                .map(request -> {
+                    TeamRequest teamRequest = request.getTeamRequest();
+                    CompanyAccount company = teamRequest != null ? teamRequest.getCompany() : null;
+                    return company != null ? company.getName() : null;
+                })
+                .orElse(null);
+    }
 
     private EmployeeAccount findEmployee(String normalizedEmail) {
         return employeeAccountRepository.findByEmail(normalizedEmail)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Conta não encontrada."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Conta nao encontrada."));
     }
 
     private EmployeeJobSummary toSummary(EmployeeRequest req, String status) {

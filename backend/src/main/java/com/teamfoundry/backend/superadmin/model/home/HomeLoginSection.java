@@ -46,6 +46,18 @@ public class HomeLoginSection {
     @Column(name = "primary_cta_url", length = 300)
     private String primaryCtaUrl;
 
+    @Column(name = "greeting_prefix", length = 80)
+    private String greetingPrefix;
+
+    @Column(name = "profile_bar_visible")
+    private boolean profileBarVisible = true;
+
+    @Column(name = "label_current_company", length = 120)
+    private String labelCurrentCompany;
+
+    @Column(name = "label_offers", length = 120)
+    private String labelOffers;
+
     /**
      * Metadata for integrating with an external News API.
      */

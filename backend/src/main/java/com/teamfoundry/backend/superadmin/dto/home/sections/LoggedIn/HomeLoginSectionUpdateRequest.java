@@ -15,6 +15,10 @@ public record HomeLoginSectionUpdateRequest(
         Boolean apiEnabled,
         @Size(max = 500) String apiUrl,
         @Size(max = 500) String apiToken,
-        @Min(1) @Max(6) Integer apiMaxItems
+        @Min(1) @Max(6) Integer apiMaxItems,
+        @Size(max = 80) String greetingPrefix,
+        Boolean profileBarVisible,
+        @Size(max = 120) String labelCurrentCompany,
+        @Size(max = 120) String labelOffers
 ) {
 }

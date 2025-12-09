@@ -13,6 +13,7 @@ import com.teamfoundry.backend.account.repository.employee.EmployeeAccountReposi
 import com.teamfoundry.backend.account.repository.employee.documents.EmployeeDocumentRepository;
 import com.teamfoundry.backend.common.service.CloudinaryService;
 import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
+import com.teamfoundry.backend.admin.service.EmployeeJobHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,12 +28,17 @@ public class EmployeeProfileAndDocumentsService {
 
     private final EmployeeAccountRepository employeeAccountRepository;
     private final EmployeeDocumentRepository employeeDocumentRepository;
+    private final DocumentRepository documentRepository;
+    private final EmployeeFunctionRepository employeeFunctionRepository;
+    private final EmployeeCompetenceRepository employeeCompetenceRepository;
+    private final EmployeeGeoAreaRepository employeeGeoAreaRepository;
+    private final EmployeeJobHistoryService employeeJobHistoryService;
     private final CloudinaryService cloudinaryService;
     private final PasswordEncoder passwordEncoder;
     private final AuthTokenRepository authTokenRepository;
 
     /**
-     * Lê o perfil do colaborador autenticado.
+     * Le o perfil do colaborador autenticado.
      */
     @Transactional(readOnly = true)
     public EmployeeProfileResponse getProfile(String email) {
@@ -41,7 +47,7 @@ public class EmployeeProfileAndDocumentsService {
     }
 
     /**
-     * Atualiza campos básicos do perfil e devolve a versão persistida.
+     * Atualiza campos basicos do perfil e devolve a versao persistida.
      */
     @Transactional
     public EmployeeProfileResponse updateProfile(String email, EmployeeProfileUpdateRequest request) {
@@ -62,6 +68,45 @@ public class EmployeeProfileAndDocumentsService {
     @Transactional(readOnly = true)
     public EmployeeProfileResponse getProfileWithCv(String email) {
         return toResponse(findByEmailOrThrow(email));
+    }
+
+    @Transactional(readOnly = true)
+    public EmployeeProfileSummaryResponse getProfileSummary(String email) {
+        EmployeeAccount account = findByEmailOrThrow(email);
+
+        boolean hasCv = documentRepository.findByEmployeeAndType(account, DocumentType.CURRICULUM)
+                .map(EmployeeDocument::getPublicId)
+                .map(StringUtils::hasText)
+                .orElse(false);
+        boolean hasPhoto = StringUtils.hasText(account.getProfilePicturePublicId());
+        boolean hasRole = employeeFunctionRepository.findFirstByEmployee(account).isPresent();
+        boolean hasCompetences = !employeeCompetenceRepository.findByEmployee(account).isEmpty();
+        boolean hasGeoAreas = !employeeGeoAreaRepository.findByEmployee(account).isEmpty();
+
+        int totalChecks = 5;
+        int completed = 0;
+        completed += hasCv ? 1 : 0;
+        completed += hasPhoto ? 1 : 0;
+        completed += hasRole ? 1 : 0;
+        completed += hasCompetences ? 1 : 0;
+        completed += hasGeoAreas ? 1 : 0;
+
+        int rawPercent = (int) Math.round((completed / (double) totalChecks) * 100);
+        int roundedPercent = Math.min(100, Math.max(0, (int) (Math.round(rawPercent / 10.0) * 10)));
+
+        long openOffers = employeeJobHistoryService.countOpenInvites(email);
+        String currentCompany = employeeJobHistoryService.findCurrentCompanyName(email);
+
+        return EmployeeProfileSummaryResponse.builder()
+                .profileCompletionPercentage(roundedPercent)
+                .hasCurriculum(hasCv)
+                .hasProfilePicture(hasPhoto)
+                .hasRolePreference(hasRole)
+                .hasCompetences(hasCompetences)
+                .hasGeoAreas(hasGeoAreas)
+                .openOffers(openOffers)
+                .currentCompanyName(currentCompany)
+                .build();
     }
 
     @Transactional

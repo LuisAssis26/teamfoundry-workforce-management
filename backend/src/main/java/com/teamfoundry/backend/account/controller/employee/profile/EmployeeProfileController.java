@@ -1,6 +1,7 @@
 package com.teamfoundry.backend.account.controller.employee.profile;
 
 import com.teamfoundry.backend.account.dto.employee.profile.EmployeeProfileResponse;
+import com.teamfoundry.backend.account_options.dto.employee.EmployeeProfileSummaryResponse;
 import com.teamfoundry.backend.account.dto.employee.profile.EmployeeProfileUpdateRequest;
 import com.teamfoundry.backend.account.dto.employee.documents.CurriculumUploadRequest;
 import com.teamfoundry.backend.account.dto.employee.documents.IdentificationDocumentUploadRequest;
@@ -34,6 +35,14 @@ public class EmployeeProfileController {
     @GetMapping
     public EmployeeProfileResponse getProfile(Authentication authentication) {
         return employeeProfileAndDocumentsService.getProfile(resolveEmail(authentication));
+    }
+
+    /**
+     * Devolve resumo do perfil (percentual de preenchimento, ofertas e empresa atual).
+     */
+    @GetMapping("/summary")
+    public EmployeeProfileSummaryResponse getProfileSummary(Authentication authentication) {
+        return employeeProfileService.getProfileSummary(resolveEmail(authentication));
     }
 
     /**
