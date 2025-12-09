@@ -34,7 +34,10 @@ public class Account {
     private UserType role;
 
     @Column(nullable = false)
-    private boolean active = false;
+    private boolean verified = false;
+
+    @Column(nullable = false)
+    private boolean deactivated = false;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "registration_status", nullable = false)

@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import phoneCountries from "./data/phoneCountries.js";
+import { DropdownChevron, DROPDOWN_INLINE_TRIGGER_CLASS, DropdownPanel } from "../Dropdown/Dropdown.jsx";
 
 const FALLBACK_COUNTRY = phoneCountries[0];
 /**
@@ -29,6 +30,15 @@ export default function PhoneInput({
   const [country, setCountry] = useState(initialCountry);
   const [localValue, setLocalValue] = useState(extractLocal(value, initialCountry?.dialCode));
 
+  // Atualiza seleção e número local quando o valor vindo de fora mudar (ex.: carregamento assíncrono).
+  useEffect(() => {
+    const nextCountry = value?.startsWith("+")
+      ? countries.find((c) => value.startsWith(`+${c.dialCode}`)) || countries[0] || FALLBACK_COUNTRY
+      : countries[0] || FALLBACK_COUNTRY;
+    setCountry(nextCountry);
+    setLocalValue(extractLocal(value, nextCountry?.dialCode));
+  }, [value, countries]);
+
   const handleSelect = (c) => {
     if (disabled) return;
     setCountry(c);
@@ -52,33 +62,40 @@ export default function PhoneInput({
           <span className="label-text font-medium">{label}</span>
         </label>
       )}
-      <div className={`relative flex h-10 w-full items-stretch input input-bordered p-0 focus-within:border-primary focus-within:ring-0 focus-within:outline-none transition ${disabled ? "pointer-events-none opacity-60" : ""}`}>
+      <div className={`relative flex h-10 w-full items-stretch input input-bordered p-0 focus-within:border-primary focus-within:ring-0 focus-within:outline-none transition   ${disabled ? "pointer-events-none opacity-60" : ""}`}>
         <div className="relative inline-block">
           <button
             type="button"
-            className="flex justify-between h-full min-w-[64px] items-center gap-2 border-r border-base-300 pl-4 pr-2 bg-transparent focus:outline-none"
+            className={`${DROPDOWN_INLINE_TRIGGER_CLASS}`}
             onClick={() => !disabled && setOpen((o) => !o)}
             aria-label="Selecionar indicativo telefónico"
           >
             <span className="font-semibold text-base">+{country.dialCode}</span>
-            <i className={`bi bi-chevron-${open ? "up" : "down"} text-xs`} />
+            <DropdownChevron open={open} className="text-xs" />
           </button>
-          {open && (
-            <ul className="absolute z-50 max-h-60 w-56 overflow-auto rounded-lg border border-base-300 bg-base-100 shadow-lg top-full right-0 mt-1 text-base-content">
-              {countries.map((c) => (
-                <li key={c.code}>
-                  <button
-                    type="button"
-                    onClick={() => handleSelect(c)}
-                    className="flex w-full items-center justify-between px-3 py-2 hover:bg-base-200 cursor-pointer"
-                  >
-                    <span className="font-semibold">+{c.dialCode}</span>
-                    <span className="text-[11px] text-base-content/70 truncate ml-2">{c.name}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+          <DropdownPanel
+            open={open}
+            options={countries}
+            onSelect={(code) => {
+              const selected = countries.find((c) => c.code === code);
+              if (selected) handleSelect(selected);
+            }}
+            getOptionLabel={(c) => c.name}
+            getOptionValue={(c) => c.code}
+            renderOption={(c, select) => (
+              <button
+                type="button"
+                className="flex w-full items-center justify-start gap-3 px-3 py-2 hover:bg-base-200 cursor-pointer text-left"
+                onClick={select}
+              >
+                <span className="font-semibold whitespace-nowrap">+{c.dialCode}</span>
+                <span className="text-[12px] text-base-content/80 flex-1 text-left whitespace-normal">
+                  {c.name}
+                </span>
+              </button>
+            )}
+            className="bottom-full right-0 mb-1 w-64 max-w-56 overflow-hidden"
+          />
         </div>
         <input
           type="tel"

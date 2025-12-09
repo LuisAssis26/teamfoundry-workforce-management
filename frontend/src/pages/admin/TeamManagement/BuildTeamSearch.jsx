@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AdminNavbar from "../components/AdminNavbar.jsx";
 import EmployeeCard from "./components/EmployeeCard.jsx";
-import MultiSelectDropdown from "../../../components/ui/MultiSelect/MultiSelectDropdown.jsx";
+import MultiSelectDropdown from "../../../components/ui/Dropdown/MultiSelectDropdown.jsx";
 import { searchCandidates } from "../../../api/admin/candidates.js";
 import { sendInvites, listInvitedIds, listAcceptedIds } from "../../../api/admin/invitations.js";
 import { useAdminData } from "../AdminDataContext.jsx";
@@ -26,9 +26,11 @@ export default function BuildTeamSearch() {
 
     const geoOptions = optionsData.geoAreas ?? [];
     const skillOptions = optionsData.competences ?? [];
+    const functionOptions = optionsData.functions ?? [];
 
     const [geoSelected, setGeoSelected] = useState([]);
     const [skillsSelected, setSkillsSelected] = useState([]);
+    const [preferredRolesSelected, setPreferredRolesSelected] = useState([]);
 
     const [teamInfo, setTeamInfo] = useState(null);
     const [isLoadingTeam, setIsLoadingTeam] = useState(true);
@@ -89,6 +91,7 @@ export default function BuildTeamSearch() {
                     role,
                     areas: geoSelected,
                     skills: skillsSelected,
+                    preferredRoles: preferredRolesSelected,
                 });
                 if (!canceled) setCandidates(data);
             } catch (err) {
@@ -102,7 +105,7 @@ export default function BuildTeamSearch() {
         return () => {
             canceled = true;
         };
-    }, [teamId, role, geoSelected, skillsSelected]);
+    }, [teamId, role, geoSelected, skillsSelected, preferredRolesSelected]);
 
     useEffect(() => {
         let canceled = false;
@@ -142,7 +145,6 @@ export default function BuildTeamSearch() {
                 name: fullName,
                 role: c.role || "Sem funcao",
                 city: preferredArea,
-                preference: preferredArea,
                 skills,
                 experiences,
                 accepted,
@@ -222,8 +224,11 @@ export default function BuildTeamSearch() {
                                     geoSelected={geoSelected}
                                     skillOptions={skillOptions}
                                     skillsSelected={skillsSelected}
+                                    functionOptions={functionOptions}
+                                    preferredRolesSelected={preferredRolesSelected}
                                     onGeoChange={setGeoSelected}
                                     onSkillsChange={setSkillsSelected}
+                                    onPreferredRolesChange={setPreferredRolesSelected}
                                 />
                                 <CandidatesPanel
                                     employees={mappedCandidates}
@@ -257,13 +262,16 @@ function HeroHeader({ teamName, role }) {
 function FiltersPanel({
                           companyName,
                           role,
-                          geoOptions,
-                          geoSelected,
-                          skillOptions,
-                          skillsSelected,
-                          onGeoChange,
-                          onSkillsChange,
-                      }) {
+                                  geoOptions,
+                                  geoSelected,
+                                  skillOptions,
+                                  skillsSelected,
+                                  functionOptions,
+                                  preferredRolesSelected,
+                                  onGeoChange,
+                                  onSkillsChange,
+                                  onPreferredRolesChange,
+                              }) {
     return (
         <aside className="w-full rounded-2xl bg-white p-6 shadow-md lg:w-80">
             <div className="space-y-4">
@@ -285,6 +293,13 @@ function FiltersPanel({
                     selectedOptions={skillsSelected}
                     onChange={onSkillsChange}
                     placeholder="Selecione competencias"
+                />
+                <MultiSelectDropdown
+                    label="Funcao preferencial"
+                    options={functionOptions}
+                    selectedOptions={preferredRolesSelected}
+                    onChange={onPreferredRolesChange}
+                    placeholder="Selecione funcao(oes)"
                 />
             </div>
         </aside>

@@ -7,6 +7,14 @@ import { EmployeeProfileProvider } from "./pages/profile/Employee/EmployeeProfil
 import "bootstrap-icons/font/bootstrap-icons.css"; // Importa icones do Bootstrap
 import "./index.css";
 
+// Aplica tema guardado (foundry light / foundry-dark)
+const storedThemeMode = localStorage.getItem("tf-theme-mode");
+if (storedThemeMode === "dark") {
+  document.documentElement.setAttribute("data-theme", "foundry-dark");
+} else if (storedThemeMode === "light") {
+  document.documentElement.setAttribute("data-theme", "foundry");
+}
+
 // Habilita estilo global que converte alerts do DaisyUI em toasts flutuantes.
 document.body.classList.add("toastify-alerts");
 

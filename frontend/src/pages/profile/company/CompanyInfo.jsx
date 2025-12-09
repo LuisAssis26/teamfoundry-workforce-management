@@ -146,8 +146,7 @@ export default function CompanyInfo() {
     <div className="space-y-6">
       <header className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <p className="text-sm text-base-content/70">Perfil da empresa</p>
-          <h1 className="text-3xl font-semibold">Informações</h1>
+          <h1 className="text-3xl font-semibold text-center sm:text-center md:text-left w-full">Informações</h1>
         </div>
       </header>
 

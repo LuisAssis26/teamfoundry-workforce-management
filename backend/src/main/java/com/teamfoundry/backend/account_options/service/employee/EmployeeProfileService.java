@@ -6,6 +6,8 @@ import com.teamfoundry.backend.account_options.dto.employee.EmployeeProfileSumma
 import com.teamfoundry.backend.account_options.dto.employee.EmployeeProfileUpdateRequest;
 import com.teamfoundry.backend.account_options.dto.employee.IdentificationDocumentUploadRequest;
 import com.teamfoundry.backend.account_options.dto.employee.ProfilePictureUploadRequest;
+import com.teamfoundry.backend.account_options.dto.employee.DeactivateAccountRequest;
+import com.teamfoundry.backend.account.model.EmployeeAccount;
 import com.teamfoundry.backend.account_options.enums.DocumentType;
 import com.teamfoundry.backend.account_options.model.employee.EmployeeDocument;
 import com.teamfoundry.backend.account.model.EmployeeAccount;
@@ -15,9 +17,11 @@ import com.teamfoundry.backend.account_options.repository.employee.EmployeeCompe
 import com.teamfoundry.backend.account_options.repository.employee.EmployeeFunctionRepository;
 import com.teamfoundry.backend.account_options.repository.employee.EmployeeGeoAreaRepository;
 import com.teamfoundry.backend.common.service.CloudinaryService;
+import com.teamfoundry.backend.security.repository.AuthTokenRepository;
 import com.teamfoundry.backend.admin.service.EmployeeJobHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -34,6 +38,8 @@ public class EmployeeProfileService {
     private final EmployeeGeoAreaRepository employeeGeoAreaRepository;
     private final EmployeeJobHistoryService employeeJobHistoryService;
     private final CloudinaryService cloudinaryService;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthTokenRepository authTokenRepository;
 
     /**
      * Le o perfil do colaborador autenticado.
@@ -152,7 +158,7 @@ public class EmployeeProfileService {
     @Transactional
     public void deleteIdentificationDocument(String email, DocumentType type) {
         if (type == DocumentType.CURRICULUM) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo invalido para este endpoint.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo inválido para este endpoint.");
         }
         EmployeeAccount account = findByEmailOrThrow(email);
         documentRepository.findByEmployeeAndType(account, type)
@@ -185,7 +191,20 @@ public class EmployeeProfileService {
         }
     }
 
+    @Transactional
+    public void deactivateAccount(String email, DeactivateAccountRequest request) {
+        EmployeeAccount account = findByEmailOrThrow(email);
+        if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password incorreta.");
+        }
+        account.setDeactivated(true);
+        account.setVerified(false);
+        employeeAccountRepository.save(account);
+        authTokenRepository.deleteAllByUser(account);
+    }
+
     private EmployeeAccount findByEmailOrThrow(String email) {
+        // Normaliza e valida email antes de carregar a conta.
         String normalizedEmail = email == null ? null : email.trim().toLowerCase();
         if (normalizedEmail == null || normalizedEmail.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilizador nao autenticado.");
@@ -209,6 +228,7 @@ public class EmployeeProfileService {
                 .nif(account.getNif())
                 .phone(account.getPhone())
                 .email(account.getEmail())
+                .deactivated(account.isDeactivated())
                 .curriculumUrl(cvUrl)
                 .identificationFrontUrl(idFrontUrl)
                 .identificationBackUrl(idBackUrl)

@@ -42,6 +42,7 @@ public class AuthService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
     private static final int REMEMBER_ME_DAYS = 30;
+    private static final int SESSION_REFRESH_DAYS = 1; // refresh de sessão (cookie de sessão)
 
     private final AdminAccountRepository adminAccountRepository;
     private final CompanyAccountRepository companyAccountRepository;
@@ -106,7 +107,9 @@ public class AuthService {
             String refresh = issueRefreshToken(account, REMEMBER_ME_DAYS);
             return new LoginResult(resp, refresh, REMEMBER_ME_DAYS * 24 * 60 * 60);
         }
-        return new LoginResult(resp, null, 0);
+        String refresh = issueRefreshToken(account, SESSION_REFRESH_DAYS);
+        // maxAge -1 => cookie de sessão (dura enquanto o browser estiver aberto)
+        return new LoginResult(resp, refresh, -1);
     }
 
     private LoginResult validateEmployee(EmployeeAccount employeeAccount, String rawPassword, boolean remember) {
@@ -118,7 +121,8 @@ public class AuthService {
             String refresh = issueRefreshToken(employeeAccount, REMEMBER_ME_DAYS);
             return new LoginResult(resp, refresh, REMEMBER_ME_DAYS * 24 * 60 * 60);
         }
-        return new LoginResult(resp, null, 0);
+        String refresh = issueRefreshToken(employeeAccount, SESSION_REFRESH_DAYS);
+        return new LoginResult(resp, refresh, -1);
     }
 
     private String issueRefreshToken(Account user, int days) {
@@ -139,8 +143,12 @@ public class AuthService {
     }
 
     private void ensureAccountIsActive(Account account) {
-        if (!account.isActive()) {
-            log.warn("Conta {} ainda não está ativa", account.getEmail());
+        if (account.isDeactivated()) {
+            log.warn("Conta {} está desativada", account.getEmail());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Conta desativada. Contacte o suporte.");
+        }
+        if (!account.isVerified()) {
+            log.warn("Conta {} ainda não está verificada", account.getEmail());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Conta ainda não foi verificada");
         }
     }
@@ -224,7 +232,7 @@ public class AuthService {
         if (account.getRegistrationStatus() != RegistrationStatus.COMPLETED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Esta conta ainda não concluiu o registo.");
         }
-        if (!account.isActive()) {
+        if (!account.isVerified()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A conta ainda não foi verificada.");
         }
         if (account instanceof CompanyAccount companyAccount && !companyAccount.isStatus()) {
@@ -241,7 +249,7 @@ public class AuthService {
         }
 
         Account user = token.getUser();
-        if (!user.isActive()) {
+        if (!user.isVerified()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Conta inativa");
         }
         String access = jwtService.generateToken(user.getEmail(), user.getRole().name(), user.getId());

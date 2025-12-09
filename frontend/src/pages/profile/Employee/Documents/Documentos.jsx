@@ -7,6 +7,7 @@ import {
   uploadIdentificationDocument,
   deleteIdentificationDocument,
 } from "../../../../api/profile/employeeProfile.js";
+import { useEmployeeProfile } from "../EmployeeProfileContext.jsx";
 
 const DEFAULT_NAMES = {
   cv: "curriculo.pdf",
@@ -30,6 +31,7 @@ const DOC_ITEMS = [
 ];
 
 export default function Documentos() {
+  const { documentsData, documentsLoaded, setDocumentsData, setDocumentsLoaded } = useEmployeeProfile();
   const [docs, setDocs] = useState({
     idFront: { url: null, fileName: DEFAULT_NAMES.idFront },
     idBack: { url: null, fileName: DEFAULT_NAMES.idBack },
@@ -40,13 +42,20 @@ export default function Documentos() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (documentsLoaded && documentsData) {
+      applyProfileData(documentsData);
+      setLoading(false);
+      return;
+    }
     loadDocuments();
-  }, []);
+  }, [documentsLoaded, documentsData]);
 
   const loadDocuments = () => {
     setLoading(true);
     fetchEmployeeCurriculum()
       .then((data) => {
+        setDocumentsData(data);
+        setDocumentsLoaded(true);
         applyProfileData(data);
       })
       .catch((err) => {
@@ -83,6 +92,8 @@ export default function Documentos() {
     try {
       const base64 = await fileToBase64(file);
       const data = await uploadEmployeeCurriculum({ file: base64, fileName: file.name });
+      setDocumentsData(data);
+      setDocumentsLoaded(true);
       applyProfileData(data, { cv: file.name });
     } catch (err) {
       setError(err.message || "Falha ao carregar o curriculo.");
@@ -97,6 +108,7 @@ export default function Documentos() {
     setProcessingKey("cv");
     try {
       await deleteEmployeeCurriculum();
+      setDocumentsData((prev) => (prev ? { ...prev, curriculumUrl: null } : prev));
       setDocs((prev) => ({
         ...prev,
         cv: { url: null, fileName: DEFAULT_NAMES.cv },
@@ -119,6 +131,8 @@ export default function Documentos() {
         fileName: file.name,
         type,
       });
+      setDocumentsData(data);
+      setDocumentsLoaded(true);
       const overrideKey = key === "idFront" ? { idFront: file.name } : { idBack: file.name };
       applyProfileData(data, overrideKey);
     } catch (err) {
@@ -134,6 +148,15 @@ export default function Documentos() {
     setProcessingKey(key);
     try {
       await deleteIdentificationDocument(type);
+      setDocumentsData((prev) =>
+        prev
+          ? {
+              ...prev,
+              identificationFrontUrl: type === "IDENTIFICATION_FRONT" ? null : prev.identificationFrontUrl,
+              identificationBackUrl: type === "IDENTIFICATION_BACK" ? null : prev.identificationBackUrl,
+            }
+          : prev
+      );
       setDocs((prev) => ({
         ...prev,
         [key]: { url: null, fileName: key === "idFront" ? DEFAULT_NAMES.idFront : DEFAULT_NAMES.idBack },
@@ -156,7 +179,7 @@ export default function Documentos() {
   return (
     <section className="w-full">
       <div className="flex items-center gap-3 mb-6">
-        <h2 className="text-3xl font-semibold">Upload de Documentos</h2>
+        <h2 className="text-3xl font-semibold text-center sm:text-center md:text-left w-full">Upload de Documentos</h2>
       </div>
 
       <div className="rounded-xl border border-base-300 bg-base-100 shadow p-6">

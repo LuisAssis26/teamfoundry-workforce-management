@@ -79,101 +79,197 @@
     --noise: 0;
 }
 
+@plugin "daisyui/theme" {
+    name: "foundry-dark";
+    default: false;
+    prefersdark: true;
+    color-scheme: dark;
+
+    /* === Base === */
+    --color-base-100: #1a1c24;      /* fundo principal */
+    --color-base-200: #2a2d3a;      /* superfícies */
+    --color-base-content: #e5e7eb;  /* texto claro */
+    /* === Brand === */
+    --color-primary: #4b5bb5;
+    --color-primary-focus: #6370ce;
+    --color-primary-content: #ffffff;
+
+    /* === Secondary === */
+    --color-secondary: #7184ff;
+    --color-secondary-focus: #8f9dff;
+    --color-secondary-content: #ffffff;
+
+    /* === Accent === */
+    --color-accent: #2c3a74;
+    --color-accent-focus: #6d7ef0;
+    --color-accent-content: #ffffff;
+
+    /* === Neutral === */
+    --color-neutral: #4c5568;
+    --color-neutral-content: #f0f2f5;
+
+    /* === Feedback === */
+    --color-info: #3bb6e8;
+    --color-info-content: #0d1117;
+
+    --color-success: #3bd375;
+    --color-success-content: #0d1117;
+
+    --color-warning: #f6b246;
+    --color-warning-content: #0d1117;
+
+    --color-error: #ff5b5b;
+    --color-error-content: #0d1117;
+
+
+    /* === Fonts === */
+    --font-heading: "Poppins", sans-serif;
+    --font-body: "Inter", sans-serif;
+
+    /* === Typography === */
+    --fs-h1: 2.5rem;
+    --fs-h2: 2rem;
+    --fs-h3: 1.5rem;
+    --fs-body: 1rem;
+    --fs-label: 0.875rem;
+
+    --lh-h1: 1.2;
+    --lh-h2: 1.25;
+    --lh-h3: 1.3;
+    --lh-body: 1.5;
+    --lh-label: 1.4;
+
+    --fw-bold: 700;
+    --fw-semibold: 600;
+    --fw-medium: 500;
+    --fw-regular: 400;
+
+    /* === Radius === */
+    --radius-selector: 1rem;
+    --radius-field: 0.5rem;
+    --radius-box: 0.5rem;
+
+    /* === Base Sizes === */
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+
+    /* === Border === */
+    --border: 1px;
+
+    /* === Effects === */
+    --depth: 1;
+    --noise: 0;
+}
+
 @layer components {
     .company-credentials-scroll {
         scrollbar-width: auto;
         scrollbar-color: #1f2959 transparent;
     }
 
-  .pseudo-underline::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -0.35rem;
-    height: 0.25rem;
-    border-radius: 999px;
-    background-color: currentColor;
-  }
-
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  /* Animações para drawer mobile do perfil */
-  @keyframes drawer-in {
-    from {
-      transform: translateX(-16px);
-      opacity: 0;
+    .pseudo-underline::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -0.35rem;
+        height: 0.25rem;
+        border-radius: 999px;
+        background-color: currentColor;
     }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
 
-  @keyframes drawer-out {
-    from {
-      transform: translateX(0);
-      opacity: 1;
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
     }
-    to {
-      transform: translateX(-16px);
-      opacity: 0;
+
+    /* Animações para drawer mobile do perfil */
+    @keyframes drawer-in {
+        from {
+            transform: translateX(-16px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
     }
-  }
 
-  .animate-drawer-in {
-    animation: drawer-in 0.2s ease-out both;
-  }
+    @keyframes drawer-out {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(-16px);
+            opacity: 0;
+        }
+    }
 
-  .animate-drawer-out {
-    animation: drawer-out 0.15s ease-in both;
-  }
+    .animate-drawer-in {
+        animation: drawer-in 0.2s ease-out both;
+    }
+
+    .animate-drawer-out {
+        animation: drawer-out 0.15s ease-in both;
+    }
 
 }
 
 /* Alerts como toasts flutuantes no topo da tela quando .toastify-alerts está presente no body */
 body.toastify-alerts .alert {
-  position: fixed;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(360px, calc(100vw - 32px));
-  z-index: 9999;
-  margin: 0;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-  animation: toast-in 180ms ease-out, toast-out 180ms ease-in 4s forwards;
-  text-align: center;
-  justify-content: center;
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(360px, calc(100vw - 32px));
+    z-index: 9999;
+    margin: 0;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    animation: toast-in 180ms ease-out, toast-out 180ms ease-in 4s forwards;
+    text-align: center;
+    justify-content: center;
 }
 
 body.toastify-alerts .alert + .alert {
-  margin-top: 12px;
+    margin-top: 12px;
 }
 
 @keyframes toast-in {
-  from {
-    opacity: 0;
-    translate: 0 -8px;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
+    from {
+        opacity: 0;
+        translate: 0 -8px;
+    }
+    to {
+        opacity: 1;
+        translate: 0 0;
+    }
 }
 
 @keyframes toast-out {
-  to {
-    opacity: 0;
-    translate: 0 -6px;
-  }
+    to {
+        opacity: 0;
+        translate: 0 -6px;
+    }
+}
+
+/* Animação genérica para chevrons em dropdowns */
+.chevron-rotate {
+    transition: transform 240ms ease;
+}
+.chevron-rotate.open {
+    transform: rotate(180deg);
+}
+
+/* Remove setas nativas quando queremos usar ícone custom */
+.no-native-chevron {
+    appearance: none;
+    background-image: none !important;
 }

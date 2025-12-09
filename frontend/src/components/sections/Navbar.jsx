@@ -105,7 +105,7 @@ export default function Navbar({
             ))}
           </div>
         ) : (
-          <div className="relative" ref={profileRef}>
+          <div className="relative " ref={profileRef}>
             <button
               type="button"
               className="btn btn-ghost btn-circle h-12 w-12 text-3xl text-primary-content hover:bg-transparent active:bg-transparent focus:bg-transparent"
@@ -199,9 +199,11 @@ const EMPLOYEE_MENU = [
   { to: "/candidato/ofertas", label: "Ofertas", icon: "bi-bell" },
   { to: "/candidato/documentos", label: "Documentos", icon: "bi-file-earmark-text" },
   { to: "/candidato/proximos-passos", label: "Próximos passos", icon: "bi-flag" },
+  { to: "/candidato/definicoes", label: "Definições", icon: "bi-gear" },
 ];
 
 const COMPANY_MENU = [
   { to: "/empresa/informacoes", label: "Informações", icon: "bi-buildings" },
   { to: "/empresa/requisicoes", label: "Requisições", icon: "bi-list-check" },
+  { to: "/empresa/definicoes", label: "Definições", icon: "bi-gear" },
 ];

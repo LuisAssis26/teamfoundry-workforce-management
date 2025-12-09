@@ -41,3 +41,7 @@ export async function deleteEmployeeProfilePicture() {
 export async function fetchEmployeeProfileSummary() {
   return httpGet(`${PROFILE_ENDPOINT}/summary`);
 }
+
+export async function deactivateEmployeeAccount(password) {
+  return httpPost(`${PROFILE_ENDPOINT}/deactivate`, { password });
+}

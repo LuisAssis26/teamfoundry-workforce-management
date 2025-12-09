@@ -60,7 +60,7 @@ public class CompanyRegistrationService {
         companyAccount.setPassword(passwordEncoder.encode(request.password()));
         companyAccount.setRole(UserType.COMPANY);
         companyAccount.setRegistrationStatus(RegistrationStatus.COMPLETED);
-        companyAccount.setActive(false);
+        companyAccount.setVerified(false);
         companyAccount.setName(request.companyName().trim());
         companyAccount.setNif(request.nif());
         companyAccount.setAddress(request.address().trim());

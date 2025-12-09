@@ -4,17 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Profile Pciture&#10;Documentos Funcionais">
+    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Fix Preferences.jsx &#10;Dropdown Animado">
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/ui/Dropdown/Dropdown.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/ui/Dropdown/SelectDropdown.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/sections/Tabs.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/sections/Tabs.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ui/Dropdown/FilterDropdown.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ui/Dropdown/FilterDropdown.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ui/Dropdown/MultiSelectDropdown.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ui/Dropdown/MultiSelectDropdown.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/ui/Input/PhoneInput.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ui/Input/PhoneInput.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ui/Upload/DropZone.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ui/Upload/DropZone.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Documents/Documentos.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Documents/Documentos.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/PersonalDetails.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/PersonalDetails.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/RecentJobs.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/RecentJobs.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/components/ProfileHeader.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/components/ProfileHeader.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/components/RecentJobCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/JobOffers/JobCard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/JobOffers/JobOfferCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/JobOffers/JobOfferCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/Preferences.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/Preferences.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/JobOffers/JobOffers.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/JobOffers/JobOffers.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,6 +57,9 @@
   &quot;isMigrated&quot;: true
 }</component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -66,35 +68,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Docker.docker-compose.yml.teamfoundry_postgres: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
-    "Jest.findNameReturnsValueFromRepository.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/draga/Ambiente de Trabalho/Trabalhos Uni/teamfoundry-workforce-management",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs.jest.jest_package": "C:/Users/joaog/Desktop/TeamFoundry/teamfoundry-workforce-management/frontend/node_modules/jest",
-    "nodejs_package_manager_path": "npm",
-    "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Docker.docker-compose.yml.teamfoundry_postgres: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.findNameReturnsValueFromRepository.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/draga/Ambiente de Trabalho/Trabalhos Uni/teamfoundry-workforce-management&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/joaog/Desktop/TeamFoundry/teamfoundry-workforce-management/frontend/node_modules/jest&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="ReactDesignerToolWindowState">
     <option name="myId2Visible">
       <map>
@@ -106,11 +108,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\profile" />
+      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\components\ui\Modal" />
       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\profile\Employee\JobOffers" />
       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\backend\src\main\java\com\teamfoundry\backend\common" />
       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\api\config" />
-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\profile\Employee\Info" />
-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\backend\src\main\java\com\teamfoundry\backend\account_options\service" />
     </key>
   </component>
   <component name="RunManager" selected="Docker.docker-compose.yml: Compose Deployment">
@@ -236,7 +238,8 @@
       <workItem from="1764861113741" duration="4648000" />
       <workItem from="1764963104669" duration="4928000" />
       <workItem from="1764968344990" duration="1691000" />
-      <workItem from="1765121170109" duration="6498000" />
+      <workItem from="1765121170109" duration="6959000" />
+      <workItem from="1765204622467" duration="17524000" />
     </task>
     <task id="LOCAL-00001" summary="paleta certa">
       <option name="closed" value="true" />
@@ -374,7 +377,31 @@
       <option name="project" value="LOCAL" />
       <updated>1764970736108</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Enhance document upload functionality with file type and size validation">
+      <option name="closed" value="true" />
+      <created>1765128424760</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1765128424760</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Perfil de Funcionario - Falta Prox Passos&#10;Ajustes de interface login e register&#10;Dark Mode&#10;Definições">
+      <option name="closed" value="true" />
+      <created>1765220973227</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1765220973227</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Perfil de Empresa - Falta Eliminação de conta">
+      <option name="closed" value="true" />
+      <created>1765223114618</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1765223114618</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -428,7 +455,13 @@
     <MESSAGE value="Ajustes Register (Funcioanrio e Empresa)&#10;Toasts atualizados" />
     <MESSAGE value="Cloud de Imagens Funcional." />
     <MESSAGE value="Profile Pciture&#10;Documentos Funcionais" />
-    <option name="LAST_COMMIT_MESSAGE" value="Profile Pciture&#10;Documentos Funcionais" />
+    <MESSAGE value="Enhance document upload functionality with file type and size validation" />
+    <MESSAGE value="Perfil de Funcionario - Falta Prox Passos&#10;Ajustes de interface login e register" />
+    <MESSAGE value="Perfil de Funcionario - Falta Prox Passos&#10;Ajustes de interface login e register&#10;Dark Mode&#10;Definições" />
+    <MESSAGE value="Perfil de Empresa - Falta Eliminação de conta" />
+    <MESSAGE value="Fix Preferences.jsx" />
+    <MESSAGE value="Fix Preferences.jsx &#10;Dropdown Animado" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix Preferences.jsx &#10;Dropdown Animado" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

@@ -6,6 +6,7 @@ import { updateEmployeeProfile } from "../../../../api/profile/employeeProfile.j
 import { useEmployeeProfile } from "../EmployeeProfileContext.jsx";
 import { formatName } from "../utils/profileUtils.js";
 import PhoneInput from "../../../../components/ui/Input/PhoneInput.jsx";
+import SelectDropdown from "../../../../components/ui/Dropdown/SelectDropdown.jsx";
 
 const genderOptions = [
   { value: "MALE", label: "Masculino" },
@@ -127,23 +128,18 @@ export default function PersonalDetails() {
               onChange={handleChange("birthDate")}
               disabled={loading || saving}
             />
-            <InputField
+            <SelectDropdown
               label="Género"
-              as="select"
+              value={formData.gender || ""}
+              onChange={(val) => {
+                setFormData((prev) => ({ ...prev, gender: val }));
+                if (feedback) setFeedback("");
+                if (error) setError("");
+              }}
+              options={genderOptions}
               placeholder={genderPlaceholder}
-              value={formData.gender}
-              onChange={handleChange("gender")}
               disabled={loading || saving}
-            >
-              <option value="" disabled>
-                {genderPlaceholder}
-              </option>
-              {genderOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </InputField>
+            />
             <InputField
               label="Nacionalidade"
               placeholder="Ex.: Portuguesa"
