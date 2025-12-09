@@ -479,7 +479,7 @@ public class SiteContentService {
         List<HomeNewsArticleResponse> articles = Collections.emptyList();
         if (section.getType() == HomeLoginSectionType.NEWS) {
             int limit = Optional.ofNullable(section.getApiMaxItems()).orElse(6);
-            articles = newsApiService.getLatestPortugueseNews(limit);
+            articles = newsApiService.getEmpregabilidadeNews(limit);
         }
         return new HomeLoginSectionResponse(
                 section.getId(),

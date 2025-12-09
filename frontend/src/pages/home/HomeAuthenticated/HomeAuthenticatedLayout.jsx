@@ -38,20 +38,27 @@ export default function HomeAuthenticatedLayout() {
             <span>{contentError}</span>
           </div>
         )}
-        <HeroPanel
-          displayName={displayName}
-          section={heroSection}
-          profileSummary={profileSummary}
-          summaryLoading={profileSummaryLoading}
-          loadingContent={contentLoading}
-        />
-        <WeeklyTipSection
-          section={weeklyTipSection}
-          tipOfWeek={weeklyTipsData?.tipOfWeek}
-          error={weeklyTipsError}
-          fallbackTip={fallbackWeeklyTip}
-        />
-        <NewsSection section={newsSection} articles={newsArticles} loading={contentLoading} fallbackNews={fallbackNews} />
+        <div className="space-y-14">
+          <HeroPanel
+            displayName={displayName}
+            section={heroSection}
+            profileSummary={profileSummary}
+            summaryLoading={profileSummaryLoading}
+            loadingContent={contentLoading}
+          />
+          <WeeklyTipSection
+            section={weeklyTipSection}
+            tipOfWeek={weeklyTipsData?.tipOfWeek}
+            error={weeklyTipsError}
+            fallbackTip={fallbackWeeklyTip}
+          />
+          <NewsSection
+            section={newsSection}
+            articles={newsArticles}
+            loading={contentLoading}
+            fallbackNews={fallbackNews}
+          />
+        </div>
       </main>
       <Footer />
     </div>
