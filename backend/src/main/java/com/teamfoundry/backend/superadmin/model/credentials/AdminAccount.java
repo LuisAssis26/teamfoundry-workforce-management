@@ -24,4 +24,7 @@ public class AdminAccount {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserType role;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean deactivated = false;
 }

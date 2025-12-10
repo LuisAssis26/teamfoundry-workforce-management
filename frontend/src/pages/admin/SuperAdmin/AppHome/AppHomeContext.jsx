@@ -274,6 +274,8 @@ AppHomeProvider.defaultProps = {
 
 export function useAppHome() {
   const ctx = useContext(AppHomeContext);
-  if (!ctx) throw new Error("useAppHome deve ser usado dentro de AppHomeProvider");
+  if (!ctx) {
+    throw new Error("useAppHome deve ser usado dentro de AppHomeProvider");
+  }
   return ctx;
 }

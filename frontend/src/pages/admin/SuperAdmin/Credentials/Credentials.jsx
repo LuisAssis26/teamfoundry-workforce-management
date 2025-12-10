@@ -1,9 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { apiFetch } from "../../../../api/auth/client.js";
-import CompanyCredentialsList from "./components/CompanyCredentialsList.jsx";
+import CredentialList from "./components/Credential/CredentialList.jsx";
 import Button from "../../../../components/ui/Button/Button.jsx";
-import Modal from "../../../../components/ui/Modal/Modal.jsx";
 import { useSuperAdminData } from "../SuperAdminDataContext.jsx";
+import CompanyInfoModal from "./components/Modal/Company/CompanyInfoModal.jsx";
+import CompanyApprovalModal from "./components/Modal/Company/CompanyApprovalModal.jsx";
+import CompanyRejectionModal from "./components/Modal/Company/CompanyRejectionModal.jsx";
+import AdminDisableModal from "./components/Modal/Admin/AdminDisableModal.jsx";
+import AdminEditModal from "./components/Modal/Admin/AdminEditModal.jsx";
+import AdminCreateModal from "./components/Modal/Admin/AdminCreateModal.jsx";
 
 const ROLE_OPTIONS = [
   { value: "admin", label: "Admin" },
@@ -53,6 +58,14 @@ export default function Credenciais() {
         setData: setAdminCredentials,
       },
     },
+    staffing: {
+      requests: {
+        data: workRequests = [],
+        loading: isLoadingRequests,
+        loaded: requestsLoaded,
+        refresh: refreshRequests,
+      },
+    },
   } = useSuperAdminData();
 
   const [createAdminError, setCreateAdminError] = useState(null);
@@ -99,29 +112,71 @@ export default function Credenciais() {
     refreshAdmins().catch(() => {});
   }, [adminsLoaded, refreshAdmins]);
 
+  const initialRequestsLoad = useRef(false);
+  useEffect(() => {
+    if (requestsLoaded || initialRequestsLoad.current) return;
+    initialRequestsLoad.current = true;
+    refreshRequests().catch(() => {});
+  }, [requestsLoaded, refreshRequests]);
+
   const businessFields = useMemo(
-      () => [
-        { key: "companyName", label: "Nome Empresa:" },
-        { key: "credentialEmail", label: "Email Credencial:" },
-        { key: "nif", label: "NIF:" },
-        { key: "country", label: "Pais:" },
-        { key: "responsibleName", label: "Nome Responsavel:" },
-        { key: "responsibleEmail", label: "Email Responsavel:" },
-      ],
-      []
+    () => [
+      { key: "companyName", label: "Nome Empresa:" },
+      { key: "credentialEmail", label: "Email Credencial:" },
+      { key: "nif", label: "NIF:" },
+      { key: "country", label: "Pais:" },
+    ],
+    []
   );
 
   const adminFields = useMemo(
-      () => [
-        { key: "username", label: "Username:" },
-        {
-          key: "role",
-          label: "Cargo:",
-          getValue: (admin) =>
-              admin.role === "super-admin" ? "Super Admin" : "Admin",
-        },
-      ],
-      []
+    () => [
+      { key: "username", label: "Username:" },
+      {
+        key: "role",
+        label: "Cargo:",
+        getValue: (admin) => (admin.role === "super-admin" ? "Super Admin" : "Admin"),
+      },
+      {
+        key: "openRequests",
+        label: "Requisições:",
+        getValue: (admin) => admin.openRequests ?? 0,
+      },
+      {
+        key: "openSlots",
+        label: "Mão de obra associada:",
+        getValue: (admin) => admin.openSlots ?? 0,
+      },
+    ],
+    []
+  );
+
+  const adminRequestStats = useMemo(() => {
+    const stats = {};
+    workRequests.forEach((req) => {
+      if (!req?.responsibleAdminId) return;
+      const key = String(req.responsibleAdminId);
+      if (!stats[key]) stats[key] = { open: 0, openSlots: 0 };
+      const state = (req.state || "").toUpperCase();
+      if (state !== "COMPLETE") {
+        stats[key].open += 1;
+        stats[key].openSlots += Number(req.workforceNeeded ?? 0);
+      }
+    });
+    return stats;
+  }, [workRequests]);
+
+  const adminsWithStats = useMemo(
+    () =>
+      adminCredentials.map((admin) => {
+        const stats = adminRequestStats[String(admin.id)] ?? {};
+        return {
+          ...admin,
+          openRequests: stats.open ?? 0,
+          openSlots: stats.openSlots ?? 0,
+        };
+      }),
+    [adminCredentials, adminRequestStats]
   );
 
   const handleViewMore = (company) => setCompanyInModal(company);
@@ -157,8 +212,14 @@ const handleRejectClick = () => {
   };
 
   const handleDisable = (adminId) => {
-    const admin = adminCredentials.find((item) => item.id === adminId);
+    const admin = adminsWithStats.find((item) => item.id === adminId);
     if (!admin) return;
+
+    if ((admin.openRequests ?? 0) > 0) {
+      setDisableAdminError("Não é possível desativar: administrador possui requisições atribuídas.");
+      return;
+    }
+
     setAdminPendingDisable(admin);
     setDisableAdminError(null);
     setDisableForm({ superAdminPassword: "" });
@@ -494,7 +555,7 @@ const handleCancelReject = () => {
                 </p>
               </div>
           ) : (
-              <CompanyCredentialsList
+              <CredentialList
                   title="Credenciais Empresariais"
                   companies={businessCompanies}
                   fieldConfig={businessFields}
@@ -514,6 +575,11 @@ const handleCancelReject = () => {
                 <span>{adminError}</span>
               </div>
           )}
+          {disableAdminError && !adminPendingDisable && (
+              <div className="alert alert-warning shadow">
+                <span>{disableAdminError}</span>
+              </div>
+          )}
 
           {isLoadingAdmins ? (
               <div className="bg-base-100 border border-base-200 rounded-3xl shadow-xl p-8">
@@ -522,9 +588,9 @@ const handleCancelReject = () => {
                 </p>
               </div>
           ) : (
-              <CompanyCredentialsList
+              <CredentialList
                   title="Credenciais Administrativas"
-                  companies={adminCredentials}
+                  companies={adminsWithStats}
                   fieldConfig={adminFields}
                   onViewMore={handleEdit}
                   onAccept={handleDisable}
@@ -545,394 +611,66 @@ const handleCancelReject = () => {
           )}
         </section>
 
-        <Modal
-            open={Boolean(companyInModal)}
-            title="Detalhes da Credencial"
-            onClose={() => setCompanyInModal(null)}
-            actions={
-              <div className="w-full flex justify-end gap-3">
-                <Button
-                    label="Recusar"
-                    variant="danger"
-                    className="max-w-32 btn-error text-white"
-                    onClick={handleRejectClick}
-                />
-                <Button
-                    label="Fechar"
-                    variant="outline"
-                    className="max-w-32 btn btn-secondary"
-                    onClick={() => setCompanyInModal(null)}
-                />
-              </div>
-            }
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              { label: "Nome da empresa", value: companyInModal?.companyName },
-              { label: "Email da credencial", value: companyInModal?.credentialEmail },
-              { label: "NIF", value: companyInModal?.nif },
-              { label: "Website", value: companyInModal?.website },
-              { label: "País", value: companyInModal?.country },
-              { label: "Morada", value: companyInModal?.address },
-              { label: "Nome do responsável", value: companyInModal?.responsibleName },
-              {
-                label: "Email do responsável",
-                value: companyInModal?.responsibleEmail,
-              },
-            ].map(({ label, value }) => (
-                <label key={label} className="form-control w-full">
-                  <span className="label-text font-medium">{label}</span>
-                  <input type="text" value={value ?? ""} disabled className="input input-bordered w-full" />
-                </label>
-            ))}
-          </div>
-        </Modal>
+        <CompanyInfoModal
+          open={Boolean(companyInModal)}
+          company={companyInModal}
+          onClose={() => setCompanyInModal(null)}
+          onReject={handleRejectClick}
+        />
 
-        <Modal
-            open={Boolean(companyPendingRejection)}
-            title="Tem certeza?"
-            onClose={handleCancelReject}
-            actions={
-              <div className="flex w-full justify-end gap-3">
-                <Button
-                    label="Cancelar"
-                    variant="outline"
-                    className="max-w-32 btn btn-secondary"
-                    onClick={handleCancelReject}
-                    disabled={isRejectingCompany}
-                />
-                <Button
-                    label={isRejectingCompany ? "Recusando..." : "Sim"}
-                    variant="danger"
-                    className="max-w-32 btn-error text-white"
-                    onClick={handleConfirmReject}
-                    disabled={isRejectingCompany}
-                />
-              </div>
-            }
-        >
-          {rejectCompanyError && (
-              <div className="alert alert-error mb-4">
-                <span>{rejectCompanyError}</span>
-              </div>
-          )}
+        <CompanyRejectionModal
+          open={Boolean(companyPendingRejection)}
+          company={companyPendingRejection}
+          password={rejectForm.superAdminPassword}
+          onPasswordChange={(value) => setRejectForm({ superAdminPassword: value })}
+          onConfirm={handleConfirmReject}
+          onCancel={handleCancelReject}
+          loading={isRejectingCompany}
+          error={rejectCompanyError}
+        />
 
-          <div className="space-y-4">
-            <p className="text-base-content">
-              Ao confirmar, a credencial da empresa "{companyPendingRejection?.companyName}" será removida. Deseja continuar?
-            </p>
+        <CompanyApprovalModal
+          open={Boolean(companyPendingApproval)}
+          company={companyPendingApproval}
+          password={approveForm.superAdminPassword}
+          onPasswordChange={handleApproveFieldChange}
+          onConfirm={handleConfirmApprove}
+          onCancel={handleCancelApprove}
+          loading={isApprovingCompany}
+          error={approveCompanyError}
+        />
 
-            <label className="form-control w-full">
-              <span className="label-text font-medium">Password Super Admin</span>
-              <input
-                  type="password"
-                  value={rejectForm.superAdminPassword}
-                  onChange={(event) => setRejectForm({ superAdminPassword: event.target.value })}
-                  className="input input-bordered w-full"
-                  disabled={isRejectingCompany}
-              />
-            </label>
-          </div>
-        </Modal>
+        <AdminDisableModal
+          open={Boolean(adminPendingDisable)}
+          admin={adminPendingDisable}
+          password={disableForm.superAdminPassword}
+          onPasswordChange={handleDisableFieldChange}
+          onConfirm={handleConfirmDisable}
+          onCancel={handleCancelDisable}
+          loading={isDisablingAdmin}
+          error={disableAdminError}
+        />
 
+        <AdminEditModal
+          open={isEditModalOpen}
+          form={editForm}
+          error={editAdminError}
+          loading={isSavingAdmin}
+          onClose={handleCloseEditModal}
+          onSave={handleSaveAdmin}
+          onFieldChange={handleEditFieldChange}
+          onToggleChangePassword={handleToggleChangePassword}
+        />
 
-        <Modal
-            open={Boolean(companyPendingApproval)}
-            title="Aprovar credencial"
-            onClose={handleCancelApprove}
-            actions={
-              <div className="flex w-full justify-end gap-3">
-                <Button
-                    label="Cancelar"
-                    variant="outline"
-                    className="max-w-32 btn btn-secondary"
-                    onClick={handleCancelApprove}
-                    disabled={isApprovingCompany}
-                />
-                <Button
-                    label={isApprovingCompany ? "Aprovando..." : "Confirmar"}
-                    variant="primary"
-                    className="max-w-32"
-                    onClick={handleConfirmApprove}
-                    disabled={isApprovingCompany}
-                />
-              </div>
-            }
-        >
-          {approveCompanyError && (
-              <div className="alert alert-error mb-4">
-                <span>{approveCompanyError}</span>
-              </div>
-          )}
-
-          <div className="space-y-4">
-            <p className="text-base-content">
-              Ao confirmar, a credencial da empresa "{companyPendingApproval?.companyName}" será aprovada.
-            </p>
-
-            <label className="form-control w-full">
-              <span className="label-text font-medium">Password Super Admin</span>
-              <input
-                  type="password"
-                  value={approveForm.superAdminPassword}
-                  onChange={(event) => handleApproveFieldChange(event.target.value)}
-                  className="input input-bordered w-full"
-                  disabled={isApprovingCompany}
-              />
-            </label>
-          </div>
-        </Modal>
-
-        <Modal
-            open={Boolean(adminPendingDisable)}
-            title="Tem certeza?"
-            onClose={handleCancelDisable}
-            actions={
-              <div className="flex w-full justify-end gap-3">
-                <Button
-                    label="Cancelar"
-                    variant="outline"
-                    className="max-w-32 btn btn-secondary"
-                    onClick={handleCancelDisable}
-                    disabled={isDisablingAdmin}
-                />
-                <Button
-                    label={isDisablingAdmin ? "Desativando..." : "Sim"}
-                    variant="danger"
-                    className="max-w-32 btn-error text-white"
-                    onClick={handleConfirmDisable}
-                    disabled={isDisablingAdmin}
-                />
-              </div>
-            }
-        >
-          {disableAdminError && (
-              <div className="alert alert-error mb-4">
-                <span>{disableAdminError}</span>
-              </div>
-          )}
-
-          <div className="space-y-4">
-            <p className="text-base-content">
-              Ao confirmar, o administrador será desativado. Deseja continuar?
-            </p>
-
-            <label className="form-control w-full">
-              <span className="label-text font-medium">Password Super Admin</span>
-              <input
-                  type="password"
-                  value={disableForm.superAdminPassword}
-                  onChange={(event) => handleDisableFieldChange(event.target.value)}
-                  className="input input-bordered w-full"
-                  disabled={isDisablingAdmin}
-              />
-            </label>
-          </div>
-        </Modal>
-
-        <Modal
-            open={isEditModalOpen}
-            title="Editar administrador"
-            onClose={handleCloseEditModal}
-            actions={
-              <div className="flex w-full justify-end gap-3">
-                <Button
-                    label="Fechar"
-                    variant="outline"
-                    className="max-w-32 btn btn-secondary"
-                    onClick={handleCloseEditModal}
-                    disabled={isSavingAdmin}
-                />
-                <Button
-                    label={isSavingAdmin ? "Salvando..." : "Salvar"}
-                    variant="primary"
-                    className="max-w-32"
-                    onClick={handleSaveAdmin}
-                    disabled={isSavingAdmin}
-                />
-              </div>
-            }
-        >
-          <div className="space-y-4">
-            {editAdminError && (
-                <div className="alert alert-error shadow">
-                  <span>{editAdminError}</span>
-                </div>
-            )}
-
-            <label className="form-control w-full">
-              <span className="label-text font-medium">Username</span>
-              <input
-                  type="text"
-                  value={editForm.username}
-                  onChange={(event) => handleEditFieldChange("username", event.target.value)}
-                  className="input input-bordered w-full"
-                  disabled={isSavingAdmin}
-              />
-            </label>
-
-            <label className="form-control w-full">
-              <span className="label-text font-medium">Cargo</span>
-              <select
-                  className="select select-bordered w-full"
-                  value={editForm.role}
-                  onChange={(event) => handleEditFieldChange("role", event.target.value)}
-                  disabled={isSavingAdmin}
-              >
-                {ROLE_OPTIONS.map(({ value, label }) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                ))}
-              </select>
-            </label>
-
-            <div className="flex items-center gap-3 pt-5">
-              <input
-                  id="change-password-checkbox"
-                  type="checkbox"
-                  className="toggle toggle-primary"
-                  checked={editForm.changePassword}
-                  onChange={handleToggleChangePassword}
-                  disabled={isSavingAdmin}
-              />
-              <label htmlFor="change-password-checkbox" className="text-base font-medium">
-                Alterar password?
-              </label>
-            </div>
-
-            {editForm.changePassword && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label className="form-control w-full">
-                    <span className="label-text font-medium">Password</span>
-                    <input
-                        type="password"
-                        value={editForm.password}
-                        onChange={(event) => handleEditFieldChange("password", event.target.value)}
-                        className="input input-bordered w-full"
-                        disabled={isSavingAdmin}
-                    />
-                  </label>
-
-                  <label className="form-control w-full">
-                    <span className="label-text font-medium">Repetir password</span>
-                    <input
-                        type="password"
-                        value={editForm.confirmPassword}
-                        onChange={(event) => handleEditFieldChange("confirmPassword", event.target.value)}
-                        className="input input-bordered w-full"
-                        disabled={isSavingAdmin}
-                    />
-                  </label>
-                </div>
-            )}
-
-            <label className="form-control w-full">
-              <span className="label-text font-medium">Password Super Admin</span>
-              <input
-                  type="password"
-                  value={editForm.superAdminPassword}
-                  onChange={(event) => handleEditFieldChange("superAdminPassword", event.target.value)}
-                  className="input input-bordered w-full"
-                  disabled={isSavingAdmin}
-              />
-            </label>
-          </div>
-        </Modal>
-
-        <Modal
-            open={isCreateModalOpen}
-            title="Criar administrador"
-            onClose={handleCloseCreateModal}
-            actions={
-              <div className="flex w-full justify-end gap-3">
-                <Button
-                    label="Cancelar"
-                    variant="outline"
-                    className="max-w-32 btn btn-secondary"
-                    onClick={handleCloseCreateModal}
-                    disabled={isCreatingAdmin}
-                />
-                <Button
-                    label={isCreatingAdmin ? "Criando..." : "Criar"}
-                    variant="primary"
-                    className="max-w-32"
-                    onClick={handleSaveNewAdmin}
-                    disabled={isCreatingAdmin}
-                />
-              </div>
-            }
-        >
-          <div className="space-y-4">
-            {createAdminError && (
-                <div className="alert alert-error shadow">
-                  <span>{createAdminError}</span>
-                </div>
-            )}
-
-            <label className="form-control w-full">
-              <span className="label-text font-medium">Username</span>
-              <input
-                  type="text"
-                  value={createForm.username}
-                  onChange={(event) => handleCreateFieldChange("username", event.target.value)}
-                  className="input input-bordered w-full"
-                  disabled={isCreatingAdmin}
-              />
-            </label>
-
-            <label className="form-control w-full">
-              <span className="label-text font-medium">Cargo</span>
-              <select
-                  className="select select-bordered w-full"
-                  value={createForm.role}
-                  onChange={(event) => handleCreateFieldChange("role", event.target.value)}
-                  disabled={isCreatingAdmin}
-              >
-                {ROLE_OPTIONS.map(({ value, label }) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                ))}
-              </select>
-            </label>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label className="form-control w-full">
-                <span className="label-text font-medium">Password</span>
-                <input
-                    type="password"
-                    value={createForm.password}
-                    onChange={(event) => handleCreateFieldChange("password", event.target.value)}
-                    className="input input-bordered w-full"
-                    disabled={isCreatingAdmin}
-                />
-              </label>
-
-              <label className="form-control w-full">
-                <span className="label-text font-medium">Repetir password</span>
-                <input
-                    type="password"
-                    value={createForm.confirmPassword}
-                    onChange={(event) => handleCreateFieldChange("confirmPassword", event.target.value)}
-                    className="input input-bordered w-full"
-                    disabled={isCreatingAdmin}
-                />
-              </label>
-
-              <label className="form-control w-full md:col-span-2">
-                <span className="label-text font-medium">Password Super Admin</span>
-                <input
-                    type="password"
-                    value={createForm.superAdminPassword}
-                    onChange={(event) => handleCreateFieldChange("superAdminPassword", event.target.value)}
-                    className="input input-bordered w-full"
-                    disabled={isCreatingAdmin}
-                />
-              </label>
-            </div>
-          </div>
-        </Modal>
+        <AdminCreateModal
+          open={isCreateModalOpen}
+          form={createForm}
+          error={createAdminError}
+          loading={isCreatingAdmin}
+          onClose={handleCloseCreateModal}
+          onSave={handleSaveNewAdmin}
+          onFieldChange={handleCreateFieldChange}
+        />
       </>
   );
 }

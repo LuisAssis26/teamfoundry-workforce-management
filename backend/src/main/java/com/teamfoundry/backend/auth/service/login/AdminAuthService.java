@@ -28,7 +28,7 @@ public class AdminAuthService {
     }
 
     public Optional<AdminLoginResponse> authenticate(String username, String rawPassword) {
-        return adminAccountRepository.findByUsernameIgnoreCase(username)
+        return adminAccountRepository.findByUsernameIgnoreCaseAndDeactivatedFalse(username)
                 .filter(account -> passwordEncoder.matches(rawPassword, account.getPassword()))
                 .map(account -> {
                     String access = jwtService.generateToken("admin:" + account.getUsername(),

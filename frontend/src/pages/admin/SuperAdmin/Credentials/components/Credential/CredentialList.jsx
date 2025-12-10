@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import PropTypes from "prop-types";
-import CompanyCredentialsCard from "./CompanyCredentialsCard.jsx";
+import CredentialCard from "./CredentialCard.jsx";
+import SearchBar from "../../../../../../components/ui/Input/SearchBar.jsx";
 
 const DEFAULT_FIELDS = [
     { key: "companyName", label: "Nome Empresa:" },
@@ -10,7 +11,7 @@ const DEFAULT_FIELDS = [
     { key: "responsibleEmail", label: "Email Responsavel:" },
 ];
 
-export default function CompanyCredentialsList({
+export default function CredentialList({
                                                    companies,
                                                    onViewMore,
                                                    onAccept,
@@ -60,36 +61,18 @@ export default function CompanyCredentialsList({
 
     return (
         <section className="bg-base-100 border border-base-200 rounded-3xl shadow-xl p-8 space-y-6 md:p-10">
-            <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between pr-6">
                 <h2 className="text-3xl md:text-4xl font-extrabold text-primary">
                     {title}
                 </h2>
 
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4 w-full md:w-auto md:justify-end">
-                    <label className="input input-bordered flex items-center gap-2 w-full md:w-72">
-                        <input
-                            type="search"
-                            className="grow"
-                            placeholder={searchPlaceholder}
-                            value={query}
-                            onChange={handleSearch}
-                        />
-                        <span className="btn btn-ghost btn-circle btn-sm pointer-events-none">
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 stroke-current"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-              >
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-4.35-4.35m0 0A7 7 0 1010.3 17a7 7 0 006.35-6.35z"
-                />
-              </svg>
-            </span>
-                    </label>
+                    <SearchBar
+                        value={query}
+                        onChange={handleSearch}
+                        placeholder={searchPlaceholder}
+                        className="w-full md:w-72"
+                    />
 
                     {headerActions && (
                         <div className="w-full md:w-auto">{headerActions}</div>
@@ -100,7 +83,7 @@ export default function CompanyCredentialsList({
             <div className={listContainerClass}>
                 {filteredCompanies.map((company) => (
                     <div key={company.id} className="flex-shrink-0">
-                        <CompanyCredentialsCard
+                        <CredentialCard
                             company={company}
                             fieldConfig={effectiveFields}
                             onViewMore={onViewMore}
@@ -125,7 +108,7 @@ export default function CompanyCredentialsList({
     );
 }
 
-CompanyCredentialsList.propTypes = {
+CredentialList.propTypes = {
     companies: PropTypes.arrayOf(PropTypes.object).isRequired,
     onViewMore: PropTypes.func.isRequired,
     onAccept: PropTypes.func.isRequired,

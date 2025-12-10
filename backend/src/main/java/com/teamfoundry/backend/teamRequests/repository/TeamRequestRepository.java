@@ -27,6 +27,8 @@ public interface TeamRequestRepository extends JpaRepository<TeamRequest, Intege
 
     Optional<TeamRequest> findByTeamName(String teamName);
 
+    long countByResponsibleAdminId(Integer adminId);
+
     interface AdminAssignmentCount {
         Integer getAdminId();
         long getTotal();

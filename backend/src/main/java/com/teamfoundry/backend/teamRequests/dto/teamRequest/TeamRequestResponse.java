@@ -11,6 +11,7 @@ public record TeamRequestResponse(
         String description,
         State state,
         Integer responsibleAdminId,
+        long workforceNeeded,
         LocalDateTime startDate,
         LocalDateTime endDate,
         LocalDateTime createdAt

@@ -1,0 +1,1499 @@
+Index: frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsList.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsList.jsx b/frontend/src/pages/admin/SuperAdmin/Credentials/components/Credential/CredentialList.jsx
+rename from frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsList.jsx
+rename to frontend/src/pages/admin/SuperAdmin/Credentials/components/Credential/CredentialList.jsx
+--- a/frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsList.jsx	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ b/frontend/src/pages/admin/SuperAdmin/Credentials/components/Credential/CredentialList.jsx	(date 1765302388624)
+@@ -1,6 +1,6 @@
+ import { useMemo, useState } from "react";
+ import PropTypes from "prop-types";
+-import CompanyCredentialsCard from "./CompanyCredentialsCard.jsx";
++import CredentialCard from "./CredentialCard.jsx";
+ 
+ const DEFAULT_FIELDS = [
+     { key: "companyName", label: "Nome Empresa:" },
+@@ -10,7 +10,7 @@
+     { key: "responsibleEmail", label: "Email Responsavel:" },
+ ];
+ 
+-export default function CompanyCredentialsList({
++export default function CredentialList({
+                                                    companies,
+                                                    onViewMore,
+                                                    onAccept,
+@@ -60,7 +60,7 @@
+ 
+     return (
+         <section className="bg-base-100 border border-base-200 rounded-3xl shadow-xl p-8 space-y-6 md:p-10">
+-            <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
++            <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between pr-6">
+                 <h2 className="text-3xl md:text-4xl font-extrabold text-primary">
+                     {title}
+                 </h2>
+@@ -74,21 +74,7 @@
+                             value={query}
+                             onChange={handleSearch}
+                         />
+-                        <span className="btn btn-ghost btn-circle btn-sm pointer-events-none">
+-              <svg
+-                  xmlns="http://www.w3.org/2000/svg"
+-                  className="h-4 w-4 stroke-current"
+-                  fill="none"
+-                  viewBox="0 0 24 24"
+-                  strokeWidth="2"
+-              >
+-                <path
+-                    strokeLinecap="round"
+-                    strokeLinejoin="round"
+-                    d="M21 21l-4.35-4.35m0 0A7 7 0 1010.3 17a7 7 0 006.35-6.35z"
+-                />
+-              </svg>
+-            </span>
++                        <span className="bi bi-search text-xl text-base-content/50" />
+                     </label>
+ 
+                     {headerActions && (
+@@ -100,7 +86,7 @@
+             <div className={listContainerClass}>
+                 {filteredCompanies.map((company) => (
+                     <div key={company.id} className="flex-shrink-0">
+-                        <CompanyCredentialsCard
++                        <CredentialCard
+                             company={company}
+                             fieldConfig={effectiveFields}
+                             onViewMore={onViewMore}
+@@ -125,7 +111,7 @@
+     );
+ }
+ 
+-CompanyCredentialsList.propTypes = {
++CredentialList.propTypes = {
+     companies: PropTypes.arrayOf(PropTypes.object).isRequired,
+     onViewMore: PropTypes.func.isRequired,
+     onAccept: PropTypes.func.isRequired,
+Index: frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsCard.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsCard.jsx b/frontend/src/pages/admin/SuperAdmin/Credentials/components/Credential/CredentialCard.jsx
+rename from frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsCard.jsx
+rename to frontend/src/pages/admin/SuperAdmin/Credentials/components/Credential/CredentialCard.jsx
+--- a/frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsCard.jsx	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ b/frontend/src/pages/admin/SuperAdmin/Credentials/components/Credential/CredentialCard.jsx	(date 1765301169206)
+@@ -1,7 +1,7 @@
+ import PropTypes from "prop-types";
+-import Button from "../../../../../components/ui/Button/Button.jsx";
++import Button from "../../../../../../components/ui/Button/Button.jsx";
+ 
+-export default function CompanyCredentialsCard({
++export default function CredentialCard({
+                                                  company,
+                                                  fieldConfig,
+                                                  onViewMore,
+@@ -78,7 +78,7 @@
+   );
+ }
+ 
+-CompanyCredentialsCard.propTypes = {
++CredentialCard.propTypes = {
+   company: PropTypes.shape({
+     id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+   }).isRequired,
+Index: frontend/src/pages/admin/SuperAdmin/Staffing/Staffing.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect, useMemo, useRef, useState } from \"react\";\r\nimport WorkRequestCard from \"./components/WorkRequestCard.jsx\";\r\nimport AssignAdminModal from \"./components/AssignAdminModal.jsx\";\r\nimport { teamRequestsAPI } from \"../../../../api/admin/teamRequests.js\";\r\nimport { useSuperAdminData } from \"../SuperAdminDataContext.jsx\";\r\n\r\nconst STATUS_FILTERS = [\r\n  { value: \"ALL\", label: \"Todas\" },\r\n  { value: \"INCOMPLETE\", label: \"Incompletas\" },\r\n  { value: \"COMPLETE\", label: \"Concluídas\" },\r\n];\r\n\r\nexport default function GestaoTrabalho() {\r\n  const [searchTerm, setSearchTerm] = useState(\"\");\r\n  const [statusFilter, setStatusFilter] = useState(\"ALL\");\r\n  const [responsibleFilter, setResponsibleFilter] = useState(\"ALL\");\r\n  const [responsibleQuery, setResponsibleQuery] = useState(\"\");\r\n  const [responsibleOpen, setResponsibleOpen] = useState(false);\r\n  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);\r\n  const [selectedRequestId, setSelectedRequestId] = useState(null);\r\n\r\n  const {\r\n    staffing: {\r\n      requests: {\r\n        data: workRequests = [],\r\n        loading: isLoadingRequests,\r\n        loaded: requestsLoaded,\r\n        error: requestsError,\r\n        refresh: refreshRequests,\r\n        setData: setWorkRequests,\r\n      },\r\n      adminOptions: {\r\n        data: adminOptions = [],\r\n        loading: isLoadingAdmins,\r\n        loaded: adminOptionsLoaded,\r\n        error: adminError,\r\n        refresh: refreshAdminOptions,\r\n      },\r\n    },\r\n  } = useSuperAdminData();\r\n\r\n  const [assignError, setAssignError] = useState(null);\r\n  const [isAssigning, setIsAssigning] = useState(false);\r\n\r\n  const initialRequestsLoad = useRef(false);\r\n  useEffect(() => {\r\n    if (requestsLoaded || initialRequestsLoad.current) return;\r\n    initialRequestsLoad.current = true;\r\n    refreshRequests().catch(() => {});\r\n  }, [requestsLoaded, refreshRequests]);\r\n\r\n  const initialAdminOptionsLoad = useRef(false);\r\n  useEffect(() => {\r\n    if (adminOptionsLoaded || initialAdminOptionsLoad.current) return;\r\n    initialAdminOptionsLoad.current = true;\r\n    refreshAdminOptions().catch(() => {});\r\n  }, [adminOptionsLoaded, refreshAdminOptions]);\r\n\r\n  const filteredResponsibleOptions = useMemo(() => {\r\n    const term = responsibleQuery.trim().toLowerCase();\r\n    const list = term\r\n        ? adminOptions.filter((a) => a.name.toLowerCase().includes(term))\r\n        : adminOptions;\r\n    return list.slice(0, 5);\r\n  }, [adminOptions, responsibleQuery]);\r\n\r\n  const filteredRequests = useMemo(() => {\r\n    const term = searchTerm.trim().toLowerCase();\r\n    return workRequests.filter((request) => {\r\n      const team = request.teamName?.toLowerCase() ?? \"\";\r\n      const company = request.companyName?.toLowerCase() ?? \"\";\r\n      const matchesSearch = !term || team.includes(term) || company.includes(term);\r\n\r\n      const matchesStatus =\r\n          statusFilter === \"ALL\" ? true : (request.state || \"\").toUpperCase() === statusFilter;\r\n\r\n      const matchesResponsible =\r\n          responsibleFilter === \"ALL\"\r\n              ? true\r\n              : String(request.responsibleAdminId || \"\") === responsibleFilter;\r\n\r\n      return matchesSearch && matchesStatus && matchesResponsible;\r\n    });\r\n  }, [workRequests, searchTerm, statusFilter, responsibleFilter]);\r\n\r\n  const handleAssignAdmin = (requestId) => {\r\n    setSelectedRequestId(requestId);\r\n    setAssignError(null);\r\n    setIsAssignModalOpen(true);\r\n  };\r\n\r\n  const handleCloseModal = () => {\r\n    setIsAssignModalOpen(false);\r\n    setSelectedRequestId(null);\r\n    setAssignError(null);\r\n  };\r\n\r\n  const handleAssignAdminConfirm = async (admin) => {\r\n    if (!selectedRequestId || !admin) return;\r\n\r\n    setAssignError(null);\r\n    setIsAssigning(true);\r\n\r\n    try {\r\n      const updated = await teamRequestsAPI.assignToAdmin(selectedRequestId, admin.id);\r\n      setWorkRequests((prev) => prev.map((request) => (request.id === updated.id ? updated : request)));\r\n      handleCloseModal();\r\n    } catch (err) {\r\n      setAssignError(err.message || \"Erro inesperado ao atribuir administrador.\");\r\n    } finally {\r\n      setIsAssigning(false);\r\n    }\r\n  };\r\n\r\n  const resolveAdminName = (adminId) => {\r\n    if (!adminId) return null;\r\n    const admin = adminOptions.find((a) => a.id === adminId);\r\n    return admin ? admin.name : null;\r\n  };\r\n\r\n  const handleSelectResponsible = (adminId, adminName) => {\r\n    setResponsibleFilter(String(adminId));\r\n    setResponsibleQuery(adminName);\r\n    setResponsibleOpen(false);\r\n  };\r\n\r\n  return (\r\n      <section className=\"space-y-6\">\r\n        <header>\r\n          <h1 className=\"text-3xl md:text-4xl font-extrabold text-primary\">Gestao de Trabalho</h1>\r\n          <p className=\"text-body text-base-content/70 mt-2\">Configure fluxos de trabalho, cargos e equipes empresariais.</p>\r\n        </header>\r\n\r\n        {requestsError && (\r\n            <div className=\"alert alert-error shadow\">\r\n              <span>{requestsError}</span>\r\n            </div>\r\n        )}\r\n        {adminError && (\r\n            <div className=\"alert alert-warning shadow\">\r\n              <span>{adminError}</span>\r\n            </div>\r\n        )}\r\n\r\n        <section className=\"bg-base-100 border border-base-200 rounded-3xl shadow-xl p-8 space-y-6 md:p-10\">\r\n          <header className=\"flex flex-col gap-4 md:flex-row md:items-center md:justify-between\">\r\n            <h2 className=\"text-3xl md:text-4xl font-extrabold text-primary\">Requisicoes</h2>\r\n\r\n            <div className=\"flex flex-col gap-3 md:flex-row md:items-center md:gap-4 w-full md:w-auto md:justify-end\">\r\n\r\n              <div className=\"flex items-center gap-2\">\r\n                <span className=\"text-sm font-medium text-base-content\">Status:</span>\r\n                <select\r\n                    className=\"select select-bordered select-sm w-full md:w-40 text-sm\"\r\n                    value={statusFilter}\r\n                    onChange={(e) => setStatusFilter(e.target.value)}\r\n                >\r\n                  {STATUS_FILTERS.map((opt) => (\r\n                      <option key={opt.value} value={opt.value}>\r\n                        {opt.label}\r\n                      </option>\r\n                  ))}\r\n                </select>\r\n              </div>\r\n\r\n              <div className=\"flex items-center gap-2 relative w-full md:w-60\">\r\n                <span className=\"text-sm font-medium text-base-content\">Responsável:</span>\r\n                <div className=\"relative flex-1\">\r\n                  <button\r\n                      type=\"button\"\r\n                      className=\"input input-bordered input-sm w-full text-sm flex items-center justify-between\"\r\n                      onClick={() => setResponsibleOpen((prev) => !prev)}\r\n                  >\r\n                    <span className=\"truncate\">{responsibleQuery || \"Todos\"}</span>\r\n                    <i className=\"bi bi-chevron-down\" aria-hidden=\"true\" />\r\n                  </button>\r\n                  {responsibleOpen && (\r\n                      <div className=\"absolute z-40 mt-1 w-full bg-base-100 border border-base-200 rounded-xl shadow max-h-60 overflow-auto text-sm\">\r\n                        <div className=\"p-2\">\r\n                          <input\r\n                              type=\"text\"\r\n                              className=\"input input-bordered input-sm w-full text-sm\"\r\n                              placeholder=\"Pesquisar...\"\r\n                              value={responsibleQuery}\r\n                              onChange={(e) => {\r\n                                setResponsibleQuery(e.target.value);\r\n                                setResponsibleFilter(\"ALL\");\r\n                              }}\r\n                              autoFocus\r\n                          />\r\n                        </div>\r\n                        <ul>\r\n                          <li>\r\n                            <button\r\n                                type=\"button\"\r\n                                className=\"w-full text-left px-3 py-2 hover:bg-base-200\"\r\n                                onClick={() => {\r\n                                  setResponsibleFilter(\"ALL\");\r\n                                  setResponsibleQuery(\"\");\r\n                                  setResponsibleOpen(false);\r\n                                }}\r\n                            >\r\n                              Todos\r\n                            </button>\r\n                          </li>\r\n                          {filteredResponsibleOptions.map((admin) => (\r\n                              <li key={admin.id}>\r\n                                <button\r\n                                    type=\"button\"\r\n                                    className=\"w-full text-left px-3 py-2 hover:bg-base-200\"\r\n                                    onClick={() => handleSelectResponsible(admin.id, admin.name)}\r\n                                >\r\n                                  {admin.name}\r\n                                </button>\r\n                              </li>\r\n                          ))}\r\n                        </ul>\r\n                      </div>\r\n                  )}\r\n                </div>\r\n              </div>\r\n\r\n              <div className=\"flex items-center gap-2\">\r\n                <label className=\"input input-bordered flex items-center gap-2 w-full md:w-64\">\r\n                  <input\r\n                      type=\"search\"\r\n                      className=\"grow text-sm\"\r\n                      placeholder=\"Equipe ou empresa\"\r\n                      value={searchTerm}\r\n                      onChange={(event) => setSearchTerm(event.target.value)}\r\n                  />\r\n                  <span className=\"btn btn-ghost btn-circle btn-sm pointer-events-none\">\r\n                  <i className=\"bi bi-search\" aria-hidden=\"true\" />\r\n                </span>\r\n                </label>\r\n              </div>\r\n            </div>\r\n          </header>\r\n\r\n          {isLoadingRequests ? (\r\n              <div className=\"py-6 text-center text-base-content/70\">Carregando requisições...</div>\r\n          ) : filteredRequests.length === 0 ? (\r\n              <div className=\"alert alert-info shadow-md\">\r\n                <span className=\"text-body\">Nenhuma requisicao encontrada.</span>\r\n              </div>\r\n          ) : (\r\n              <div className=\"space-y-4\">\r\n                {filteredRequests.map((request) => (\r\n                    <WorkRequestCard\r\n                        key={request.id}\r\n                        company={{ name: request.companyName }}\r\n                        teamName={request.teamName}\r\n                        description={request.description}\r\n                        state={request.state}\r\n                        responsibleAdminName={resolveAdminName(request.responsibleAdminId)}\r\n                        startDate={request.startDate}\r\n                        endDate={request.endDate}\r\n                        createdAt={request.createdAt}\r\n                        onAssignAdmin={() => handleAssignAdmin(request.id)}\r\n                    />\r\n                ))}\r\n              </div>\r\n          )}\r\n        </section>\r\n\r\n        <AssignAdminModal\r\n            open={isAssignModalOpen}\r\n            onClose={handleCloseModal}\r\n            onAssign={handleAssignAdminConfirm}\r\n            adminList={adminOptions}\r\n            isLoading={isLoadingAdmins}\r\n            isBusy={isAssigning}\r\n            errorMessage={assignError}\r\n        />\r\n      </section>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/pages/admin/SuperAdmin/Staffing/Staffing.jsx b/frontend/src/pages/admin/SuperAdmin/Staffing/Staffing.jsx
+--- a/frontend/src/pages/admin/SuperAdmin/Staffing/Staffing.jsx	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ b/frontend/src/pages/admin/SuperAdmin/Staffing/Staffing.jsx	(date 1765302949593)
+@@ -3,6 +3,8 @@
+ import AssignAdminModal from "./components/AssignAdminModal.jsx";
+ import { teamRequestsAPI } from "../../../../api/admin/teamRequests.js";
+ import { useSuperAdminData } from "../SuperAdminDataContext.jsx";
++import InputField from "../../../../components/ui/Input/InputField.jsx";
++import { DropdownChevron, DropdownPanel, DROPDOWN_TRIGGER_CLASS } from "../../../../components/ui/Dropdown/Dropdown.jsx";
+ 
+ const STATUS_FILTERS = [
+   { value: "ALL", label: "Todas" },
+@@ -58,9 +60,7 @@
+ 
+   const filteredResponsibleOptions = useMemo(() => {
+     const term = responsibleQuery.trim().toLowerCase();
+-    const list = term
+-        ? adminOptions.filter((a) => a.name.toLowerCase().includes(term))
+-        : adminOptions;
++    const list = term ? adminOptions.filter((a) => a.name.toLowerCase().includes(term)) : adminOptions;
+     return list.slice(0, 5);
+   }, [adminOptions, responsibleQuery]);
+ 
+@@ -127,7 +127,6 @@
+   return (
+       <section className="space-y-6">
+         <header>
+-          <h1 className="text-3xl md:text-4xl font-extrabold text-primary">Gestao de Trabalho</h1>
+           <p className="text-body text-base-content/70 mt-2">Configure fluxos de trabalho, cargos e equipes empresariais.</p>
+         </header>
+ 
+@@ -146,94 +145,69 @@
+           <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+             <h2 className="text-3xl md:text-4xl font-extrabold text-primary">Requisicoes</h2>
+ 
+-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4 w-full md:w-auto md:justify-end">
+-
+-              <div className="flex items-center gap-2">
+-                <span className="text-sm font-medium text-base-content">Status:</span>
+-                <select
+-                    className="select select-bordered select-sm w-full md:w-40 text-sm"
+-                    value={statusFilter}
+-                    onChange={(e) => setStatusFilter(e.target.value)}
+-                >
+-                  {STATUS_FILTERS.map((opt) => (
+-                      <option key={opt.value} value={opt.value}>
+-                        {opt.label}
+-                      </option>
+-                  ))}
+-                </select>
+-              </div>
++            <div className="grid w-full gap-3 md:grid-cols-3 md:items-end md:w-auto">
++              <InputField
++                  label="Status"
++                  as="select"
++                  value={statusFilter}
++                  onChange={(e) => setStatusFilter(e.target.value)}
++                  inputClassName="select-sm"
++              >
++                {STATUS_FILTERS.map((opt) => (
++                    <option key={opt.value} value={opt.value}>
++                      {opt.label}
++                    </option>
++                ))}
++              </InputField>
+ 
+-              <div className="flex items-center gap-2 relative w-full md:w-60">
+-                <span className="text-sm font-medium text-base-content">Responsável:</span>
+-                <div className="relative flex-1">
++              <div className="form-control w-full">
++                <label className="label">
++                  <span className="label-text font-medium">Responsável</span>
++                </label>
++                <div className="relative">
+                   <button
+                       type="button"
+-                      className="input input-bordered input-sm w-full text-sm flex items-center justify-between"
++                      className={`${DROPDOWN_TRIGGER_CLASS} h-10 text-sm`}
+                       onClick={() => setResponsibleOpen((prev) => !prev)}
+                   >
+                     <span className="truncate">{responsibleQuery || "Todos"}</span>
+-                    <i className="bi bi-chevron-down" aria-hidden="true" />
++                    <DropdownChevron open={responsibleOpen} />
+                   </button>
+-                  {responsibleOpen && (
+-                      <div className="absolute z-40 mt-1 w-full bg-base-100 border border-base-200 rounded-xl shadow max-h-60 overflow-auto text-sm">
+-                        <div className="p-2">
+-                          <input
+-                              type="text"
+-                              className="input input-bordered input-sm w-full text-sm"
+-                              placeholder="Pesquisar..."
+-                              value={responsibleQuery}
+-                              onChange={(e) => {
+-                                setResponsibleQuery(e.target.value);
+-                                setResponsibleFilter("ALL");
+-                              }}
+-                              autoFocus
+-                          />
+-                        </div>
+-                        <ul>
+-                          <li>
+-                            <button
+-                                type="button"
+-                                className="w-full text-left px-3 py-2 hover:bg-base-200"
+-                                onClick={() => {
+-                                  setResponsibleFilter("ALL");
+-                                  setResponsibleQuery("");
+-                                  setResponsibleOpen(false);
+-                                }}
+-                            >
+-                              Todos
+-                            </button>
+-                          </li>
+-                          {filteredResponsibleOptions.map((admin) => (
+-                              <li key={admin.id}>
+-                                <button
+-                                    type="button"
+-                                    className="w-full text-left px-3 py-2 hover:bg-base-200"
+-                                    onClick={() => handleSelectResponsible(admin.id, admin.name)}
+-                                >
+-                                  {admin.name}
+-                                </button>
+-                              </li>
+-                          ))}
+-                        </ul>
+-                      </div>
+-                  )}
++                  <DropdownPanel
++                      open={responsibleOpen}
++                      options={[{ id: "ALL", name: "Todos" }, ...filteredResponsibleOptions]}
++                      getOptionLabel={(opt) => opt.name}
++                      getOptionValue={(opt) => opt.id}
++                      onSelect={(val) => {
++                        if (val === "ALL") {
++                          setResponsibleFilter("ALL");
++                          setResponsibleQuery("");
++                        } else {
++                          const admin = adminOptions.find((a) => String(a.id) === String(val));
++                          handleSelectResponsible(val, admin?.name || "");
++                        }
++                        setResponsibleOpen(false);
++                      }}
++                      showSearch
++                      searchQuery={responsibleQuery}
++                      onSearchChange={(value) => {
++                        setResponsibleQuery(value);
++                        setResponsibleFilter("ALL");
++                      }}
++                      className="w-full md:w-64"
++                  />
+                 </div>
+               </div>
+ 
+-              <div className="flex items-center gap-2">
+-                <label className="input input-bordered flex items-center gap-2 w-full md:w-64">
+-                  <input
+-                      type="search"
+-                      className="grow text-sm"
+-                      placeholder="Equipe ou empresa"
+-                      value={searchTerm}
+-                      onChange={(event) => setSearchTerm(event.target.value)}
+-                  />
+-                  <span className="btn btn-ghost btn-circle btn-sm pointer-events-none">
+-                  <i className="bi bi-search" aria-hidden="true" />
+-                </span>
+-                </label>
+-              </div>
++              <InputField
++                  label="Pesquisa"
++                  type="search"
++                  placeholder="Equipe ou empresa"
++                  value={searchTerm}
++                  onChange={(event) => setSearchTerm(event.target.value)}
++                  inputClassName="input-sm"
++                  icon={<i className="bi bi-search" aria-hidden="true" />}
++              />
+             </div>
+           </header>
+ 
+Index: frontend/src/pages/admin/SuperAdmin/Credentials/Credentials.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect, useMemo, useRef, useState } from \"react\";\r\nimport { apiFetch } from \"../../../../api/auth/client.js\";\r\nimport CompanyCredentialsList from \"./components/CompanyCredentialsList.jsx\";\r\nimport Button from \"../../../../components/ui/Button/Button.jsx\";\r\nimport Modal from \"../../../../components/ui/Modal/Modal.jsx\";\r\nimport { useSuperAdminData } from \"../SuperAdminDataContext.jsx\";\r\n\r\nconst ROLE_OPTIONS = [\r\n  { value: \"admin\", label: \"Admin\" },\r\n  { value: \"super-admin\", label: \"Super Admin\" },\r\n];\r\n\r\nconst getInitialCreateForm = () => ({\r\n  username: \"\",\r\n  role: \"admin\",\r\n  password: \"\",\r\n  confirmPassword: \"\",\r\n  superAdminPassword: \"\",\r\n});\r\n\r\nconst getInitialEditForm = () => ({\r\n  username: \"\",\r\n  role: \"admin\",\r\n  changePassword: false,\r\n  password: \"\",\r\n  confirmPassword: \"\",\r\n  superAdminPassword: \"\",\r\n});\r\n\r\nconst normalizeRole = (role) => {\r\n  if (!role) return \"admin\";\r\n  const lower = String(role).toLowerCase();\r\n  return lower === \"superadmin\" ? \"super-admin\" : lower;\r\n};\r\n\r\nexport default function Credenciais() {\r\n  const {\r\n    credentials: {\r\n      companies: {\r\n        data: businessCompanies = [],\r\n        loading: isLoadingCompanies,\r\n        loaded: companiesLoaded,\r\n        error: companyError,\r\n        refresh: refreshCompanies,\r\n        setData: setBusinessCompanies,\r\n      },\r\n      admins: {\r\n        data: adminCredentials = [],\r\n        loading: isLoadingAdmins,\r\n        loaded: adminsLoaded,\r\n        error: adminError,\r\n        refresh: refreshAdmins,\r\n        setData: setAdminCredentials,\r\n      },\r\n    },\r\n  } = useSuperAdminData();\r\n\r\n  const [createAdminError, setCreateAdminError] = useState(null);\r\n  const [isCreatingAdmin, setIsCreatingAdmin] = useState(false);\r\n\r\n  const [editAdminError, setEditAdminError] = useState(null);\r\n  const [isSavingAdmin, setIsSavingAdmin] = useState(false);\r\n\r\n  const [disableAdminError, setDisableAdminError] = useState(null);\r\n  const [isDisablingAdmin, setIsDisablingAdmin] = useState(false);\r\n  const [disableForm, setDisableForm] = useState({ superAdminPassword: \"\" });\r\n\r\n  const [companyInModal, setCompanyInModal] = useState(null);\r\n  const [companyPendingRejection, setCompanyPendingRejection] = useState(null);\r\n  const [companyPendingApproval, setCompanyPendingApproval] = useState(null);\r\n  const [approveCompanyError, setApproveCompanyError] = useState(null);\r\n  const [isApprovingCompany, setIsApprovingCompany] = useState(false);\r\n  const [approveForm, setApproveForm] = useState({ superAdminPassword: \"\" });\r\n\r\n  const [rejectCompanyError, setRejectCompanyError] = useState(null);\r\n  const [isRejectingCompany, setIsRejectingCompany] = useState(false);\r\n  const [rejectForm, setRejectForm] = useState({ superAdminPassword: \"\" });\r\n\r\n  const [adminPendingDisable, setAdminPendingDisable] = useState(null);\r\n\r\n  const [isEditModalOpen, setIsEditModalOpen] = useState(false);\r\n  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);\r\n  const [adminBeingEdited, setAdminBeingEdited] = useState(null);\r\n\r\n  const [editForm, setEditForm] = useState(getInitialEditForm);\r\n  const [createForm, setCreateForm] = useState(getInitialCreateForm);\r\n\r\n  const initialCompaniesLoad = useRef(false);\r\n  useEffect(() => {\r\n    if (companiesLoaded || initialCompaniesLoad.current) return;\r\n    initialCompaniesLoad.current = true;\r\n    refreshCompanies().catch(() => {});\r\n  }, [companiesLoaded, refreshCompanies]);\r\n\r\n  const initialAdminsLoad = useRef(false);\r\n  useEffect(() => {\r\n    if (adminsLoaded || initialAdminsLoad.current) return;\r\n    initialAdminsLoad.current = true;\r\n    refreshAdmins().catch(() => {});\r\n  }, [adminsLoaded, refreshAdmins]);\r\n\r\n  const businessFields = useMemo(\r\n      () => [\r\n        { key: \"companyName\", label: \"Nome Empresa:\" },\r\n        { key: \"credentialEmail\", label: \"Email Credencial:\" },\r\n        { key: \"nif\", label: \"NIF:\" },\r\n        { key: \"country\", label: \"Pais:\" },\r\n        { key: \"responsibleName\", label: \"Nome Responsavel:\" },\r\n        { key: \"responsibleEmail\", label: \"Email Responsavel:\" },\r\n      ],\r\n      []\r\n  );\r\n\r\n  const adminFields = useMemo(\r\n      () => [\r\n        { key: \"username\", label: \"Username:\" },\r\n        {\r\n          key: \"role\",\r\n          label: \"Cargo:\",\r\n          getValue: (admin) =>\r\n              admin.role === \"super-admin\" ? \"Super Admin\" : \"Admin\",\r\n        },\r\n      ],\r\n      []\r\n  );\r\n\r\n  const handleViewMore = (company) => setCompanyInModal(company);\r\n\r\n  const handleAccept = (id) => {\r\n    const company = businessCompanies.find((item) => item.id === id);\r\n    if (!company) return;\r\n    setApproveCompanyError(null);\r\n    setApproveForm({ superAdminPassword: \"\" });\r\n    setCompanyPendingApproval(company);\r\n  };\r\n\r\nconst handleRejectClick = () => {\r\n  setCompanyPendingRejection(companyInModal);\r\n  setRejectCompanyError(null);\r\n  setRejectForm({ superAdminPassword: \"\" });\r\n};\r\n\r\n  const handleEdit = (admin) => {\r\n    if (!admin) return;\r\n\r\n    setAdminBeingEdited(admin);\r\n    setEditAdminError(null);\r\n    setEditForm({\r\n      username: admin.username,\r\n      role: admin.role,\r\n      changePassword: false,\r\n      password: \"\",\r\n      confirmPassword: \"\",\r\n      superAdminPassword: \"\",\r\n    });\r\n    setIsEditModalOpen(true);\r\n  };\r\n\r\n  const handleDisable = (adminId) => {\r\n    const admin = adminCredentials.find((item) => item.id === adminId);\r\n    if (!admin) return;\r\n    setAdminPendingDisable(admin);\r\n    setDisableAdminError(null);\r\n    setDisableForm({ superAdminPassword: \"\" });\r\n  };\r\n\r\n  const handleCreate = () => {\r\n    setCreateAdminError(null);\r\n    setCreateForm(getInitialCreateForm());\r\n    setIsCreateModalOpen(true);\r\n  };\r\n\r\n  const handleEditFieldChange = (field, value) => {\r\n    setEditForm((prev) => ({ ...prev, [field]: value }));\r\n  };\r\n\r\n  const handleCreateFieldChange = (field, value) => {\r\n    setCreateForm((prev) => ({ ...prev, [field]: value }));\r\n  };\r\n\r\n  const handleApproveFieldChange = (value) => {\r\n    setApproveForm({ superAdminPassword: value });\r\n  };\r\n\r\n  const handleDisableFieldChange = (value) => {\r\n    setDisableForm({ superAdminPassword: value });\r\n  };\r\n\r\n  const handleToggleChangePassword = () => {\r\n    setEditForm((prev) => ({\r\n      ...prev,\r\n      changePassword: !prev.changePassword,\r\n      password: \"\",\r\n      confirmPassword: \"\",\r\n    }));\r\n  };\r\n\r\n  const handleCloseEditModal = () => {\r\n    setIsEditModalOpen(false);\r\n    setAdminBeingEdited(null);\r\n  };\r\n\r\n  const handleCloseCreateModal = () => setIsCreateModalOpen(false);\r\n\r\n  const handleSaveAdmin = async () => {\r\n    if (!adminBeingEdited) return;\r\n\r\n    setEditAdminError(null);\r\n\r\n    if (!editForm.username.trim()) {\r\n      setEditAdminError(\"Username é obrigatório.\");\r\n      return;\r\n    }\r\n\r\n    if (!editForm.superAdminPassword.trim()) {\r\n      setEditAdminError(\"Informe a password do Super Admin para confirmar.\");\r\n      return;\r\n    }\r\n\r\n    if (editForm.changePassword) {\r\n      if (!editForm.password.trim() || !editForm.confirmPassword.trim()) {\r\n        setEditAdminError(\r\n            \"Para alterar a password, preencha e confirme o novo valor.\"\r\n        );\r\n        return;\r\n      }\r\n      if (editForm.password !== editForm.confirmPassword) {\r\n        setEditAdminError(\"As passwords devem coincidir.\");\r\n        return;\r\n      }\r\n    }\r\n\r\n    setIsSavingAdmin(true);\r\n    try {\r\n      const payload = {\r\n        username: editForm.username.trim(),\r\n        role: editForm.role === \"super-admin\" ? \"SUPERADMIN\" : \"ADMIN\",\r\n        password: editForm.changePassword ? editForm.password : null,\r\n        superAdminPassword: editForm.superAdminPassword.trim(),\r\n      };\r\n\r\n      const resp = await apiFetch(\r\n          `/api/super-admin/credentials/admins/${adminBeingEdited.id}`,\r\n          {\r\n            method: \"PUT\",\r\n            headers: { \"Content-Type\": \"application/json\" },\r\n            body: JSON.stringify(payload),\r\n          }\r\n      );\r\n\r\n      if (!resp.ok) {\r\n        const message = (await resp.json().catch(() => null))?.error;\r\n        throw new Error(message || \"Não foi possível atualizar o administrador.\");\r\n      }\r\n\r\n      const updated = await resp.json();\r\n      setAdminCredentials((prev) =>\r\n          prev.map((admin) =>\r\n              admin.id === adminBeingEdited.id\r\n                  ? {\r\n                    ...updated,\r\n                    role: normalizeRole(updated.role),\r\n                  }\r\n                  : admin\r\n          )\r\n      );\r\n\r\n      handleCloseEditModal();\r\n    } catch (error) {\r\n      setEditAdminError(error.message || \"Erro inesperado ao editar administrador.\");\r\n    } finally {\r\n      setIsSavingAdmin(false);\r\n    }\r\n  };\r\n\r\n  const handleSaveNewAdmin = async () => {\r\n    setCreateAdminError(null);\r\n\r\n    if (!createForm.username.trim() || !createForm.password.trim()) {\r\n      setCreateAdminError(\"Username e password são obrigatórios.\");\r\n      return;\r\n    }\r\n\r\n    if (createForm.password !== createForm.confirmPassword) {\r\n      setCreateAdminError(\"As passwords devem coincidir.\");\r\n      return;\r\n    }\r\n\r\n    if (!createForm.superAdminPassword.trim()) {\r\n      setCreateAdminError(\r\n          \"Informe a password do Super Admin para criar um administrador.\"\r\n      );\r\n      return;\r\n    }\r\n\r\n    if (!createForm.superAdminPassword.trim()) {\r\n      setCreateAdminError(\"Informe a password do Super Admin para criar um administrador.\");\r\n      return;\r\n    }\r\n\r\n    setIsCreatingAdmin(true);\r\n    try {\r\n      const payload = {\r\n        username: createForm.username.trim(),\r\n        password: createForm.password,\r\n        role: createForm.role === \"super-admin\" ? \"SUPERADMIN\" : \"ADMIN\",\r\n        superAdminPassword: createForm.superAdminPassword.trim(),\r\n      };\r\n\r\n      const resp = await apiFetch(\"/api/super-admin/credentials/admins\", {\r\n        method: \"POST\",\r\n        headers: { \"Content-Type\": \"application/json\" },\r\n        body: JSON.stringify(payload),\r\n      });\r\n\r\n      if (!resp.ok) {\r\n        const message = (await resp.json().catch(() => null))?.error;\r\n        throw new Error(message || \"Não foi possível criar o administrador.\");\r\n      }\r\n\r\n      const created = await resp.json();\r\n      setAdminCredentials((prev) => [\r\n        ...prev,\r\n        {\r\n          ...created,\r\n          role: normalizeRole(created.role),\r\n        },\r\n      ]);\r\n      setCreateForm(getInitialCreateForm());\r\n      setIsCreateModalOpen(false);\r\n    } catch (error) {\r\n      setCreateAdminError(error.message || \"Erro inesperado ao criar administrador.\");\r\n    } finally {\r\n      setIsCreatingAdmin(false);\r\n    }\r\n  };\r\n\r\nconst handleConfirmReject = async () => {\r\n  if (!companyPendingRejection) return;\r\n\r\n  const password = rejectForm.superAdminPassword.trim();\r\n  if (!password) {\r\n    setRejectCompanyError(\"Informe a password do Super Admin para confirmar.\");\r\n    return;\r\n  }\r\n\r\n  setRejectCompanyError(null);\r\n  setIsRejectingCompany(true);\r\n\r\n  try {\r\n    const resp = await apiFetch(\r\n      `/api/super-admin/credentials/companies/${companyPendingRejection.id}/reject`,\r\n      {\r\n        method: \"POST\",\r\n        headers: { \"Content-Type\": \"application/json\" },\r\n        body: JSON.stringify({ superAdminPassword: password }),\r\n      }\r\n    );\r\n\r\n    if (!resp.ok) {\r\n      const message = (await resp.json().catch(() => null))?.error;\r\n      throw new Error(message || \"Não foi possível recusar a empresa.\");\r\n    }\r\n\r\n    setBusinessCompanies((prev) =>\r\n      prev.filter((company) => company.id !== companyPendingRejection.id)\r\n    );\r\n    setCompanyPendingRejection(null);\r\n    setRejectForm({ superAdminPassword: \"\" });\r\n    // Fecha o modal de detalhes caso ainda esteja aberto para essa empresa.\r\n    setCompanyInModal((current) =>\r\n      current?.id === companyPendingRejection.id ? null : current\r\n    );\r\n  } catch (error) {\r\n    setRejectCompanyError(error.message || \"Erro inesperado ao recusar empresa.\");\r\n  } finally {\r\n    setIsRejectingCompany(false);\r\n  }\r\n};\r\n\r\n\r\nconst handleCancelReject = () => {\r\n  setRejectCompanyError(null);\r\n  setRejectForm({ superAdminPassword: \"\" });\r\n  setCompanyPendingRejection(null);\r\n};\r\n\r\n\r\n  const handleConfirmApprove = async () => {\r\n    if (!companyPendingApproval) return;\r\n\r\n    const password = approveForm.superAdminPassword.trim();\r\n    if (!password) {\r\n      setApproveCompanyError(\"Informe a password do Super Admin para confirmar.\");\r\n      return;\r\n    }\r\n\r\n    setApproveCompanyError(null);\r\n    setIsApprovingCompany(true);\r\n\r\n    try {\r\n      const resp = await apiFetch(\r\n          `/api/super-admin/credentials/companies/${companyPendingApproval.id}/approve`,\r\n          {\r\n            method: \"POST\",\r\n            headers: { \"Content-Type\": \"application/json\" },\r\n            body: JSON.stringify({ superAdminPassword: password }),\r\n          }\r\n      );\r\n\r\n      if (!resp.ok) {\r\n        const message = (await resp.json().catch(() => null))?.error;\r\n        throw new Error(message || \"Não foi possível aprovar a empresa.\");\r\n      }\r\n\r\n      setBusinessCompanies((prev) =>\r\n          prev.filter((company) => company.id !== companyPendingApproval.id)\r\n      );\r\n      setCompanyPendingApproval(null);\r\n      setApproveForm({ superAdminPassword: \"\" });\r\n    } catch (error) {\r\n      setApproveCompanyError(error.message || \"Erro inesperado ao aprovar empresa.\");\r\n    } finally {\r\n      setIsApprovingCompany(false);\r\n    }\r\n  };\r\n\r\n  const handleCancelApprove = () => {\r\n    setApproveCompanyError(null);\r\n    setApproveForm({ superAdminPassword: \"\" });\r\n    setCompanyPendingApproval(null);\r\n  };\r\n\r\n  const handleConfirmDisable = async () => {\r\n    if (!adminPendingDisable) return;\r\n\r\n    const password = disableForm.superAdminPassword.trim();\r\n    if (!password) {\r\n      setDisableAdminError(\"Informe a password do Super Admin para confirmar.\");\r\n      return;\r\n    }\r\n\r\n    setDisableAdminError(null);\r\n    setIsDisablingAdmin(true);\r\n\r\n    try {\r\n      const resp = await apiFetch(\r\n          `/api/super-admin/credentials/admins/${adminPendingDisable.id}`,\r\n          {\r\n            method: \"DELETE\",\r\n            headers: { \"Content-Type\": \"application/json\" },\r\n            body: JSON.stringify({ superAdminPassword: password }),\r\n          }\r\n      );\r\n\r\n      if (!resp.ok) {\r\n        const message = (await resp.json().catch(() => null))?.error;\r\n        throw new Error(message || \"Não foi possível desativar o administrador.\");\r\n      }\r\n\r\n      setAdminCredentials((prev) =>\r\n          prev.filter((admin) => admin.id !== adminPendingDisable.id)\r\n      );\r\n      setAdminPendingDisable(null);\r\n      setDisableForm({ superAdminPassword: \"\" });\r\n    } catch (error) {\r\n      setDisableAdminError(\r\n          error.message || \"Erro inesperado ao desativar administrador.\"\r\n      );\r\n    } finally {\r\n      setIsDisablingAdmin(false);\r\n    }\r\n  };\r\n\r\n  const handleCancelDisable = () => {\r\n    setDisableAdminError(null);\r\n    setDisableForm({ superAdminPassword: \"\" });\r\n    setAdminPendingDisable(null);\r\n  };\r\n\r\n  return (\r\n      <>\r\n        <section className=\"space-y-12\">\r\n          {companyError && (\r\n              <div className=\"alert alert-error shadow\">\r\n                <span>{companyError}</span>\r\n              </div>\r\n          )}\r\n\r\n          {isLoadingCompanies ? (\r\n              <div className=\"bg-base-100 border border-base-200 rounded-3xl shadow-xl p-8\">\r\n                <p className=\"text-base-content font-semibold\">\r\n                  Carregando credenciais empresariais...\r\n                </p>\r\n              </div>\r\n          ) : (\r\n              <CompanyCredentialsList\r\n                  title=\"Credenciais Empresariais\"\r\n                  companies={businessCompanies}\r\n                  fieldConfig={businessFields}\r\n                  onViewMore={handleViewMore}\r\n                  onAccept={handleAccept}\r\n                  onSearch={(value) => console.log(\"Pesquisar empresa:\", value)}\r\n                  searchPlaceholder=\"Pesquisar empresa\"\r\n                  viewVariant=\"primary\"\r\n                  acceptVariant=\"secondary\"\r\n                  viewButtonClassName=\"text-white\"\r\n                  acceptButtonClassName=\"btn-outline\"\r\n              />\r\n          )}\r\n\r\n          {adminError && (\r\n              <div className=\"alert alert-error shadow\">\r\n                <span>{adminError}</span>\r\n              </div>\r\n          )}\r\n\r\n          {isLoadingAdmins ? (\r\n              <div className=\"bg-base-100 border border-base-200 rounded-3xl shadow-xl p-8\">\r\n                <p className=\"text-base-content font-semibold\">\r\n                  Carregando credenciais administrativas...\r\n                </p>\r\n              </div>\r\n          ) : (\r\n              <CompanyCredentialsList\r\n                  title=\"Credenciais Administrativas\"\r\n                  companies={adminCredentials}\r\n                  fieldConfig={adminFields}\r\n                  onViewMore={handleEdit}\r\n                  onAccept={handleDisable}\r\n                  viewLabel=\"Editar\"\r\n                  acceptLabel=\"Desativar\"\r\n                  viewVariant=\"primary\"\r\n                  acceptVariant=\"secondary\"\r\n                  acceptButtonClassName=\"btn-outline\"\r\n                  headerActions={\r\n                    <Button\r\n                        label=\"Criar\"\r\n                        variant=\"\"\r\n                        className=\"w-full md:w-auto btn-outline\"\r\n                        onClick={handleCreate}\r\n                    />\r\n                  }\r\n              />\r\n          )}\r\n        </section>\r\n\r\n        <Modal\r\n            open={Boolean(companyInModal)}\r\n            title=\"Detalhes da Credencial\"\r\n            onClose={() => setCompanyInModal(null)}\r\n            actions={\r\n              <div className=\"w-full flex justify-end gap-3\">\r\n                <Button\r\n                    label=\"Recusar\"\r\n                    variant=\"danger\"\r\n                    className=\"max-w-32 btn-error text-white\"\r\n                    onClick={handleRejectClick}\r\n                />\r\n                <Button\r\n                    label=\"Fechar\"\r\n                    variant=\"outline\"\r\n                    className=\"max-w-32 btn btn-secondary\"\r\n                    onClick={() => setCompanyInModal(null)}\r\n                />\r\n              </div>\r\n            }\r\n        >\r\n          <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">\r\n            {[\r\n              { label: \"Nome da empresa\", value: companyInModal?.companyName },\r\n              { label: \"Email da credencial\", value: companyInModal?.credentialEmail },\r\n              { label: \"NIF\", value: companyInModal?.nif },\r\n              { label: \"Website\", value: companyInModal?.website },\r\n              { label: \"País\", value: companyInModal?.country },\r\n              { label: \"Morada\", value: companyInModal?.address },\r\n              { label: \"Nome do responsável\", value: companyInModal?.responsibleName },\r\n              {\r\n                label: \"Email do responsável\",\r\n                value: companyInModal?.responsibleEmail,\r\n              },\r\n            ].map(({ label, value }) => (\r\n                <label key={label} className=\"form-control w-full\">\r\n                  <span className=\"label-text font-medium\">{label}</span>\r\n                  <input type=\"text\" value={value ?? \"\"} disabled className=\"input input-bordered w-full\" />\r\n                </label>\r\n            ))}\r\n          </div>\r\n        </Modal>\r\n\r\n        <Modal\r\n            open={Boolean(companyPendingRejection)}\r\n            title=\"Tem certeza?\"\r\n            onClose={handleCancelReject}\r\n            actions={\r\n              <div className=\"flex w-full justify-end gap-3\">\r\n                <Button\r\n                    label=\"Cancelar\"\r\n                    variant=\"outline\"\r\n                    className=\"max-w-32 btn btn-secondary\"\r\n                    onClick={handleCancelReject}\r\n                    disabled={isRejectingCompany}\r\n                />\r\n                <Button\r\n                    label={isRejectingCompany ? \"Recusando...\" : \"Sim\"}\r\n                    variant=\"danger\"\r\n                    className=\"max-w-32 btn-error text-white\"\r\n                    onClick={handleConfirmReject}\r\n                    disabled={isRejectingCompany}\r\n                />\r\n              </div>\r\n            }\r\n        >\r\n          {rejectCompanyError && (\r\n              <div className=\"alert alert-error mb-4\">\r\n                <span>{rejectCompanyError}</span>\r\n              </div>\r\n          )}\r\n\r\n          <div className=\"space-y-4\">\r\n            <p className=\"text-base-content\">\r\n              Ao confirmar, a credencial da empresa \"{companyPendingRejection?.companyName}\" será removida. Deseja continuar?\r\n            </p>\r\n\r\n            <label className=\"form-control w-full\">\r\n              <span className=\"label-text font-medium\">Password Super Admin</span>\r\n              <input\r\n                  type=\"password\"\r\n                  value={rejectForm.superAdminPassword}\r\n                  onChange={(event) => setRejectForm({ superAdminPassword: event.target.value })}\r\n                  className=\"input input-bordered w-full\"\r\n                  disabled={isRejectingCompany}\r\n              />\r\n            </label>\r\n          </div>\r\n        </Modal>\r\n\r\n\r\n        <Modal\r\n            open={Boolean(companyPendingApproval)}\r\n            title=\"Aprovar credencial\"\r\n            onClose={handleCancelApprove}\r\n            actions={\r\n              <div className=\"flex w-full justify-end gap-3\">\r\n                <Button\r\n                    label=\"Cancelar\"\r\n                    variant=\"outline\"\r\n                    className=\"max-w-32 btn btn-secondary\"\r\n                    onClick={handleCancelApprove}\r\n                    disabled={isApprovingCompany}\r\n                />\r\n                <Button\r\n                    label={isApprovingCompany ? \"Aprovando...\" : \"Confirmar\"}\r\n                    variant=\"primary\"\r\n                    className=\"max-w-32\"\r\n                    onClick={handleConfirmApprove}\r\n                    disabled={isApprovingCompany}\r\n                />\r\n              </div>\r\n            }\r\n        >\r\n          {approveCompanyError && (\r\n              <div className=\"alert alert-error mb-4\">\r\n                <span>{approveCompanyError}</span>\r\n              </div>\r\n          )}\r\n\r\n          <div className=\"space-y-4\">\r\n            <p className=\"text-base-content\">\r\n              Ao confirmar, a credencial da empresa \"{companyPendingApproval?.companyName}\" será aprovada.\r\n            </p>\r\n\r\n            <label className=\"form-control w-full\">\r\n              <span className=\"label-text font-medium\">Password Super Admin</span>\r\n              <input\r\n                  type=\"password\"\r\n                  value={approveForm.superAdminPassword}\r\n                  onChange={(event) => handleApproveFieldChange(event.target.value)}\r\n                  className=\"input input-bordered w-full\"\r\n                  disabled={isApprovingCompany}\r\n              />\r\n            </label>\r\n          </div>\r\n        </Modal>\r\n\r\n        <Modal\r\n            open={Boolean(adminPendingDisable)}\r\n            title=\"Tem certeza?\"\r\n            onClose={handleCancelDisable}\r\n            actions={\r\n              <div className=\"flex w-full justify-end gap-3\">\r\n                <Button\r\n                    label=\"Cancelar\"\r\n                    variant=\"outline\"\r\n                    className=\"max-w-32 btn btn-secondary\"\r\n                    onClick={handleCancelDisable}\r\n                    disabled={isDisablingAdmin}\r\n                />\r\n                <Button\r\n                    label={isDisablingAdmin ? \"Desativando...\" : \"Sim\"}\r\n                    variant=\"danger\"\r\n                    className=\"max-w-32 btn-error text-white\"\r\n                    onClick={handleConfirmDisable}\r\n                    disabled={isDisablingAdmin}\r\n                />\r\n              </div>\r\n            }\r\n        >\r\n          {disableAdminError && (\r\n              <div className=\"alert alert-error mb-4\">\r\n                <span>{disableAdminError}</span>\r\n              </div>\r\n          )}\r\n\r\n          <div className=\"space-y-4\">\r\n            <p className=\"text-base-content\">\r\n              Ao confirmar, o administrador será desativado. Deseja continuar?\r\n            </p>\r\n\r\n            <label className=\"form-control w-full\">\r\n              <span className=\"label-text font-medium\">Password Super Admin</span>\r\n              <input\r\n                  type=\"password\"\r\n                  value={disableForm.superAdminPassword}\r\n                  onChange={(event) => handleDisableFieldChange(event.target.value)}\r\n                  className=\"input input-bordered w-full\"\r\n                  disabled={isDisablingAdmin}\r\n              />\r\n            </label>\r\n          </div>\r\n        </Modal>\r\n\r\n        <Modal\r\n            open={isEditModalOpen}\r\n            title=\"Editar administrador\"\r\n            onClose={handleCloseEditModal}\r\n            actions={\r\n              <div className=\"flex w-full justify-end gap-3\">\r\n                <Button\r\n                    label=\"Fechar\"\r\n                    variant=\"outline\"\r\n                    className=\"max-w-32 btn btn-secondary\"\r\n                    onClick={handleCloseEditModal}\r\n                    disabled={isSavingAdmin}\r\n                />\r\n                <Button\r\n                    label={isSavingAdmin ? \"Salvando...\" : \"Salvar\"}\r\n                    variant=\"primary\"\r\n                    className=\"max-w-32\"\r\n                    onClick={handleSaveAdmin}\r\n                    disabled={isSavingAdmin}\r\n                />\r\n              </div>\r\n            }\r\n        >\r\n          <div className=\"space-y-4\">\r\n            {editAdminError && (\r\n                <div className=\"alert alert-error shadow\">\r\n                  <span>{editAdminError}</span>\r\n                </div>\r\n            )}\r\n\r\n            <label className=\"form-control w-full\">\r\n              <span className=\"label-text font-medium\">Username</span>\r\n              <input\r\n                  type=\"text\"\r\n                  value={editForm.username}\r\n                  onChange={(event) => handleEditFieldChange(\"username\", event.target.value)}\r\n                  className=\"input input-bordered w-full\"\r\n                  disabled={isSavingAdmin}\r\n              />\r\n            </label>\r\n\r\n            <label className=\"form-control w-full\">\r\n              <span className=\"label-text font-medium\">Cargo</span>\r\n              <select\r\n                  className=\"select select-bordered w-full\"\r\n                  value={editForm.role}\r\n                  onChange={(event) => handleEditFieldChange(\"role\", event.target.value)}\r\n                  disabled={isSavingAdmin}\r\n              >\r\n                {ROLE_OPTIONS.map(({ value, label }) => (\r\n                    <option key={value} value={value}>\r\n                      {label}\r\n                    </option>\r\n                ))}\r\n              </select>\r\n            </label>\r\n\r\n            <div className=\"flex items-center gap-3 pt-5\">\r\n              <input\r\n                  id=\"change-password-checkbox\"\r\n                  type=\"checkbox\"\r\n                  className=\"toggle toggle-primary\"\r\n                  checked={editForm.changePassword}\r\n                  onChange={handleToggleChangePassword}\r\n                  disabled={isSavingAdmin}\r\n              />\r\n              <label htmlFor=\"change-password-checkbox\" className=\"text-base font-medium\">\r\n                Alterar password?\r\n              </label>\r\n            </div>\r\n\r\n            {editForm.changePassword && (\r\n                <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">\r\n                  <label className=\"form-control w-full\">\r\n                    <span className=\"label-text font-medium\">Password</span>\r\n                    <input\r\n                        type=\"password\"\r\n                        value={editForm.password}\r\n                        onChange={(event) => handleEditFieldChange(\"password\", event.target.value)}\r\n                        className=\"input input-bordered w-full\"\r\n                        disabled={isSavingAdmin}\r\n                    />\r\n                  </label>\r\n\r\n                  <label className=\"form-control w-full\">\r\n                    <span className=\"label-text font-medium\">Repetir password</span>\r\n                    <input\r\n                        type=\"password\"\r\n                        value={editForm.confirmPassword}\r\n                        onChange={(event) => handleEditFieldChange(\"confirmPassword\", event.target.value)}\r\n                        className=\"input input-bordered w-full\"\r\n                        disabled={isSavingAdmin}\r\n                    />\r\n                  </label>\r\n                </div>\r\n            )}\r\n\r\n            <label className=\"form-control w-full\">\r\n              <span className=\"label-text font-medium\">Password Super Admin</span>\r\n              <input\r\n                  type=\"password\"\r\n                  value={editForm.superAdminPassword}\r\n                  onChange={(event) => handleEditFieldChange(\"superAdminPassword\", event.target.value)}\r\n                  className=\"input input-bordered w-full\"\r\n                  disabled={isSavingAdmin}\r\n              />\r\n            </label>\r\n          </div>\r\n        </Modal>\r\n\r\n        <Modal\r\n            open={isCreateModalOpen}\r\n            title=\"Criar administrador\"\r\n            onClose={handleCloseCreateModal}\r\n            actions={\r\n              <div className=\"flex w-full justify-end gap-3\">\r\n                <Button\r\n                    label=\"Cancelar\"\r\n                    variant=\"outline\"\r\n                    className=\"max-w-32 btn btn-secondary\"\r\n                    onClick={handleCloseCreateModal}\r\n                    disabled={isCreatingAdmin}\r\n                />\r\n                <Button\r\n                    label={isCreatingAdmin ? \"Criando...\" : \"Criar\"}\r\n                    variant=\"primary\"\r\n                    className=\"max-w-32\"\r\n                    onClick={handleSaveNewAdmin}\r\n                    disabled={isCreatingAdmin}\r\n                />\r\n              </div>\r\n            }\r\n        >\r\n          <div className=\"space-y-4\">\r\n            {createAdminError && (\r\n                <div className=\"alert alert-error shadow\">\r\n                  <span>{createAdminError}</span>\r\n                </div>\r\n            )}\r\n\r\n            <label className=\"form-control w-full\">\r\n              <span className=\"label-text font-medium\">Username</span>\r\n              <input\r\n                  type=\"text\"\r\n                  value={createForm.username}\r\n                  onChange={(event) => handleCreateFieldChange(\"username\", event.target.value)}\r\n                  className=\"input input-bordered w-full\"\r\n                  disabled={isCreatingAdmin}\r\n              />\r\n            </label>\r\n\r\n            <label className=\"form-control w-full\">\r\n              <span className=\"label-text font-medium\">Cargo</span>\r\n              <select\r\n                  className=\"select select-bordered w-full\"\r\n                  value={createForm.role}\r\n                  onChange={(event) => handleCreateFieldChange(\"role\", event.target.value)}\r\n                  disabled={isCreatingAdmin}\r\n              >\r\n                {ROLE_OPTIONS.map(({ value, label }) => (\r\n                    <option key={value} value={value}>\r\n                      {label}\r\n                    </option>\r\n                ))}\r\n              </select>\r\n            </label>\r\n\r\n            <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">\r\n              <label className=\"form-control w-full\">\r\n                <span className=\"label-text font-medium\">Password</span>\r\n                <input\r\n                    type=\"password\"\r\n                    value={createForm.password}\r\n                    onChange={(event) => handleCreateFieldChange(\"password\", event.target.value)}\r\n                    className=\"input input-bordered w-full\"\r\n                    disabled={isCreatingAdmin}\r\n                />\r\n              </label>\r\n\r\n              <label className=\"form-control w-full\">\r\n                <span className=\"label-text font-medium\">Repetir password</span>\r\n                <input\r\n                    type=\"password\"\r\n                    value={createForm.confirmPassword}\r\n                    onChange={(event) => handleCreateFieldChange(\"confirmPassword\", event.target.value)}\r\n                    className=\"input input-bordered w-full\"\r\n                    disabled={isCreatingAdmin}\r\n                />\r\n              </label>\r\n\r\n              <label className=\"form-control w-full md:col-span-2\">\r\n                <span className=\"label-text font-medium\">Password Super Admin</span>\r\n                <input\r\n                    type=\"password\"\r\n                    value={createForm.superAdminPassword}\r\n                    onChange={(event) => handleCreateFieldChange(\"superAdminPassword\", event.target.value)}\r\n                    className=\"input input-bordered w-full\"\r\n                    disabled={isCreatingAdmin}\r\n                />\r\n              </label>\r\n            </div>\r\n          </div>\r\n        </Modal>\r\n      </>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/pages/admin/SuperAdmin/Credentials/Credentials.jsx b/frontend/src/pages/admin/SuperAdmin/Credentials/Credentials.jsx
+--- a/frontend/src/pages/admin/SuperAdmin/Credentials/Credentials.jsx	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ b/frontend/src/pages/admin/SuperAdmin/Credentials/Credentials.jsx	(date 1765303346753)
+@@ -1,9 +1,14 @@
+ import { useEffect, useMemo, useRef, useState } from "react";
+ import { apiFetch } from "../../../../api/auth/client.js";
+-import CompanyCredentialsList from "./components/CompanyCredentialsList.jsx";
++import CredentialList from "./components/Credential/CredentialList.jsx";
+ import Button from "../../../../components/ui/Button/Button.jsx";
+-import Modal from "../../../../components/ui/Modal/Modal.jsx";
+ import { useSuperAdminData } from "../SuperAdminDataContext.jsx";
++import CompanyInfoModal from "./components/Modal/Company/CompanyInfoModal.jsx";
++import CompanyApprovalModal from "./components/Modal/Company/CompanyApprovalModal.jsx";
++import CompanyRejectionModal from "./components/Modal/Company/CompanyRejectionModal.jsx";
++import AdminDisableModal from "./components/Modal/Admin/AdminDisableModal.jsx";
++import AdminEditModal from "./components/Modal/Admin/AdminEditModal.jsx";
++import AdminCreateModal from "./components/Modal/Admin/AdminCreateModal.jsx";
+ 
+ const ROLE_OPTIONS = [
+   { value: "admin", label: "Admin" },
+@@ -53,6 +58,14 @@
+         setData: setAdminCredentials,
+       },
+     },
++    staffing: {
++      requests: {
++        data: workRequests = [],
++        loading: isLoadingRequests,
++        loaded: requestsLoaded,
++        refresh: refreshRequests,
++      },
++    },
+   } = useSuperAdminData();
+ 
+   const [createAdminError, setCreateAdminError] = useState(null);
+@@ -99,30 +112,72 @@
+     refreshAdmins().catch(() => {});
+   }, [adminsLoaded, refreshAdmins]);
+ 
++  const initialRequestsLoad = useRef(false);
++  useEffect(() => {
++    if (requestsLoaded || initialRequestsLoad.current) return;
++    initialRequestsLoad.current = true;
++    refreshRequests().catch(() => {});
++  }, [requestsLoaded, refreshRequests]);
++
+   const businessFields = useMemo(
+-      () => [
+-        { key: "companyName", label: "Nome Empresa:" },
+-        { key: "credentialEmail", label: "Email Credencial:" },
+-        { key: "nif", label: "NIF:" },
+-        { key: "country", label: "Pais:" },
+-        { key: "responsibleName", label: "Nome Responsavel:" },
+-        { key: "responsibleEmail", label: "Email Responsavel:" },
+-      ],
+-      []
++    () => [
++      { key: "companyName", label: "Nome Empresa:" },
++      { key: "credentialEmail", label: "Email Credencial:" },
++      { key: "nif", label: "NIF:" },
++      { key: "country", label: "Pais:" },
++    ],
++    []
+   );
+ 
+   const adminFields = useMemo(
+-      () => [
+-        { key: "username", label: "Username:" },
+-        {
+-          key: "role",
+-          label: "Cargo:",
+-          getValue: (admin) =>
+-              admin.role === "super-admin" ? "Super Admin" : "Admin",
+-        },
+-      ],
+-      []
++    () => [
++      { key: "username", label: "Username:" },
++      {
++        key: "role",
++        label: "Cargo:",
++        getValue: (admin) => (admin.role === "super-admin" ? "Super Admin" : "Admin"),
++      },
++      {
++        key: "openRequests",
++        label: "Requisições:",
++        getValue: (admin) => admin.openRequests ?? 0,
++      },
++      {
++        key: "openSlots",
++        label: "Mão de obra associada:",
++        getValue: (admin) => admin.openSlots ?? 0,
++      },
++    ],
++    []
+   );
++
++  const adminRequestStats = useMemo(() => {
++    const stats = {};
++    workRequests.forEach((req) => {
++      if (!req?.responsibleAdminId) return;
++      const key = String(req.responsibleAdminId);
++      if (!stats[key]) stats[key] = { open: 0, openSlots: 0 };
++      const state = (req.state || "").toUpperCase();
++      if (state !== "COMPLETE") {
++        stats[key].open += 1;
++        stats[key].openSlots += Number(req.workforceNeeded ?? 0);
++      }
++    });
++    return stats;
++  }, [workRequests]);
++
++  const adminsWithStats = useMemo(
++    () =>
++      adminCredentials.map((admin) => {
++        const stats = adminRequestStats[String(admin.id)] ?? {};
++        return {
++          ...admin,
++          openRequests: stats.open ?? 0,
++          openSlots: stats.openSlots ?? 0,
++        };
++      }),
++    [adminCredentials, adminRequestStats]
++  );
+ 
+   const handleViewMore = (company) => setCompanyInModal(company);
+ 
+@@ -494,7 +549,7 @@
+                 </p>
+               </div>
+           ) : (
+-              <CompanyCredentialsList
++              <CredentialList
+                   title="Credenciais Empresariais"
+                   companies={businessCompanies}
+                   fieldConfig={businessFields}
+@@ -522,9 +577,9 @@
+                 </p>
+               </div>
+           ) : (
+-              <CompanyCredentialsList
++              <CredentialList
+                   title="Credenciais Administrativas"
+-                  companies={adminCredentials}
++                  companies={adminsWithStats}
+                   fieldConfig={adminFields}
+                   onViewMore={handleEdit}
+                   onAccept={handleDisable}
+@@ -545,394 +600,66 @@
+           )}
+         </section>
+ 
+-        <Modal
+-            open={Boolean(companyInModal)}
+-            title="Detalhes da Credencial"
+-            onClose={() => setCompanyInModal(null)}
+-            actions={
+-              <div className="w-full flex justify-end gap-3">
+-                <Button
+-                    label="Recusar"
+-                    variant="danger"
+-                    className="max-w-32 btn-error text-white"
+-                    onClick={handleRejectClick}
+-                />
+-                <Button
+-                    label="Fechar"
+-                    variant="outline"
+-                    className="max-w-32 btn btn-secondary"
+-                    onClick={() => setCompanyInModal(null)}
+-                />
+-              </div>
+-            }
+-        >
+-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+-            {[
+-              { label: "Nome da empresa", value: companyInModal?.companyName },
+-              { label: "Email da credencial", value: companyInModal?.credentialEmail },
+-              { label: "NIF", value: companyInModal?.nif },
+-              { label: "Website", value: companyInModal?.website },
+-              { label: "País", value: companyInModal?.country },
+-              { label: "Morada", value: companyInModal?.address },
+-              { label: "Nome do responsável", value: companyInModal?.responsibleName },
+-              {
+-                label: "Email do responsável",
+-                value: companyInModal?.responsibleEmail,
+-              },
+-            ].map(({ label, value }) => (
+-                <label key={label} className="form-control w-full">
+-                  <span className="label-text font-medium">{label}</span>
+-                  <input type="text" value={value ?? ""} disabled className="input input-bordered w-full" />
+-                </label>
+-            ))}
+-          </div>
+-        </Modal>
++        <CompanyInfoModal
++          open={Boolean(companyInModal)}
++          company={companyInModal}
++          onClose={() => setCompanyInModal(null)}
++          onReject={handleRejectClick}
++        />
+ 
+-        <Modal
+-            open={Boolean(companyPendingRejection)}
+-            title="Tem certeza?"
+-            onClose={handleCancelReject}
+-            actions={
+-              <div className="flex w-full justify-end gap-3">
+-                <Button
+-                    label="Cancelar"
+-                    variant="outline"
+-                    className="max-w-32 btn btn-secondary"
+-                    onClick={handleCancelReject}
+-                    disabled={isRejectingCompany}
+-                />
+-                <Button
+-                    label={isRejectingCompany ? "Recusando..." : "Sim"}
+-                    variant="danger"
+-                    className="max-w-32 btn-error text-white"
+-                    onClick={handleConfirmReject}
+-                    disabled={isRejectingCompany}
+-                />
+-              </div>
+-            }
+-        >
+-          {rejectCompanyError && (
+-              <div className="alert alert-error mb-4">
+-                <span>{rejectCompanyError}</span>
+-              </div>
+-          )}
++        <CompanyRejectionModal
++          open={Boolean(companyPendingRejection)}
++          company={companyPendingRejection}
++          password={rejectForm.superAdminPassword}
++          onPasswordChange={(value) => setRejectForm({ superAdminPassword: value })}
++          onConfirm={handleConfirmReject}
++          onCancel={handleCancelReject}
++          loading={isRejectingCompany}
++          error={rejectCompanyError}
++        />
+ 
+-          <div className="space-y-4">
+-            <p className="text-base-content">
+-              Ao confirmar, a credencial da empresa "{companyPendingRejection?.companyName}" será removida. Deseja continuar?
+-            </p>
+-
+-            <label className="form-control w-full">
+-              <span className="label-text font-medium">Password Super Admin</span>
+-              <input
+-                  type="password"
+-                  value={rejectForm.superAdminPassword}
+-                  onChange={(event) => setRejectForm({ superAdminPassword: event.target.value })}
+-                  className="input input-bordered w-full"
+-                  disabled={isRejectingCompany}
+-              />
+-            </label>
+-          </div>
+-        </Modal>
+-
+-
+-        <Modal
+-            open={Boolean(companyPendingApproval)}
+-            title="Aprovar credencial"
+-            onClose={handleCancelApprove}
+-            actions={
+-              <div className="flex w-full justify-end gap-3">
+-                <Button
+-                    label="Cancelar"
+-                    variant="outline"
+-                    className="max-w-32 btn btn-secondary"
+-                    onClick={handleCancelApprove}
+-                    disabled={isApprovingCompany}
+-                />
+-                <Button
+-                    label={isApprovingCompany ? "Aprovando..." : "Confirmar"}
+-                    variant="primary"
+-                    className="max-w-32"
+-                    onClick={handleConfirmApprove}
+-                    disabled={isApprovingCompany}
+-                />
+-              </div>
+-            }
+-        >
+-          {approveCompanyError && (
+-              <div className="alert alert-error mb-4">
+-                <span>{approveCompanyError}</span>
+-              </div>
+-          )}
+-
+-          <div className="space-y-4">
+-            <p className="text-base-content">
+-              Ao confirmar, a credencial da empresa "{companyPendingApproval?.companyName}" será aprovada.
+-            </p>
+-
+-            <label className="form-control w-full">
+-              <span className="label-text font-medium">Password Super Admin</span>
+-              <input
+-                  type="password"
+-                  value={approveForm.superAdminPassword}
+-                  onChange={(event) => handleApproveFieldChange(event.target.value)}
+-                  className="input input-bordered w-full"
+-                  disabled={isApprovingCompany}
+-              />
+-            </label>
+-          </div>
+-        </Modal>
++        <CompanyApprovalModal
++          open={Boolean(companyPendingApproval)}
++          company={companyPendingApproval}
++          password={approveForm.superAdminPassword}
++          onPasswordChange={handleApproveFieldChange}
++          onConfirm={handleConfirmApprove}
++          onCancel={handleCancelApprove}
++          loading={isApprovingCompany}
++          error={approveCompanyError}
++        />
+ 
+-        <Modal
+-            open={Boolean(adminPendingDisable)}
+-            title="Tem certeza?"
+-            onClose={handleCancelDisable}
+-            actions={
+-              <div className="flex w-full justify-end gap-3">
+-                <Button
+-                    label="Cancelar"
+-                    variant="outline"
+-                    className="max-w-32 btn btn-secondary"
+-                    onClick={handleCancelDisable}
+-                    disabled={isDisablingAdmin}
+-                />
+-                <Button
+-                    label={isDisablingAdmin ? "Desativando..." : "Sim"}
+-                    variant="danger"
+-                    className="max-w-32 btn-error text-white"
+-                    onClick={handleConfirmDisable}
+-                    disabled={isDisablingAdmin}
+-                />
+-              </div>
+-            }
+-        >
+-          {disableAdminError && (
+-              <div className="alert alert-error mb-4">
+-                <span>{disableAdminError}</span>
+-              </div>
+-          )}
+-
+-          <div className="space-y-4">
+-            <p className="text-base-content">
+-              Ao confirmar, o administrador será desativado. Deseja continuar?
+-            </p>
+-
+-            <label className="form-control w-full">
+-              <span className="label-text font-medium">Password Super Admin</span>
+-              <input
+-                  type="password"
+-                  value={disableForm.superAdminPassword}
+-                  onChange={(event) => handleDisableFieldChange(event.target.value)}
+-                  className="input input-bordered w-full"
+-                  disabled={isDisablingAdmin}
+-              />
+-            </label>
+-          </div>
+-        </Modal>
++        <AdminDisableModal
++          open={Boolean(adminPendingDisable)}
++          admin={adminPendingDisable}
++          password={disableForm.superAdminPassword}
++          onPasswordChange={handleDisableFieldChange}
++          onConfirm={handleConfirmDisable}
++          onCancel={handleCancelDisable}
++          loading={isDisablingAdmin}
++          error={disableAdminError}
++        />
+ 
+-        <Modal
+-            open={isEditModalOpen}
+-            title="Editar administrador"
+-            onClose={handleCloseEditModal}
+-            actions={
+-              <div className="flex w-full justify-end gap-3">
+-                <Button
+-                    label="Fechar"
+-                    variant="outline"
+-                    className="max-w-32 btn btn-secondary"
+-                    onClick={handleCloseEditModal}
+-                    disabled={isSavingAdmin}
+-                />
+-                <Button
+-                    label={isSavingAdmin ? "Salvando..." : "Salvar"}
+-                    variant="primary"
+-                    className="max-w-32"
+-                    onClick={handleSaveAdmin}
+-                    disabled={isSavingAdmin}
+-                />
+-              </div>
+-            }
+-        >
+-          <div className="space-y-4">
+-            {editAdminError && (
+-                <div className="alert alert-error shadow">
+-                  <span>{editAdminError}</span>
+-                </div>
+-            )}
+-
+-            <label className="form-control w-full">
+-              <span className="label-text font-medium">Username</span>
+-              <input
+-                  type="text"
+-                  value={editForm.username}
+-                  onChange={(event) => handleEditFieldChange("username", event.target.value)}
+-                  className="input input-bordered w-full"
+-                  disabled={isSavingAdmin}
+-              />
+-            </label>
+-
+-            <label className="form-control w-full">
+-              <span className="label-text font-medium">Cargo</span>
+-              <select
+-                  className="select select-bordered w-full"
+-                  value={editForm.role}
+-                  onChange={(event) => handleEditFieldChange("role", event.target.value)}
+-                  disabled={isSavingAdmin}
+-              >
+-                {ROLE_OPTIONS.map(({ value, label }) => (
+-                    <option key={value} value={value}>
+-                      {label}
+-                    </option>
+-                ))}
+-              </select>
+-            </label>
+-
+-            <div className="flex items-center gap-3 pt-5">
+-              <input
+-                  id="change-password-checkbox"
+-                  type="checkbox"
+-                  className="toggle toggle-primary"
+-                  checked={editForm.changePassword}
+-                  onChange={handleToggleChangePassword}
+-                  disabled={isSavingAdmin}
+-              />
+-              <label htmlFor="change-password-checkbox" className="text-base font-medium">
+-                Alterar password?
+-              </label>
+-            </div>
+-
+-            {editForm.changePassword && (
+-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+-                  <label className="form-control w-full">
+-                    <span className="label-text font-medium">Password</span>
+-                    <input
+-                        type="password"
+-                        value={editForm.password}
+-                        onChange={(event) => handleEditFieldChange("password", event.target.value)}
+-                        className="input input-bordered w-full"
+-                        disabled={isSavingAdmin}
+-                    />
+-                  </label>
+-
+-                  <label className="form-control w-full">
+-                    <span className="label-text font-medium">Repetir password</span>
+-                    <input
+-                        type="password"
+-                        value={editForm.confirmPassword}
+-                        onChange={(event) => handleEditFieldChange("confirmPassword", event.target.value)}
+-                        className="input input-bordered w-full"
+-                        disabled={isSavingAdmin}
+-                    />
+-                  </label>
+-                </div>
+-            )}
++        <AdminEditModal
++          open={isEditModalOpen}
++          form={editForm}
++          error={editAdminError}
++          loading={isSavingAdmin}
++          onClose={handleCloseEditModal}
++          onSave={handleSaveAdmin}
++          onFieldChange={handleEditFieldChange}
++          onToggleChangePassword={handleToggleChangePassword}
++        />
+ 
+-            <label className="form-control w-full">
+-              <span className="label-text font-medium">Password Super Admin</span>
+-              <input
+-                  type="password"
+-                  value={editForm.superAdminPassword}
+-                  onChange={(event) => handleEditFieldChange("superAdminPassword", event.target.value)}
+-                  className="input input-bordered w-full"
+-                  disabled={isSavingAdmin}
+-              />
+-            </label>
+-          </div>
+-        </Modal>
+-
+-        <Modal
+-            open={isCreateModalOpen}
+-            title="Criar administrador"
+-            onClose={handleCloseCreateModal}
+-            actions={
+-              <div className="flex w-full justify-end gap-3">
+-                <Button
+-                    label="Cancelar"
+-                    variant="outline"
+-                    className="max-w-32 btn btn-secondary"
+-                    onClick={handleCloseCreateModal}
+-                    disabled={isCreatingAdmin}
+-                />
+-                <Button
+-                    label={isCreatingAdmin ? "Criando..." : "Criar"}
+-                    variant="primary"
+-                    className="max-w-32"
+-                    onClick={handleSaveNewAdmin}
+-                    disabled={isCreatingAdmin}
+-                />
+-              </div>
+-            }
+-        >
+-          <div className="space-y-4">
+-            {createAdminError && (
+-                <div className="alert alert-error shadow">
+-                  <span>{createAdminError}</span>
+-                </div>
+-            )}
+-
+-            <label className="form-control w-full">
+-              <span className="label-text font-medium">Username</span>
+-              <input
+-                  type="text"
+-                  value={createForm.username}
+-                  onChange={(event) => handleCreateFieldChange("username", event.target.value)}
+-                  className="input input-bordered w-full"
+-                  disabled={isCreatingAdmin}
+-              />
+-            </label>
+-
+-            <label className="form-control w-full">
+-              <span className="label-text font-medium">Cargo</span>
+-              <select
+-                  className="select select-bordered w-full"
+-                  value={createForm.role}
+-                  onChange={(event) => handleCreateFieldChange("role", event.target.value)}
+-                  disabled={isCreatingAdmin}
+-              >
+-                {ROLE_OPTIONS.map(({ value, label }) => (
+-                    <option key={value} value={value}>
+-                      {label}
+-                    </option>
+-                ))}
+-              </select>
+-            </label>
+-
+-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+-              <label className="form-control w-full">
+-                <span className="label-text font-medium">Password</span>
+-                <input
+-                    type="password"
+-                    value={createForm.password}
+-                    onChange={(event) => handleCreateFieldChange("password", event.target.value)}
+-                    className="input input-bordered w-full"
+-                    disabled={isCreatingAdmin}
+-                />
+-              </label>
+-
+-              <label className="form-control w-full">
+-                <span className="label-text font-medium">Repetir password</span>
+-                <input
+-                    type="password"
+-                    value={createForm.confirmPassword}
+-                    onChange={(event) => handleCreateFieldChange("confirmPassword", event.target.value)}
+-                    className="input input-bordered w-full"
+-                    disabled={isCreatingAdmin}
+-                />
+-              </label>
+-
+-              <label className="form-control w-full md:col-span-2">
+-                <span className="label-text font-medium">Password Super Admin</span>
+-                <input
+-                    type="password"
+-                    value={createForm.superAdminPassword}
+-                    onChange={(event) => handleCreateFieldChange("superAdminPassword", event.target.value)}
+-                    className="input input-bordered w-full"
+-                    disabled={isCreatingAdmin}
+-                />
+-              </label>
+-            </div>
+-          </div>
+-        </Modal>
++        <AdminCreateModal
++          open={isCreateModalOpen}
++          form={createForm}
++          error={createAdminError}
++          loading={isCreatingAdmin}
++          onClose={handleCloseCreateModal}
++          onSave={handleSaveNewAdmin}
++          onFieldChange={handleCreateFieldChange}
++        />
+       </>
+   );
+ }
+Index: frontend/src/pages/admin/SuperAdmin/AppHome/AppHomeContext.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {\r\n  createContext,\r\n  useCallback,\r\n  useContext,\r\n  useEffect,\r\n  useMemo,\r\n  useRef,\r\n  useState,\r\n} from \"react\";\r\nimport PropTypes from \"prop-types\";\r\nimport { updateAppHomeSection, reorderAppHomeSections } from \"../../../../api/site/siteManagement.js\";\r\nimport { useSuperAdminData } from \"../SuperAdminDataContext.jsx\";\r\nimport { moveItemInList } from \"../VariableManagement/utils.js\";\r\nimport { APP_SECTION_LABELS, APP_SECTION_TYPES } from \"./constants.js\";\r\n\r\nconst AppHomeContext = createContext(null);\r\n\r\nfunction defaultAppSectionForm() {\r\n  return {\r\n    title: \"\",\r\n    subtitle: \"\",\r\n    content: \"\",\r\n    primaryCtaLabel: \"\",\r\n    primaryCtaUrl: \"\",\r\n    active: true,\r\n    apiEnabled: false,\r\n    apiUrl: \"\",\r\n    apiMaxItems: \"\",\r\n    greetingPrefix: \"Ola\",\r\n    profileBarVisible: true,\r\n    labelCurrentCompany: \"Empresa atual\",\r\n    labelOffers: \"Ofertas disponiveis\",\r\n  };\r\n}\r\n\r\nfunction mapAppSectionForm(section) {\r\n  if (!section) {\r\n    return defaultAppSectionForm();\r\n  }\r\n  return {\r\n    title: section.title ?? \"\",\r\n    subtitle: section.subtitle ?? \"\",\r\n    content: section.content ?? \"\",\r\n    primaryCtaLabel: section.primaryCtaLabel ?? \"\",\r\n    primaryCtaUrl: section.primaryCtaUrl ?? \"\",\r\n    active: Boolean(section.active),\r\n    apiEnabled: Boolean(section.apiEnabled),\r\n    apiUrl: section.apiUrl ?? \"\",\r\n    apiMaxItems: section.apiMaxItems ?? \"\",\r\n    greetingPrefix: section.greetingPrefix ?? \"Ola\",\r\n    profileBarVisible: section.profileBarVisible ?? true,\r\n    labelCurrentCompany: section.labelCurrentCompany ?? \"Empresa atual\",\r\n    labelOffers: section.labelOffers ?? \"Ofertas disponiveis\",\r\n  };\r\n}\r\n\r\nfunction buildSectionPayload(form) {\r\n  return {\r\n    title: form.title,\r\n    subtitle: form.subtitle,\r\n    content: form.content,\r\n    primaryCtaLabel: form.primaryCtaLabel,\r\n    primaryCtaUrl: form.primaryCtaUrl,\r\n    active: form.active,\r\n    apiEnabled: Boolean(form.apiEnabled),\r\n    apiUrl: form.apiUrl || null,\r\n    apiMaxItems: form.apiMaxItems ? Number(form.apiMaxItems) : null,\r\n    greetingPrefix: form.greetingPrefix || null,\r\n    profileBarVisible: form.profileBarVisible,\r\n    labelCurrentCompany: form.labelCurrentCompany || null,\r\n    labelOffers: form.labelOffers || null,\r\n  };\r\n}\r\n\r\nconst sectionKeyFromType = (type) =>\r\n  Object.entries(APP_SECTION_TYPES).find(([, value]) => value === type)?.[0] ?? null;\r\n\r\nexport function AppHomeProvider({ children, onUnauthorized }) {\r\n  const {\r\n    site: {\r\n      appHome: {\r\n        data: config,\r\n        loading,\r\n        loaded,\r\n        error: loadError,\r\n        refresh: refreshAppHome,\r\n        setData: setAppHomeConfig,\r\n      },\r\n    },\r\n  } = useSuperAdminData();\r\n\r\n  const allowedTypes = useMemo(() => Object.values(APP_SECTION_TYPES), []);\r\n  const [banner, setBanner] = useState(null);\r\n  const [forms, setForms] = useState({\r\n    hero: defaultAppSectionForm(),\r\n    weeklyTip: defaultAppSectionForm(),\r\n    news: defaultAppSectionForm(),\r\n  });\r\n  const [savingSections, setSavingSections] = useState({\r\n    hero: false,\r\n    weeklyTip: false,\r\n    news: false,\r\n  });\r\n  const initialLoad = useRef(false);\r\n\r\n  useEffect(() => {\r\n    if (loaded || initialLoad.current) return;\r\n    initialLoad.current = true;\r\n    refreshAppHome().catch((err) => {\r\n      if (err?.status === 401) onUnauthorized?.();\r\n    });\r\n  }, [loaded, refreshAppHome, onUnauthorized]);\r\n\r\n  const retryAppHomeConfig = useCallback(() => {\r\n    refreshAppHome({ force: true }).catch((err) => {\r\n      if (err?.status === 401) onUnauthorized?.();\r\n    });\r\n  }, [refreshAppHome, onUnauthorized]);\r\n\r\n  const sections = useMemo(\r\n    () => (config?.sections ?? []).filter((section) => allowedTypes.includes(section.type)),\r\n    [config, allowedTypes]\r\n  );\r\n\r\n  useEffect(() => {\r\n    if (!config) return;\r\n    setForms({\r\n      hero: mapAppSectionForm(sections.find((section) => section.type === APP_SECTION_TYPES.hero)),\r\n      weeklyTip: mapAppSectionForm(sections.find((section) => section.type === APP_SECTION_TYPES.weeklyTip)),\r\n      news: mapAppSectionForm(sections.find((section) => section.type === APP_SECTION_TYPES.news)),\r\n    });\r\n  }, [config, sections]);\r\n\r\n  const handleSectionFieldChange = useCallback((key, field, value) => {\r\n    setForms((prev) => ({\r\n      ...prev,\r\n      [key]: { ...prev[key], [field]: value },\r\n    }));\r\n  }, []);\r\n\r\n  const handleSectionSubmit = useCallback(\r\n    async (event, key) => {\r\n      event.preventDefault();\r\n      const section = sections.find((item) => item.type === APP_SECTION_TYPES[key]);\r\n      const form = forms[key];\r\n      if (!section || !form) return;\r\n      setSavingSections((prev) => ({ ...prev, [key]: true }));\r\n      setBanner(null);\r\n      try {\r\n        const updated = await updateAppHomeSection(section.id, buildSectionPayload(form));\r\n        setAppHomeConfig((prev) => ({\r\n          ...prev,\r\n          sections: prev.sections.map((item) => (item.id === updated.id ? updated : item)),\r\n        }));\r\n        setForms((prev) => ({ ...prev, [key]: mapAppSectionForm(updated) }));\r\n        setBanner({ type: \"success\", message: \"Secao guardada com sucesso.\" });\r\n      } catch (err) {\r\n        if (err?.status === 401) {\r\n          onUnauthorized?.();\r\n        }\r\n        setBanner({ type: \"error\", message: err.message || \"Nao foi possivel guardar a secao.\" });\r\n      } finally {\r\n        setSavingSections((prev) => ({ ...prev, [key]: false }));\r\n      }\r\n    },\r\n    [forms, sections, onUnauthorized, setAppHomeConfig]\r\n  );\r\n\r\n  const handleSectionMove = useCallback(\r\n    async (id, direction) => {\r\n      const next = moveItemInList(sections, id, direction);\r\n      if (!next) return;\r\n      const previous = sections;\r\n      setAppHomeConfig((prev) => ({ ...prev, sections: next }));\r\n      setBanner(null);\r\n      try {\r\n        await reorderAppHomeSections(next.map((section) => section.id));\r\n        setBanner({ type: \"success\", message: \"Ordem atualizada com sucesso.\" });\r\n      } catch (err) {\r\n        if (err?.status === 401) {\r\n          onUnauthorized?.();\r\n        }\r\n        setAppHomeConfig((prev) => ({ ...prev, sections: previous }));\r\n        setBanner({ type: \"error\", message: err.message || \"Nao foi possivel reordenar as secoes.\" });\r\n      }\r\n    },\r\n    [sections, setAppHomeConfig, onUnauthorized]\r\n  );\r\n\r\n  const handleSectionToggle = useCallback(\r\n    async (section) => {\r\n      const key = sectionKeyFromType(section.type);\r\n      if (!key) return;\r\n      setBanner(null);\r\n      try {\r\n        const updated = await updateAppHomeSection(section.id, {\r\n          title: section.title,\r\n          subtitle: section.subtitle,\r\n          content: section.content,\r\n          primaryCtaLabel: section.primaryCtaLabel,\r\n          primaryCtaUrl: section.primaryCtaUrl,\r\n          active: !section.active,\r\n          apiEnabled: section.apiEnabled,\r\n          apiUrl: section.apiUrl,\r\n          apiMaxItems: section.apiMaxItems,\r\n          greetingPrefix: section.greetingPrefix,\r\n          profileBarVisible: section.profileBarVisible,\r\n          labelCurrentCompany: section.labelCurrentCompany,\r\n          labelOffers: section.labelOffers,\r\n        });\r\n        setAppHomeConfig((prev) => ({\r\n          ...prev,\r\n          sections: prev.sections.map((item) => (item.id === updated.id ? updated : item)),\r\n        }));\r\n        setForms((prev) => ({ ...prev, [key]: mapAppSectionForm(updated) }));\r\n        setBanner({ type: \"success\", message: \"Visibilidade atualizada.\" });\r\n      } catch (err) {\r\n        if (err?.status === 401) {\r\n          onUnauthorized?.();\r\n        }\r\n        setBanner({ type: \"error\", message: err.message || \"Nao foi possivel atualizar a secao.\" });\r\n      }\r\n    },\r\n    [setAppHomeConfig, onUnauthorized]\r\n  );\r\n\r\n  const value = useMemo(\r\n    () => ({\r\n      banner,\r\n      setBanner,\r\n      forms,\r\n      savingSections,\r\n      sections,\r\n      config,\r\n      loading,\r\n      loaded,\r\n      loadError,\r\n      APP_SECTION_LABELS,\r\n      handleSectionFieldChange,\r\n      handleSectionSubmit,\r\n      handleSectionMove,\r\n      handleSectionToggle,\r\n      retryAppHomeConfig,\r\n    }),\r\n    [\r\n      banner,\r\n      forms,\r\n      savingSections,\r\n      sections,\r\n      config,\r\n      loading,\r\n      loaded,\r\n      loadError,\r\n      handleSectionFieldChange,\r\n      handleSectionSubmit,\r\n      handleSectionMove,\r\n      handleSectionToggle,\r\n      retryAppHomeConfig,\r\n    ]\r\n  );\r\n\r\n  return <AppHomeContext.Provider value={value}>{children}</AppHomeContext.Provider>;\r\n}\r\n\r\nAppHomeProvider.propTypes = {\r\n  children: PropTypes.node,\r\n  onUnauthorized: PropTypes.func,\r\n};\r\n\r\nAppHomeProvider.defaultProps = {\r\n  children: null,\r\n  onUnauthorized: null,\r\n};\r\n\r\nexport function useAppHome() {\r\n  const ctx = useContext(AppHomeContext);\r\n  if (!ctx) throw new Error(\"useAppHome deve ser usado dentro de AppHomeProvider\");\r\n  return ctx;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/pages/admin/SuperAdmin/AppHome/AppHomeContext.jsx b/frontend/src/pages/admin/SuperAdmin/AppHome/AppHomeContext.jsx
+--- a/frontend/src/pages/admin/SuperAdmin/AppHome/AppHomeContext.jsx	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ b/frontend/src/pages/admin/SuperAdmin/AppHome/AppHomeContext.jsx	(date 1765299635559)
+@@ -274,6 +274,8 @@
+ 
+ export function useAppHome() {
+   const ctx = useContext(AppHomeContext);
+-  if (!ctx) throw new Error("useAppHome deve ser usado dentro de AppHomeProvider");
++  if (!ctx) {
++    throw new Error("useAppHome deve ser usado dentro de AppHomeProvider");
++  }
+   return ctx;
+ }
+Index: tmp_staffing.txt
+===================================================================
+diff --git a/tmp_staffing.txt b/tmp_staffing.txt
+deleted file mode 100644
+--- a/tmp_staffing.txt	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ /dev/null	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
+@@ -1,218 +0,0 @@
+-import React, { useState, useEffect } from 'react';
+-import WorkRequestCard from '../../../../components/ui/WorkManagement/WorkRequestCard';
+-import AssignAdminModal from '../../../../components/ui/WorkManagement/AssignAdminModal';
+-import { employeeRequestsAPI } from '../../../../api/employeeRequests';
+-
+-export default function GestaoTrabalho() {
+-  const [searchTerm, setSearchTerm] = useState('');
+-  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+-  const [selectedRequestId, setSelectedRequestId] = useState(null);
+-  const [loading, setLoading] = useState(true);
+-  const [error, setError] = useState(null);
+-  
+-  // Mock data para administradores
+-  const [adminList] = useState([
+-    { id: 1, name: 'Admin01', requestCount: 6 },
+-    { id: 2, name: 'admin02', requestCount: 8 },
+-    { id: 3, name: 'admin03', requestCount: 9 },
+-    { id: 4, name: 'admin04', requestCount: 14 },
+-    { id: 5, name: 'admin05', requestCount: 7 },
+-    { id: 6, name: 'admin06', requestCount: 10 },
+-  ]);
+-
+-  const [workRequests, setWorkRequests] = useState([]);
+-
+-  // Mock data de exemplo para testes
+-  const mockWorkRequests = [
+-    {
+-      id: 1,
+-      companyName: "Clebin Ltda",
+-      jobRole: "Tubista",
+-      workforceCount: 3,
+-      administrator: "N/A",
+-      startDate: "10/11/2025",
+-      endDate: "20/12/2025",
+-      status: "Por fazer"
+-    },
+-    {
+-      id: 2,
+-      companyName: "Tech Green Solutions",
+-      jobRole: "Desenvolvedor Full Stack",
+-      workforceCount: 5,
+-      administrator: "admin02",
+-      startDate: "01/11/2025",
+-      endDate: "15/12/2025",
+-      status: "Em andamento"
+-    },
+-    {
+-      id: 3,
+-      companyName: "Innova Labs",
+-      jobRole: "Designer Gráfico",
+-      workforceCount: 2,
+-      administrator: "N/A",
+-      startDate: "15/11/2025",
+-      endDate: "25/01/2026",
+-      status: "Por fazer"
+-    },
+-    {
+-      id: 4,
+-      companyName: "StartUp Azul",
+-      jobRole: "Analista de Dados",
+-      workforceCount: 4,
+-      administrator: "admin04",
+-      startDate: "05/11/2025",
+-      endDate: "10/02/2026",
+-      status: "Em andamento"
+-    }
+-  ];
+-
+-  // Buscar requisições da API ao montar o componente
+-  useEffect(() => {
+-    const fetchRequests = async () => {
+-      try {
+-        setLoading(true);
+-        const data = await employeeRequestsAPI.getAll();
+-        
+-        // Se não houver dados na API, usar mock data
+-        let transformedData = [];
+-        if (data && data.length > 0) {
+-          // Transformar os dados da API para o formato esperado pelo componente
+-          transformedData = data.map(request => ({
+-            id: request.id,
+-            companyName: request.companyId ? `Empresa ${request.companyId}` : 'N/A',
+-            jobRole: request.requestedRole,
+-            workforceCount: 1, // Placeholder - ajustar conforme necessário
+-            administrator: 'N/A', // Placeholder - ajustar quando tiver administrador atribuído
+-            startDate: request.createdAt ? new Date(request.createdAt).toLocaleDateString('pt-PT') : 'N/A',
+-            endDate: 'dd/mm/aaaa', // Placeholder - ajustar conforme necessário
+-            status: request.state === 'PENDING' ? 'Por fazer' : request.state === 'IN_PROGRESS' ? 'Em andamento' : 'Concluído'
+-          }));
+-        } else {
+-          // Usar mock data quando não houver dados na API
+-          transformedData = mockWorkRequests;
+-        }
+-        
+-        setWorkRequests(transformedData);
+-        setError(null);
+-      } catch (err) {
+-        console.error('Erro ao buscar requisições:', err);
+-        // Em caso de erro, usar mock data para não quebrar a experiência
+-        setWorkRequests(mockWorkRequests);
+-        setError(null);
+-      } finally {
+-        setLoading(false);
+-      }
+-    };
+-
+-    fetchRequests();
+-  }, []);
+-
+-  const handleSearch = (event) => {
+-    setSearchTerm(event.target.value);
+-  };
+-
+-  const handleAssignAdmin = (requestId) => {
+-    setSelectedRequestId(requestId);
+-    setIsAssignModalOpen(true);
+-  };
+-
+-  const handleCloseModal = () => {
+-    setIsAssignModalOpen(false);
+-    setSelectedRequestId(null);
+-  };
+-
+-  const handleAssignAdminConfirm = (admin) => {
+-    // Aqui você implementará a lógica para atribuir o admin à requisição
+-    console.log(`Atribuindo admin ${admin.name} à requisição ${selectedRequestId}`);
+-    handleCloseModal();
+-  };
+-
+-  return (
+-    <section className="space-y-6">
+-      <header>
+-          <h1 className="text-3xl md:text-4xl font-extrabold text-primary">
+-            Gestão de Trabalho
+-          </h1>
+-        <p className="text-body text-base-content/70 mt-2">
+-          Configure fluxos de trabalho, cargos e equipes empresariais.
+-        </p>
+-      </header>
+-
+-      <section className="bg-base-100 border border-base-200 rounded-3xl shadow-xl p-8 space-y-6 md:p-10">
+-        <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+-          <h2 className="text-3xl md:text-4xl font-extrabold text-primary">Requisições</h2>
+-
+-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4 w-full md:w-auto md:justify-end">
+-            <label className="input input-bordered flex items-center gap-2 w-full md:w-72">
+-              <input
+-                type="search"
+-                className="grow"
+-                placeholder="Pesquisar requisição"
+-                value={searchTerm}
+-                onChange={handleSearch}
+-              />
+-              <span className="btn btn-ghost btn-circle btn-sm pointer-events-none">
+-                <svg
+-                  xmlns="http://www.w3.org/2000/svg"
+-                  className="h-4 w-4 stroke-current"
+-                  fill="none"
+-                  viewBox="0 0 24 24"
+-                  strokeWidth="2"
+-                >
+-                  <path
+-                    strokeLinecap="round"
+-                    strokeLinejoin="round"
+-                    d="M21 21l-4.35-4.35m0 0A7 7 0 1010.3 17a7 7 0 006.35-6.35z"
+-                  />
+-                </svg>
+-              </span>
+-            </label>
+-          </div>
+-        </header>
+-
+-        {loading && (
+-          <div className="flex justify-center items-center py-8">
+-            <span className="loading loading-spinner loading-lg"></span>
+-          </div>
+-        )}
+-
+-        {error && (
+-          <div className="alert alert-error shadow-md mb-4">
+-            <span className="text-body">{error}</span>
+-          </div>
+-        )}
+-
+-        {!loading && workRequests.length === 0 && (
+-          <div className="alert alert-info shadow-md">
+-            <span className="text-body">Nenhuma requisição encontrada.</span>
+-          </div>
+-        )}
+-
+-        <div className="space-y-4">
+-          {workRequests.map((request) => (
+-            <WorkRequestCard
+-              key={request.id}
+-              companyName={request.companyName}
+-              jobRole={request.jobRole}
+-              workforceCount={request.workforceCount}
+-              administrator={request.administrator}
+-              startDate={request.startDate}
+-              endDate={request.endDate}
+-              status={request.status}
+-              onAssignAdmin={() => handleAssignAdmin(request.id)}
+-            />
+-          ))}
+-        </div>
+-      </section>
+-
+-      <AssignAdminModal
+-        open={isAssignModalOpen}
+-        onClose={handleCloseModal}
+-        onAssign={handleAssignAdminConfirm}
+-        adminList={adminList}
+-      />
+-    </section>
+-  );
+-}
+-
+-
+Index: TEMP_AccountDetailsService_copy.txt
+===================================================================
+diff --git a/TEMP_AccountDetailsService_copy.txt b/TEMP_AccountDetailsService_copy.txt
+deleted file mode 100644
+--- a/TEMP_AccountDetailsService_copy.txt	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ /dev/null	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
+@@ -1,26 +0,0 @@
+-package com.teamfoundry.backend.security.service;
+-
+-import com.teamfoundry.backend.account.model.Account;
+-import com.teamfoundry.backend.account.repository.AccountRepository;
+-import org.springframework.security.core.GrantedAuthority;
+-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+-import org.springframework.security.core.userdetails.User;
+-import org.springframework.security.core.userdetails.UserDetails;
+-import org.springframework.security.core.userdetails.UserDetailsService;
+-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+-
+-import java.util.List;
+-import java.util.Optional;
+-
+-public class AccountDetailsService implements UserDetailsService {
+-    private AccountRepository repository;
+-
+-    @Override
+-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+-        Account acc = repository.findByEmail(username)
+-                .orElseThrow(() -> new UsernameNotFoundException("Utilizador não encontrado"));
+-        List<GrantedAuthority> auth = List.of(new SimpleGrantedAuthority("ROLE_"+ acc.getRole().name()));
+-        return new User(acc.getEmail(), acc.getPassword(), auth);
+-    }
+-}
+-
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"a7dae958-fb9c-447a-93ab-f5d1d5d4e299\" name=\"Changes\" comment=\"Fix Preferences.jsx &#10;Dropdown Animado\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/Account.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/Account.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/AdminAccount.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/AdminAccount.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/CompanyAccount.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/CompanyAccount.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/CompanyAccountManager.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/CompanyAccountManager.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/EmployeeAccount.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/EmployeeAccount.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/company/ActivitySectors.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/company/ActivitySectors.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/company/CompanyActivitySectors.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/company/CompanyActivitySectors.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/EmployeeCertifications.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/EmployeeCertification.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/EmployeeFunction.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/EmployeeRole.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/Function.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/PrefRole.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/GeoArea.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/PrefGeoArea.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ComposerSettings\">\r\n    <execution />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"JSX File\" />\r\n        <option value=\"JavaScript File\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"EmplyeeRegister\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;LuisAssis24&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/LuisAssis24/teamfoundry-workforce-management&quot;,\r\n    &quot;accountId&quot;: &quot;744e2a3a-bde5-4768-bf04-afd756c9b8e6&quot;\r\n  }\r\n}</component>\r\n  <component name=\"KubernetesApiPersistence\">{}</component>\r\n  <component name=\"KubernetesApiProvider\">{\r\n  &quot;isMigrated&quot;: true\r\n}</component>\r\n  <component name=\"PhpWorkspaceProjectConfiguration\" interpreter_name=\"PHP\" />\r\n  <component name=\"ProblemsViewState\">\r\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 8\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"34vCubPTpiW0fbRzlf0VXysOloh\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;Docker.docker-compose.yml.teamfoundry_postgres: Compose Deployment.executor&quot;: &quot;Run&quot;,\r\n    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,\r\n    &quot;Jest.findNameReturnsValueFromRepository.executor&quot;: &quot;Run&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\r\n    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;C:/Users/draga/Ambiente de Trabalho/Trabalhos Uni/teamfoundry-workforce-management&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/joaog/Desktop/TeamFoundry/teamfoundry-workforce-management/frontend/node_modules/jest&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,\r\n    &quot;ts.external.directory.path&quot;: &quot;C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA 2025.1\\\\plugins\\\\javascript-plugin\\\\jsLanguageServicesImpl\\\\external&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  },\r\n  &quot;keyToStringList&quot;: {\r\n    &quot;DatabaseDriversLRU&quot;: [\r\n      &quot;postgresql&quot;\r\n    ]\r\n  }\r\n}</component>\r\n  <component name=\"ReactDesignerToolWindowState\">\r\n    <option name=\"myId2Visible\">\r\n      <map>\r\n        <entry key=\"com.intellij.reactbuddy.reactComponents\" value=\"false\" />\r\n        <entry key=\"com.intellij.reactbuddy.reactInspector\" value=\"false\" />\r\n        <entry key=\"com.intellij.reactbuddy.storybook\" value=\"false\" />\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\draga\\Ambiente de Trabalho\\Trabalhos Uni\\teamfoundry-workforce-management\\frontend\\src\\pages\\profile\" />\r\n      <recent name=\"C:\\Users\\draga\\Ambiente de Trabalho\\Trabalhos Uni\\teamfoundry-workforce-management\\frontend\\src\\components\\ui\\Modal\" />\r\n      <recent name=\"C:\\Users\\draga\\Ambiente de Trabalho\\Trabalhos Uni\\teamfoundry-workforce-management\\frontend\\src\\pages\\profile\\Employee\\JobOffers\" />\r\n      <recent name=\"C:\\Users\\draga\\Ambiente de Trabalho\\Trabalhos Uni\\teamfoundry-workforce-management\\backend\\src\\main\\java\\com\\teamfoundry\\backend\\common\" />\r\n      <recent name=\"C:\\Users\\draga\\Ambiente de Trabalho\\Trabalhos Uni\\teamfoundry-workforce-management\\frontend\\src\\api\\config\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Docker.docker-compose.yml: Compose Deployment\">\r\n    <configuration name=\"findNameReturnsValueFromRepository\" type=\"JavaScriptTestRunnerJest\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <node-interpreter value=\"project\" />\r\n      <jest-package value=\"$PROJECT_DIR$/frontend/node_modules/jest\" />\r\n      <working-dir value=\"$PROJECT_DIR$/frontend\" />\r\n      <envs />\r\n      <scope-kind value=\"TEST\" />\r\n      <test-file value=\"$PROJECT_DIR$/frontend/src/components/Testes/SampleComponent.test.jsx\" />\r\n      <test-names>\r\n        <test-name value=\"findNameReturnsValueFromRepository\" />\r\n      </test-names>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration default=\"true\" type=\"docker-deploy\" factoryName=\"docker-compose.yml\" temporary=\"true\">\r\n      <deployment type=\"docker-compose.yml\">\r\n        <settings />\r\n      </deployment>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"docker-compose.yml: Compose Deployment\" type=\"docker-deploy\" factoryName=\"docker-compose.yml\" temporary=\"true\" server-name=\"Docker\">\r\n      <deployment type=\"docker-compose.yml\">\r\n        <settings>\r\n          <option name=\"sourceFilePath\" value=\"docker-compose.yml\" />\r\n        </settings>\r\n      </deployment>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"docker-compose.yml.teamfoundry_postgres: Compose Deployment\" type=\"docker-deploy\" factoryName=\"docker-compose.yml\" temporary=\"true\" server-name=\"Docker\">\r\n      <deployment type=\"docker-compose.yml\">\r\n        <settings>\r\n          <option name=\"services\">\r\n            <list>\r\n              <option value=\"teamfoundry_postgres\" />\r\n            </list>\r\n          </option>\r\n          <option name=\"sourceFilePath\" value=\"docker-compose.yml\" />\r\n        </settings>\r\n      </deployment>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Docker.docker-compose.yml: Compose Deployment\" />\r\n        <item itemvalue=\"Docker.docker-compose.yml.teamfoundry_postgres: Compose Deployment\" />\r\n        <item itemvalue=\"Jest.findNameReturnsValueFromRepository\" />\r\n        <item itemvalue=\"Docker.docker-compose.yml: Compose Deployment\" />\r\n        <item itemvalue=\"Jest.findNameReturnsValueFromRepository\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129\" />\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"a7dae958-fb9c-447a-93ab-f5d1d5d4e299\" name=\"Changes\" comment=\"\" />\r\n      <created>1762084882236</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1762084882236</updated>\r\n      <workItem from=\"1762084883878\" duration=\"21000\" />\r\n      <workItem from=\"1762091469964\" duration=\"76000\" />\r\n      <workItem from=\"1762094001251\" duration=\"2765000\" />\r\n      <workItem from=\"1762246782593\" duration=\"518000\" />\r\n      <workItem from=\"1762251955265\" duration=\"1640000\" />\r\n      <workItem from=\"1762269561409\" duration=\"37000\" />\r\n      <workItem from=\"1762342213231\" duration=\"34000\" />\r\n      <workItem from=\"1762342346529\" duration=\"11000\" />\r\n      <workItem from=\"1762342365107\" duration=\"12000\" />\r\n      <workItem from=\"1762343724969\" duration=\"31000\" />\r\n      <workItem from=\"1762343772875\" duration=\"5000\" />\r\n      <workItem from=\"1762344150441\" duration=\"327000\" />\r\n      <workItem from=\"1762345186853\" duration=\"419000\" />\r\n      <workItem from=\"1762358190210\" duration=\"6393000\" />\r\n      <workItem from=\"1762436874748\" duration=\"230000\" />\r\n      <workItem from=\"1762438641421\" duration=\"5000\" />\r\n      <workItem from=\"1762441766047\" duration=\"281000\" />\r\n      <workItem from=\"1762442119332\" duration=\"49000\" />\r\n      <workItem from=\"1762442232719\" duration=\"101000\" />\r\n      <workItem from=\"1762443631079\" duration=\"16000\" />\r\n      <workItem from=\"1762512585602\" duration=\"531000\" />\r\n      <workItem from=\"1762515533644\" duration=\"32000\" />\r\n      <workItem from=\"1762627382488\" duration=\"2600000\" />\r\n      <workItem from=\"1762702866572\" duration=\"121000\" />\r\n      <workItem from=\"1762704320510\" duration=\"6000\" />\r\n      <workItem from=\"1762704336685\" duration=\"680000\" />\r\n      <workItem from=\"1762809067972\" duration=\"13000\" />\r\n      <workItem from=\"1762948677077\" duration=\"233000\" />\r\n      <workItem from=\"1762949436526\" duration=\"21000\" />\r\n      <workItem from=\"1762949521722\" duration=\"12000\" />\r\n      <workItem from=\"1762949627915\" duration=\"1635000\" />\r\n      <workItem from=\"1762969694442\" duration=\"2838000\" />\r\n      <workItem from=\"1762972598953\" duration=\"721000\" />\r\n      <workItem from=\"1763463924704\" duration=\"6320000\" />\r\n      <workItem from=\"1763480340076\" duration=\"218000\" />\r\n      <workItem from=\"1763550194133\" duration=\"345000\" />\r\n      <workItem from=\"1763554962973\" duration=\"1118000\" />\r\n      <workItem from=\"1763569777382\" duration=\"325000\" />\r\n      <workItem from=\"1763583755763\" duration=\"84000\" />\r\n      <workItem from=\"1763588064716\" duration=\"321000\" />\r\n      <workItem from=\"1763590834566\" duration=\"38000\" />\r\n      <workItem from=\"1763902860713\" duration=\"34000\" />\r\n      <workItem from=\"1763904317542\" duration=\"15932000\" />\r\n      <workItem from=\"1763989419419\" duration=\"1009000\" />\r\n      <workItem from=\"1764078411961\" duration=\"5049000\" />\r\n      <workItem from=\"1764085620638\" duration=\"68000\" />\r\n      <workItem from=\"1764151885978\" duration=\"12000\" />\r\n      <workItem from=\"1764152243290\" duration=\"257000\" />\r\n      <workItem from=\"1764153095769\" duration=\"153000\" />\r\n      <workItem from=\"1764513480370\" duration=\"6929000\" />\r\n      <workItem from=\"1764524233381\" duration=\"1108000\" />\r\n      <workItem from=\"1764796925520\" duration=\"5302000\" />\r\n      <workItem from=\"1764804409889\" duration=\"138000\" />\r\n      <workItem from=\"1764804563041\" duration=\"271000\" />\r\n      <workItem from=\"1764861113741\" duration=\"4648000\" />\r\n      <workItem from=\"1764963104669\" duration=\"4928000\" />\r\n      <workItem from=\"1764968344990\" duration=\"1691000\" />\r\n      <workItem from=\"1765121170109\" duration=\"6959000\" />\r\n      <workItem from=\"1765204622467\" duration=\"17524000\" />\r\n      <workItem from=\"1765278305625\" duration=\"680000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"paleta certa\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1762094139652</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1762094139652</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"small changes\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1762342221517</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1762342221517</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"small changes\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1762345285968</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1762345285968</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"Implement password reset functionality and update email service\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1762628616017</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1762628616017</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\"Backend inicia, server email com problemas\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1762704711746</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1762704711746</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"correçao Navbar.jsx\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1763467462690</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1763467462690</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"Login e Register feitos&#10;Faltam logins por email e linkedin&#10;Aguarda testes estruturais\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1763471752630</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1763471752630</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"Verificaçoes Reset Password\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1763472392588</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1763472392589</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00009\" summary=\"Comentários Login e Register\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1763473395563</created>\r\n      <option name=\"number\" value=\"00009\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1763473395563</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00010\" summary=\"Ajustes Layout\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1763916689947</created>\r\n      <option name=\"number\" value=\"00010\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1763916689947</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00011\" summary=\"Refactors e mais refactors\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1763942605831</created>\r\n      <option name=\"number\" value=\"00011\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1763942605831</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00012\" summary=\"Seeders e Historico de Trabalho Perfil\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1764079041220</created>\r\n      <option name=\"number\" value=\"00012\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1764079041220</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00013\" summary=\"Componente Tabs reutilizavel&#10;Perfil Info quase completo, a espera do banco de dados para as certificações\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1764085237510</created>\r\n      <option name=\"number\" value=\"00013\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00013\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1764085237510</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00014\" summary=\"Company Profile Layout e Mudança de email do responsável\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1764518354905</created>\r\n      <option name=\"number\" value=\"00014\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00014\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1764518354905</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00015\" summary=\"Requisições a partir da empresa funcionais\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1764521033236</created>\r\n      <option name=\"number\" value=\"00015\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00015\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1764521033236</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00016\" summary=\"Ajustes Register (Funcioanrio e Empresa)&#10;Toasts atualizados\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1764804797721</created>\r\n      <option name=\"number\" value=\"00016\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00016\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1764804797721</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00017\" summary=\"Profile Pciture&#10;Documentos Funcionais\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1764970736108</created>\r\n      <option name=\"number\" value=\"00017\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00017\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1764970736108</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00018\" summary=\"Enhance document upload functionality with file type and size validation\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1765128424760</created>\r\n      <option name=\"number\" value=\"00018\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00018\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1765128424760</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00019\" summary=\"Perfil de Funcionario - Falta Prox Passos&#10;Ajustes de interface login e register&#10;Dark Mode&#10;Definições\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1765220973227</created>\r\n      <option name=\"number\" value=\"00019\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00019\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1765220973227</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00020\" summary=\"Perfil de Empresa - Falta Eliminação de conta\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1765223114618</created>\r\n      <option name=\"number\" value=\"00020\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00020\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1765223114618</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"21\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"COLUMN_ID_WIDTH\">\r\n                <map>\r\n                  <entry key=\"Table.Default.Author.ColumnIdWidth\" value=\"107\" />\r\n                  <entry key=\"Table.Default.Date.ColumnIdWidth\" value=\"81\" />\r\n                  <entry key=\"Table.GitHub.CommitStatus.ColumnIdWidth\" value=\"81\" />\r\n                </map>\r\n              </option>\r\n              <option name=\"FILTERS\">\r\n                <map>\r\n                  <entry key=\"branch\">\r\n                    <value>\r\n                      <list>\r\n                        <option value=\"main\" />\r\n                      </list>\r\n                    </value>\r\n                  </entry>\r\n                </map>\r\n              </option>\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"paleta certa\" />\r\n    <MESSAGE value=\"small changes\" />\r\n    <MESSAGE value=\"Implement password reset functionality and update email service\" />\r\n    <MESSAGE value=\"Backend inicia, server email com problemas\" />\r\n    <MESSAGE value=\"correçao Navbar.jsx\" />\r\n    <MESSAGE value=\"Login e Register feitos&#10;Faltam logins por email e linkedin&#10;Aguarda testes estruturais\" />\r\n    <MESSAGE value=\"Verificaçoes Reset Password\" />\r\n    <MESSAGE value=\"Comentários Login e Register\" />\r\n    <MESSAGE value=\"Ajustes Layout\" />\r\n    <MESSAGE value=\"Refactors e mais refactors\" />\r\n    <MESSAGE value=\"Seeders e Historico de Trabalho Perfil\" />\r\n    <MESSAGE value=\"Componente Tabs reutilizavel&#10;Perfil Info quase completo, a espera do banco de dados para as certificações\" />\r\n    <MESSAGE value=\"Company Profile Layout e Mudança de email do responsável\" />\r\n    <MESSAGE value=\"Requisições a partir da empresa funcionais\" />\r\n    <MESSAGE value=\"Ajustes Register (Funcioanrio e Empresa)&#10;Toasts atualizados\" />\r\n    <MESSAGE value=\"Cloud de Imagens Funcional.\" />\r\n    <MESSAGE value=\"Profile Pciture&#10;Documentos Funcionais\" />\r\n    <MESSAGE value=\"Enhance document upload functionality with file type and size validation\" />\r\n    <MESSAGE value=\"Perfil de Funcionario - Falta Prox Passos&#10;Ajustes de interface login e register\" />\r\n    <MESSAGE value=\"Perfil de Funcionario - Falta Prox Passos&#10;Ajustes de interface login e register&#10;Dark Mode&#10;Definições\" />\r\n    <MESSAGE value=\"Perfil de Empresa - Falta Eliminação de conta\" />\r\n    <MESSAGE value=\"Fix Preferences.jsx\" />\r\n    <MESSAGE value=\"Fix Preferences.jsx &#10;Dropdown Animado\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Fix Preferences.jsx &#10;Dropdown Animado\" />\r\n  </component>\r\n  <component name=\"github-copilot-workspace\">\r\n    <instructionFileLocations>\r\n      <option value=\".github/instructions\" />\r\n    </instructionFileLocations>\r\n    <promptFileLocations>\r\n      <option value=\".github/prompts\" />\r\n    </promptFileLocations>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ b/.idea/workspace.xml	(date 1765303217095)
+@@ -5,18 +5,19 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Fix Preferences.jsx &#10;Dropdown Animado">
++      <change afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyApprovalModal.jsx" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyInfoModal.jsx" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/Account.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/AdminAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/AdminAccount.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/CompanyAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/CompanyAccount.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/CompanyAccountManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/CompanyAccountManager.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/EmployeeAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/EmployeeAccount.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/company/ActivitySectors.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/company/ActivitySectors.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/company/CompanyActivitySectors.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/company/CompanyActivitySectors.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/EmployeeCertifications.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/EmployeeCertification.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/EmployeeFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/EmployeeRole.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/Function.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/PrefRole.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/GeoArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account_options/model/employee/PrefGeoArea.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/TEMP_AccountDetailsService_copy.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/teamRequest/TeamRequestResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/teamRequest/TeamRequestResponse.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/TeamRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/TeamRequestService.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/frontend/src/components/ui/Button/Button.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ui/Button/Button.jsx" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/AppHome/AppHomeContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/AppHome/AppHomeContext.jsx" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/Credentials.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/Credentials.jsx" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/Credential/CredentialCard.jsx" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/Credential/CredentialList.jsx" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Staffing/Staffing.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Staffing/Staffing.jsx" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/tmp_staffing.txt" beforeDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -29,8 +30,8 @@
+   <component name="FileTemplateManagerImpl">
+     <option name="RECENT_TEMPLATES">
+       <list>
+-        <option value="JSX File" />
+         <option value="JavaScript File" />
++        <option value="JSX File" />
+       </list>
+     </option>
+   </component>
+@@ -110,11 +111,11 @@
+   </component>
+   <component name="RecentsManager">
+     <key name="MoveFile.RECENT_KEYS">
++      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\SuperAdmin\Credentials\components\Credentials" />
++      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\SuperAdmin\Credentials\components\Modal\Company" />
++      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\SuperAdmin\Credentials\components\Modal\Admin" />
++      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\SuperAdmin\Credentials\components\Modal" />
+       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\profile" />
+-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\components\ui\Modal" />
+-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\profile\Employee\JobOffers" />
+-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\backend\src\main\java\com\teamfoundry\backend\common" />
+-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\api\config" />
+     </key>
+   </component>
+   <component name="RunManager" selected="Docker.docker-compose.yml: Compose Deployment">
+@@ -243,6 +244,7 @@
+       <workItem from="1765121170109" duration="6959000" />
+       <workItem from="1765204622467" duration="17524000" />
+       <workItem from="1765278305625" duration="680000" />
++      <workItem from="1765298251028" duration="4296000" />
+     </task>
+     <task id="LOCAL-00001" summary="paleta certa">
+       <option name="closed" value="true" />
+Index: frontend/src/components/ui/Button/Button.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\r\nimport PropTypes from \"prop-types\";\r\n\r\n/**\r\n * Botão reutilizável\r\n * Props:\r\n * - label: texto do botão\r\n * - icon: elemento React opcional (ex: <i className=\"bi bi-lock\" />)\r\n * - variant: 'primary' | 'secondary' | 'accent' | 'neutral' | 'outline'\r\n * - className: estilos extra opcionais\r\n */\r\nexport const BUTTON_VARIANT_CLASSES = {\r\n  primary: \"btn-primary\",\r\n  secondary: \"btn-secondary\",\r\n  accent: \"btn-accent\",\r\n  neutral: \"btn-neutral\",\r\n  outline: \"btn-outline\",\r\n  ghost: \"btn-ghost\",\r\n  warning: \"btn-warning\",\r\n  success: \"btn-success\",\r\n};\r\n\r\nexport function getButtonVariantClass(variant = \"primary\") {\r\n  return BUTTON_VARIANT_CLASSES[variant] ?? BUTTON_VARIANT_CLASSES.primary;\r\n}\r\n\r\nexport default function Button({\r\n  label,\r\n  icon,\r\n  variant = \"primary\",\r\n  className = \"\",\r\n  fullWidth = true,\r\n  as: Component = \"button\",\r\n  ...props\r\n}) {\r\n  const variantClass = getButtonVariantClass(variant);\r\n  const widthClass = fullWidth ? \"w-full\" : \"w-auto\";\r\n  const baseClass = `btn ${variantClass} ${widthClass} flex items-center justify-center gap-2 ${className}`;\r\n  const finalProps =\r\n    Component === \"button\" && !(\"type\" in props)\r\n      ? { ...props, type: \"button\" }\r\n      : props;\r\n\r\n  return (\r\n    <Component className={baseClass} {...finalProps}>\r\n      {icon && <span className=\"text-lg\">{icon}</span>}\r\n      <span>{label}</span>\r\n    </Component>\r\n  );\r\n}\r\n\r\nButton.propTypes = {\r\n  label: PropTypes.string.isRequired,\r\n  icon: PropTypes.node,\r\n  variant: PropTypes.oneOf([\r\n    \"primary\",\r\n    \"secondary\",\r\n    \"accent\",\r\n    \"neutral\",\r\n    \"outline\",\r\n    \"ghost\",\r\n    \"warning\",\r\n    \"success\",\r\n  ]),\r\n  className: PropTypes.string,\r\n  fullWidth: PropTypes.bool,\r\n  as: PropTypes.elementType,\r\n};\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/components/ui/Button/Button.jsx b/frontend/src/components/ui/Button/Button.jsx
+--- a/frontend/src/components/ui/Button/Button.jsx	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ b/frontend/src/components/ui/Button/Button.jsx	(date 1765300762992)
+@@ -18,6 +18,8 @@
+   ghost: "btn-ghost",
+   warning: "btn-warning",
+   success: "btn-success",
++  error: "btn-error",
++  
+ };
+ 
+ export function getButtonVariantClass(variant = "primary") {
+Index: backend/src/main/java/com/teamfoundry/backend/teamRequests/service/TeamRequestService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.teamfoundry.backend.teamRequests.service;\r\n\r\nimport com.teamfoundry.backend.account.enums.UserType;\r\nimport com.teamfoundry.backend.superadmin.model.credentials.AdminAccount;\r\nimport com.teamfoundry.backend.account.model.company.CompanyAccount;\r\nimport com.teamfoundry.backend.superadmin.repository.credentials.AdminAccountRepository;\r\nimport com.teamfoundry.backend.teamRequests.dto.teamRequest.AssignedTeamRequestResponse;\r\nimport com.teamfoundry.backend.teamRequests.dto.teamRequest.TeamRequestRoleSummary;\r\nimport com.teamfoundry.backend.teamRequests.dto.AssignedAdminTeamRequestCount;\r\nimport com.teamfoundry.backend.teamRequests.dto.teamRequest.TeamRequestResponse;\r\nimport com.teamfoundry.backend.teamRequests.model.TeamRequest;\r\nimport com.teamfoundry.backend.teamRequests.repository.EmployeeRequestOfferRepository;\r\nimport com.teamfoundry.backend.teamRequests.repository.EmployeeRequestRepository;\r\nimport com.teamfoundry.backend.teamRequests.repository.TeamRequestRepository;\r\nimport lombok.RequiredArgsConstructor;\r\nimport org.springframework.data.domain.Sort;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.security.authentication.AnonymousAuthenticationToken;\r\nimport org.springframework.security.core.Authentication;\r\nimport org.springframework.security.core.context.SecurityContextHolder;\r\nimport org.springframework.stereotype.Service;\r\nimport org.springframework.transaction.annotation.Transactional;\r\nimport org.springframework.web.server.ResponseStatusException;\r\nimport java.util.stream.Collectors;\r\n\r\n\r\nimport java.util.*;\r\n\r\n@Service\r\n@RequiredArgsConstructor\r\n@Transactional(readOnly = true)\r\npublic class TeamRequestService {\r\n\r\n    private static final String ADMIN_TOKEN_PREFIX = \"admin:\";\r\n\r\n    private final TeamRequestRepository teamRequestRepository;\r\n    private final AdminAccountRepository adminAccountRepository;\r\n    private final EmployeeRequestRepository employeeRequestRepository;\r\n    private final EmployeeRequestOfferRepository employeeRequestOfferRepository;\r\n\r\n    public List<TeamRequestResponse> listAllWorkRequests() {\r\n        return teamRequestRepository\r\n                .findAll(Sort.by(Sort.Direction.DESC, \"createdAt\"))\r\n                .stream()\r\n                .map(this::toWorkRequestResponse)\r\n                .toList();\r\n    }\r\n\r\n    public List<AssignedAdminTeamRequestCount> listAssignableAdmins() {\r\n        Map<Integer, Long> counts = teamRequestRepository.countAssignmentsGroupedByAdmin()\r\n                .stream()\r\n                .filter(row -> row.getAdminId() != null)\r\n                .collect(Collectors.toMap(\r\n                        TeamRequestRepository.AdminAssignmentCount::getAdminId,\r\n                        TeamRequestRepository.AdminAssignmentCount::getTotal));\r\n\r\n        return adminAccountRepository\r\n                .findAll(Sort.by(Sort.Direction.ASC, \"username\"))\r\n                .stream()\r\n                .filter(admin -> admin.getRole() == UserType.ADMIN)\r\n                .map(admin -> new AssignedAdminTeamRequestCount(\r\n                        admin.getId(),\r\n                        admin.getUsername(),\r\n                        counts.getOrDefault(admin.getId(), 0L)))\r\n                .toList();\r\n    }\r\n\r\n    @Transactional\r\n    public TeamRequestResponse assignResponsibleAdmin(int requestId, int adminId) {\r\n        TeamRequest request = teamRequestRepository.findById(requestId)\r\n                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, \"Requisição não encontrada.\"));\r\n\r\n        AdminAccount admin = adminAccountRepository.findById(adminId)\r\n                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, \"Administrador não encontrado.\"));\r\n\r\n        if (admin.getRole() != UserType.ADMIN) {\r\n            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, \"Somente administradores comuns podem ser responsáveis.\");\r\n        }\r\n\r\n        request.setResponsibleAdminId(admin.getId());\r\n        TeamRequest saved = teamRequestRepository.save(request);\r\n        return toWorkRequestResponse(saved);\r\n    }\r\n\r\n    public List<AssignedTeamRequestResponse> listAssignedRequestsForAuthenticatedAdmin() {\r\n        AdminAccount admin = resolveAuthenticatedAdmin();\r\n        List<TeamRequest> requests = teamRequestRepository.findByResponsibleAdminId(admin.getId());\r\n        Map<Integer, Long> workforceByRequest = loadWorkforceCounts(requests);\r\n\r\n        return requests.stream()\r\n                .map(request -> toAssignedResponse(request, workforceByRequest.getOrDefault(request.getId(), 0L)))\r\n                .toList();\r\n    }\r\n\r\n    public TeamRequestResponse getAssignedRequest(int requestId) {\r\n        AdminAccount admin = resolveAuthenticatedAdmin();\r\n        TeamRequest request = loadRequestForAdmin(admin, requestId);\r\n        return toWorkRequestResponse(request);\r\n    }\r\n\r\n    public List<TeamRequestRoleSummary> listRoleSummariesForTeam(int requestId) {\r\n        AdminAccount admin = resolveAuthenticatedAdmin();\r\n        TeamRequest request = loadRequestForAdmin(admin, requestId);\r\n\r\n        Map<String, RoleAggregate> aggregates = new LinkedHashMap<>();\r\n        employeeRequestRepository.countByRoleForTeam(request.getId()).forEach(row -> {\r\n            aggregates.put(row.getRole(), new RoleAggregate(row.getRole(), row.getTotal(), row.getFilled(), 0L));\r\n        });\r\n\r\n        employeeRequestOfferRepository.countInvitesByTeamRequest(request.getId()).forEach(row -> {\r\n            RoleAggregate agg = aggregates.computeIfAbsent(row.getRole(),\r\n                    role -> new RoleAggregate(role, 0L, 0L, 0L));\r\n            agg.setProposalsSent(row.getTotal());\r\n        });\r\n\r\n        return aggregates.values().stream()\r\n                .map(agg -> new TeamRequestRoleSummary(\r\n                        agg.role(),\r\n                        agg.totalRequested(),\r\n                        agg.filled(),\r\n                        Math.max(agg.totalRequested() - agg.filled(), 0),\r\n                        agg.proposalsSent()\r\n                ))\r\n                .toList();\r\n    }\r\n\r\n    private Map<Integer, Long> loadWorkforceCounts(List<TeamRequest> requests) {\r\n        Set<Integer> ids = requests.stream()\r\n                .map(TeamRequest::getId)\r\n                .collect(Collectors.toSet());\r\n\r\n        if (ids.isEmpty()) {\r\n            return Collections.emptyMap();\r\n        }\r\n\r\n        return employeeRequestRepository.countByTeamRequestIds(ids)\r\n                .stream()\r\n                .collect(Collectors.toMap(\r\n                        EmployeeRequestRepository.TeamRequestCount::getRequestId,\r\n                        EmployeeRequestRepository.TeamRequestCount::getTotal));\r\n    }\r\n\r\n    private TeamRequest loadRequestForAdmin(AdminAccount admin, int requestId) {\r\n        TeamRequest request = teamRequestRepository.findById(requestId)\r\n                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, \"Requisição não encontrada.\"));\r\n        if (!Objects.equals(request.getResponsibleAdminId(), admin.getId())) {\r\n            throw new ResponseStatusException(HttpStatus.FORBIDDEN, \"Requisição não atribuída a este administrador.\");\r\n        }\r\n        return request;\r\n    }\r\n\r\n    private TeamRequestResponse toWorkRequestResponse(TeamRequest request) {\r\n        CompanyAccount company = request.getCompany();\r\n        String companyName = company != null ? company.getName() : null;\r\n        String companyEmail = company != null ? company.getEmail() : null;\r\n\r\n        return new TeamRequestResponse(\r\n                request.getId(),\r\n                companyName,\r\n                companyEmail,\r\n                request.getTeamName(),\r\n                request.getDescription(),\r\n                request.getState(),\r\n                request.getResponsibleAdminId(),\r\n                request.getStartDate(),\r\n                request.getEndDate(),\r\n                request.getCreatedAt()\r\n        );\r\n    }\r\n\r\n    private AssignedTeamRequestResponse toAssignedResponse(TeamRequest request, long workforceNeeded) {\r\n        CompanyAccount company = request.getCompany();\r\n        return new AssignedTeamRequestResponse(\r\n                request.getId(),\r\n                company != null ? company.getName() : null,\r\n                company != null ? company.getEmail() : null,\r\n                company != null ? company.getPhone() : null,\r\n                workforceNeeded,\r\n                request.getState(),\r\n                request.getCreatedAt()\r\n        );\r\n    }\r\n\r\n    private AdminAccount resolveAuthenticatedAdmin() {\r\n        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();\r\n        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {\r\n            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, \"Autenticação requerida.\");\r\n        }\r\n\r\n        String principal = authentication.getName();\r\n        if (principal == null || !principal.startsWith(ADMIN_TOKEN_PREFIX)) {\r\n            throw new ResponseStatusException(HttpStatus.FORBIDDEN, \"Somente administradores autenticados.\");\r\n        }\r\n\r\n        String username = principal.substring(ADMIN_TOKEN_PREFIX.length());\r\n        return adminAccountRepository.findByUsernameIgnoreCase(username)\r\n                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, \"Administrador não encontrado.\"));\r\n    }\r\n\r\n    private static class RoleAggregate {\r\n        private final String role;\r\n        private final long totalRequested;\r\n        private final long filled;\r\n        private long proposalsSent;\r\n\r\n        RoleAggregate(String role, long totalRequested, long filled, long proposalsSent) {\r\n            this.role = role;\r\n            this.totalRequested = totalRequested;\r\n            this.filled = filled;\r\n            this.proposalsSent = proposalsSent;\r\n        }\r\n\r\n        String role() {\r\n            return role;\r\n        }\r\n\r\n        long totalRequested() {\r\n            return totalRequested;\r\n        }\r\n\r\n        long filled() {\r\n            return filled;\r\n        }\r\n\r\n        long proposalsSent() {\r\n            return proposalsSent;\r\n        }\r\n\r\n        void setProposalsSent(long proposalsSent) {\r\n            this.proposalsSent = proposalsSent;\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/TeamRequestService.java b/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/TeamRequestService.java
+--- a/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/TeamRequestService.java	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ b/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/TeamRequestService.java	(date 1765302309532)
+@@ -21,10 +21,8 @@
+ import org.springframework.stereotype.Service;
+ import org.springframework.transaction.annotation.Transactional;
+ import org.springframework.web.server.ResponseStatusException;
+-import java.util.stream.Collectors;
+-
+-
+ import java.util.*;
++import java.util.stream.Collectors;
+ 
+ @Service
+ @RequiredArgsConstructor
+@@ -39,10 +37,15 @@
+     private final EmployeeRequestOfferRepository employeeRequestOfferRepository;
+ 
+     public List<TeamRequestResponse> listAllWorkRequests() {
+-        return teamRequestRepository
++        List<TeamRequest> requests = teamRequestRepository
+                 .findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
+                 .stream()
+-                .map(this::toWorkRequestResponse)
++                .toList();
++
++        Map<Integer, Long> workforceByRequest = loadWorkforceCounts(requests);
++
++        return requests.stream()
++                .map(request -> toWorkRequestResponse(request, workforceByRequest.getOrDefault(request.getId(), 0L)))
+                 .toList();
+     }
+ 
+@@ -79,7 +82,8 @@
+ 
+         request.setResponsibleAdminId(admin.getId());
+         TeamRequest saved = teamRequestRepository.save(request);
+-        return toWorkRequestResponse(saved);
++        Map<Integer, Long> workforce = loadWorkforceCounts(List.of(saved));
++        return toWorkRequestResponse(saved, workforce.getOrDefault(saved.getId(), 0L));
+     }
+ 
+     public List<AssignedTeamRequestResponse> listAssignedRequestsForAuthenticatedAdmin() {
+@@ -95,7 +99,8 @@
+     public TeamRequestResponse getAssignedRequest(int requestId) {
+         AdminAccount admin = resolveAuthenticatedAdmin();
+         TeamRequest request = loadRequestForAdmin(admin, requestId);
+-        return toWorkRequestResponse(request);
++        Map<Integer, Long> workforce = loadWorkforceCounts(List.of(request));
++        return toWorkRequestResponse(request, workforce.getOrDefault(request.getId(), 0L));
+     }
+ 
+     public List<TeamRequestRoleSummary> listRoleSummariesForTeam(int requestId) {
+@@ -149,7 +154,7 @@
+         return request;
+     }
+ 
+-    private TeamRequestResponse toWorkRequestResponse(TeamRequest request) {
++    private TeamRequestResponse toWorkRequestResponse(TeamRequest request, long workforceNeeded) {
+         CompanyAccount company = request.getCompany();
+         String companyName = company != null ? company.getName() : null;
+         String companyEmail = company != null ? company.getEmail() : null;
+@@ -162,6 +167,7 @@
+                 request.getDescription(),
+                 request.getState(),
+                 request.getResponsibleAdminId(),
++                Math.max(workforceNeeded, 0),
+                 request.getStartDate(),
+                 request.getEndDate(),
+                 request.getCreatedAt()
+Index: frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyApprovalModal.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyApprovalModal.jsx b/frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyApprovalModal.jsx
+new file mode 100644
+--- /dev/null	(date 1765299432892)
++++ b/frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyApprovalModal.jsx	(date 1765299432892)
+@@ -0,0 +1,62 @@
++import Modal from "../../../../../../../components/ui/Modal/Modal.jsx";
++import Button from "../../../../../../../components/ui/Button/Button.jsx";
++
++export default function CompanyApprovalModal({
++  open,
++  company,
++  password,
++  onPasswordChange,
++  onConfirm,
++  onCancel,
++  loading = false,
++  error,
++}) {
++  return (
++    <Modal
++      open={open}
++      title="Aprovar credencial"
++      onClose={onCancel}
++      actions={
++        <div className="flex w-full justify-end gap-3">
++          <Button
++            label="Cancelar"
++            variant="outline"
++            className="max-w-32 btn btn-secondary"
++            onClick={onCancel}
++            disabled={loading}
++          />
++          <Button
++            label={loading ? "Aprovando..." : "Confirmar"}
++            variant="primary"
++            className="max-w-32"
++            onClick={onConfirm}
++            disabled={loading}
++          />
++        </div>
++      }
++    >
++      {error && (
++        <div className="alert alert-error mb-4">
++          <span>{error}</span>
++        </div>
++      )}
++
++      <div className="space-y-4">
++        <p className="text-base-content">
++          Ao confirmar, a credencial da empresa "{company?.companyName}" será aprovada.
++        </p>
++
++        <label className="form-control w-full">
++          <span className="label-text font-medium">Password Super Admin</span>
++          <input
++            type="password"
++            value={password}
++            onChange={(event) => onPasswordChange(event.target.value)}
++            className="input input-bordered w-full"
++            disabled={loading}
++          />
++        </label>
++      </div>
++    </Modal>
++  );
++}
+Index: frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyInfoModal.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyInfoModal.jsx b/frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyInfoModal.jsx
+new file mode 100644
+--- /dev/null	(date 1765300768873)
++++ b/frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyInfoModal.jsx	(date 1765300768873)
+@@ -0,0 +1,53 @@
++import Modal from "../../../../../../../components/ui/Modal/Modal.jsx";
++import Button from "../../../../../../../components/ui/Button/Button.jsx";
++
++const fields = [
++  { key: "companyName", label: "Nome da empresa" },
++  { key: "credentialEmail", label: "Email da credencial" },
++  { key: "nif", label: "NIF" },
++  { key: "website", label: "Website" },
++  { key: "country", label: "País" },
++  { key: "address", label: "Morada" },
++  { key: "responsibleName", label: "Nome do responsável" },
++  { key: "responsibleEmail", label: "Email do responsável" },
++];
++
++export default function CompanyInfoModal({ company, open, onClose, onReject }) {
++  return (
++    <Modal
++      open={open}
++      title="Detalhes da Credencial"
++      onClose={onClose}
++      actions={
++        <div className="w-full flex justify-end gap-3">
++          <Button
++            label="Recusar"
++            variant="error"
++            className="max-w-32 text-white"
++            onClick={onReject}
++          />
++          <Button
++            label="Fechar"
++            variant="outline"
++            className="max-w-32 btn btn-secondary"
++            onClick={onClose}
++          />
++        </div>
++      }
++    >
++      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
++        {fields.map(({ key, label }) => (
++          <label key={key} className="form-control w-full">
++            <span className="label-text font-medium">{label}</span>
++            <input
++              type="text"
++              value={company?.[key] ?? ""}
++              disabled
++              className="input input-bordered w-full"
++            />
++          </label>
++        ))}
++      </div>
++    </Modal>
++  );
++}
+Index: backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/teamRequest/TeamRequestResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.teamfoundry.backend.teamRequests.dto.teamRequest;\r\n\r\nimport com.teamfoundry.backend.teamRequests.enums.State;\r\nimport java.time.LocalDateTime;\r\n\r\npublic record TeamRequestResponse(\r\n        int id,\r\n        String companyName,\r\n        String companyEmail,\r\n        String teamName,\r\n        String description,\r\n        State state,\r\n        Integer responsibleAdminId,\r\n        LocalDateTime startDate,\r\n        LocalDateTime endDate,\r\n        LocalDateTime createdAt\r\n) {}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/teamRequest/TeamRequestResponse.java b/backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/teamRequest/TeamRequestResponse.java
+--- a/backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/teamRequest/TeamRequestResponse.java	(revision 2781faf813314f1c4b5fb43a889dfc1a32f75b14)
++++ b/backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/teamRequest/TeamRequestResponse.java	(date 1765302268721)
+@@ -11,6 +11,7 @@
+         String description,
+         State state,
+         Integer responsibleAdminId,
++        long workforceNeeded,
+         LocalDateTime startDate,
+         LocalDateTime endDate,
+         LocalDateTime createdAt

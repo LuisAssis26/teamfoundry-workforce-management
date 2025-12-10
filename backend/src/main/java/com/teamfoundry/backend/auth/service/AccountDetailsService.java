@@ -28,7 +28,7 @@ public class AccountDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (username != null && username.startsWith(ADMIN_PREFIX)) {
             String adminUsername = username.substring(ADMIN_PREFIX.length());
-            AdminAccount admin = adminAccountRepository.findByUsernameIgnoreCase(adminUsername)
+            AdminAccount admin = adminAccountRepository.findByUsernameIgnoreCaseAndDeactivatedFalse(adminUsername)
                     .orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
 
             List<GrantedAuthority> authorities =

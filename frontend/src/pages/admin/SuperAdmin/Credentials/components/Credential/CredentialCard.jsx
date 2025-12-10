@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
-import Button from "../../../../../components/ui/Button/Button.jsx";
+import Button from "../../../../../../components/ui/Button/Button.jsx";
 
-export default function CompanyCredentialsCard({
+export default function CredentialCard({
                                                  company,
                                                  fieldConfig,
                                                  onViewMore,
@@ -78,7 +78,7 @@ export default function CompanyCredentialsCard({
   );
 }
 
-CompanyCredentialsCard.propTypes = {
+CredentialCard.propTypes = {
   company: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   }).isRequired,

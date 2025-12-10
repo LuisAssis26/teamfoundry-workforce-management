@@ -18,6 +18,8 @@ export const BUTTON_VARIANT_CLASSES = {
   ghost: "btn-ghost",
   warning: "btn-warning",
   success: "btn-success",
+  error: "btn-error",
+  
 };
 
 export function getButtonVariantClass(variant = "primary") {

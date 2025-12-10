@@ -21,10 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.stream.Collectors;
-
-
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +37,15 @@ public class TeamRequestService {
     private final EmployeeRequestOfferRepository employeeRequestOfferRepository;
 
     public List<TeamRequestResponse> listAllWorkRequests() {
-        return teamRequestRepository
+        List<TeamRequest> requests = teamRequestRepository
                 .findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
                 .stream()
-                .map(this::toWorkRequestResponse)
+                .toList();
+
+        Map<Integer, Long> workforceByRequest = loadWorkforceCounts(requests);
+
+        return requests.stream()
+                .map(request -> toWorkRequestResponse(request, workforceByRequest.getOrDefault(request.getId(), 0L)))
                 .toList();
     }
 
@@ -55,7 +58,7 @@ public class TeamRequestService {
                         TeamRequestRepository.AdminAssignmentCount::getTotal));
 
         return adminAccountRepository
-                .findAll(Sort.by(Sort.Direction.ASC, "username"))
+                .findByDeactivatedFalse(Sort.by(Sort.Direction.ASC, "username"))
                 .stream()
                 .filter(admin -> admin.getRole() == UserType.ADMIN)
                 .map(admin -> new AssignedAdminTeamRequestCount(
@@ -79,7 +82,8 @@ public class TeamRequestService {
 
         request.setResponsibleAdminId(admin.getId());
         TeamRequest saved = teamRequestRepository.save(request);
-        return toWorkRequestResponse(saved);
+        Map<Integer, Long> workforce = loadWorkforceCounts(List.of(saved));
+        return toWorkRequestResponse(saved, workforce.getOrDefault(saved.getId(), 0L));
     }
 
     public List<AssignedTeamRequestResponse> listAssignedRequestsForAuthenticatedAdmin() {
@@ -95,7 +99,8 @@ public class TeamRequestService {
     public TeamRequestResponse getAssignedRequest(int requestId) {
         AdminAccount admin = resolveAuthenticatedAdmin();
         TeamRequest request = loadRequestForAdmin(admin, requestId);
-        return toWorkRequestResponse(request);
+        Map<Integer, Long> workforce = loadWorkforceCounts(List.of(request));
+        return toWorkRequestResponse(request, workforce.getOrDefault(request.getId(), 0L));
     }
 
     public List<TeamRequestRoleSummary> listRoleSummariesForTeam(int requestId) {
@@ -149,7 +154,7 @@ public class TeamRequestService {
         return request;
     }
 
-    private TeamRequestResponse toWorkRequestResponse(TeamRequest request) {
+    private TeamRequestResponse toWorkRequestResponse(TeamRequest request, long workforceNeeded) {
         CompanyAccount company = request.getCompany();
         String companyName = company != null ? company.getName() : null;
         String companyEmail = company != null ? company.getEmail() : null;
@@ -162,6 +167,7 @@ public class TeamRequestService {
                 request.getDescription(),
                 request.getState(),
                 request.getResponsibleAdminId(),
+                Math.max(workforceNeeded, 0),
                 request.getStartDate(),
                 request.getEndDate(),
                 request.getCreatedAt()

@@ -44,7 +44,7 @@ const WorkRequestCard = ({
   const buttonVariant = isComplete ? 'ghost' : !responsibleAdminName ? 'success' : 'primary';
 
   return (
-      <div className="bg-base-100 rounded-box shadow-sm p-6 mb-4 border border-base-200">
+      <div className="bg-base-100 rounded-2xl shadow-sm p-6 mb-4 border border-base-200">
         <div className="flex justify-between items-start gap-6">
           <div className="flex-1">
             <div className="grid grid-cols-2 gap-6">

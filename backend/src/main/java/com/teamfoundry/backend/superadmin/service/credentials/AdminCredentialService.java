@@ -6,6 +6,7 @@ import com.teamfoundry.backend.superadmin.dto.credential.admin.AdminCredentialUp
 import com.teamfoundry.backend.superadmin.model.credentials.AdminAccount;
 import com.teamfoundry.backend.superadmin.repository.credentials.AdminAccountRepository;
 import lombok.RequiredArgsConstructor;
+import com.teamfoundry.backend.teamRequests.repository.TeamRequestRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,11 +30,12 @@ public class AdminCredentialService {
 
     private final AdminAccountRepository adminAccountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TeamRequestRepository teamRequestRepository;
     private static final String ADMIN_TOKEN_PREFIX = "admin:";
 
     public List<AdminCredentialResponse> listAdminCredentials() {
         return adminAccountRepository
-                .findAll(Sort.by(Sort.Direction.ASC, "username"))
+                .findByDeactivatedFalse(Sort.by(Sort.Direction.ASC, "username"))
                 .stream()
                 .map(this::toResponse)
                 .toList();
@@ -51,6 +53,7 @@ public class AdminCredentialService {
         admin.setUsername(request.username());
         admin.setRole(request.role());
         admin.setPassword(passwordEncoder.encode(request.password()));
+        admin.setDeactivated(false);
 
         AdminAccount saved = adminAccountRepository.save(admin);
         return toResponse(saved);
@@ -112,7 +115,13 @@ public class AdminCredentialService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Não é permitido desativar contas de super admin.");
         }
 
-        adminAccountRepository.delete(admin);
+        long assigned = teamRequestRepository.countByResponsibleAdminId(admin.getId());
+        if (assigned > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Admin possui requisições associadas. Reatribua-as antes de desativar.");
+        }
+
+        admin.setDeactivated(true);
+        adminAccountRepository.save(admin);
     }
 
 
@@ -129,7 +138,7 @@ public class AdminCredentialService {
         }
 
         String username = principal.substring(ADMIN_TOKEN_PREFIX.length());
-        return adminAccountRepository.findByUsernameIgnoreCase(username)
+        return adminAccountRepository.findByUsernameIgnoreCaseAndDeactivatedFalse(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Conta do super admin não encontrada"));
     }
 

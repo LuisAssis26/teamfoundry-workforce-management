@@ -56,6 +56,7 @@ public class AdminAccountInitializer {
         acc.setUsername(username);
         acc.setPassword(passwordEncoder.encode(rawPassword));
         acc.setRole(role);
+        acc.setDeactivated(false);
         return acc;
     }
 }
