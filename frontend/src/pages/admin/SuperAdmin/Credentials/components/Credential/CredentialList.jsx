@@ -42,7 +42,7 @@ export default function CredentialList({
                 })
                 .some((value) => value.includes(lower))
         );
-    }, [companies, effectiveFields, query]);
+    }, [companies, query]);
 
     const handleSearch = (event) => {
         const value = event.target.value;
@@ -52,9 +52,9 @@ export default function CredentialList({
 
     const listShouldScroll = filteredCompanies.length > 3;
     const listContainerClass = [
-        "space-y-6",
+        "space-y-6 mb-4",
         listShouldScroll &&
-        "max-h-96 overflow-y-auto pr-3 company-credentials-scroll",
+        "max-h-96 overflow-y-auto pr-3 company-credentials-scroll ",
     ]
         .filter(Boolean)
         .join(" ");

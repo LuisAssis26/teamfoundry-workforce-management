@@ -45,7 +45,8 @@ import SuperAdminLayout from "./pages/admin/SuperAdmin/SuperAdminLayout.jsx";
 import Credentials from "./pages/admin/SuperAdmin/Credentials/Credentials.jsx";
 import Staffing from "./pages/admin/SuperAdmin/Staffing/Staffing.jsx";
 import VariableManagement from "./pages/admin/SuperAdmin/VariableManagement/VariableManagement.jsx";
-import Metrics from "./pages/admin/SuperAdmin/Metrics/Metrics.jsx";
+import Metrics from "./pages/admin/SuperAdmin/MetricsAndLogs/Metrics.jsx";
+import Logs from "./pages/admin/SuperAdmin/MetricsAndLogs/Logs.jsx";
 import TeamManagement from "./pages/admin/TeamManagement/TeamManagement.jsx";
 import BuildTeamSearch from "./pages/admin/TeamManagement/BuildTeamSearch.jsx";
 import TeamEmployeeRequests from "./pages/admin/TeamManagement/TeamEmployeeRequests.jsx";
@@ -105,6 +106,7 @@ function App() {
         <Route path="gestao-trabalho" element={<Staffing />} />
         <Route path="gestao-site" element={<VariableManagement />} />
         <Route path="metricas" element={<Metrics />} />
+        <Route path="logs" element={<Logs />} />
       </Route>
 
       <Route

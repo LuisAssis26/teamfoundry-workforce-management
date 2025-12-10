@@ -68,7 +68,7 @@ export default function Metrics() {
   return (
     <section className="space-y-8">
       <header>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-primary">Métricas e Logs</h1>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-primary">Métricas</h1>
       </header>
 
       {error && (
@@ -115,6 +115,7 @@ export default function Metrics() {
           </ResponsiveContainer>
         </ChartPanel>
       </div>
+
     </section>
   );
 }

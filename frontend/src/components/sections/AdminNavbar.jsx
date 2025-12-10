@@ -9,6 +9,7 @@ const SUPER_NAV_LINKS = [
   { to: "/admin/super/gestao-trabalho", label: "Gestão de trabalho" },
   { to: "/admin/super/gestao-site", label: "Gestão do Site" },
   { to: "/admin/super/metricas", label: "Métricas" },
+  { to: "/admin/super/logs", label: "Logs" },
 ];
 
 export default function AdminNavbar({ variant }) {
