@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface EmployeeAccountRepository extends JpaRepository<EmployeeAccount, Integer> {
     Optional<EmployeeAccount> findByEmail(String email);
 
+    long countByDeactivatedFalse();
+
     @Query("""
             SELECT DISTINCT e
             FROM EmployeeAccount e

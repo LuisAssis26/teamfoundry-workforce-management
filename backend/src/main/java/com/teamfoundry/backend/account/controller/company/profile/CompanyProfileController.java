@@ -3,15 +3,12 @@ package com.teamfoundry.backend.account.controller.company.profile;
 import com.teamfoundry.backend.account.dto.company.profile.CompanyManagerUpdateRequest;
 import com.teamfoundry.backend.account.dto.company.preferences.CompanyProfileResponse;
 import com.teamfoundry.backend.account.service.company.CompanyProfileService;
+import com.teamfoundry.backend.account.dto.company.profile.CompanyDeactivateAccountRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Endpoints de perfil da empresa autenticada.
@@ -39,6 +36,13 @@ public class CompanyProfileController {
             @Valid @RequestBody CompanyManagerUpdateRequest request,
             Authentication authentication) {
         return companyProfileService.updateManager(resolveEmail(authentication), request);
+    }
+
+    @PostMapping(value = "/deactivate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void deactivateAccount(
+            @Valid @RequestBody CompanyDeactivateAccountRequest request,
+            Authentication authentication) {
+        companyProfileService.deactivateAccount(resolveEmail(authentication), request);
     }
 
     private String resolveEmail(Authentication authentication) {

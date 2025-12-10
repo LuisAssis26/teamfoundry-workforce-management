@@ -23,3 +23,10 @@ export const sendCompanyManagerCode = (newEmail) =>
  */
 export const confirmCompanyManagerEmail = (payload) =>
   httpPost("/api/company/verification/confirm", payload);
+
+/**
+ * Desativa a conta da empresa (mantém dados, remove acesso).
+ * @param {string} password
+ */
+export const deactivateCompanyAccount = (password) =>
+  httpPost("/api/company/profile/deactivate", { password });

@@ -16,6 +16,7 @@ import com.teamfoundry.backend.account.repository.employee.profile.EmployeeGeoAr
 import com.teamfoundry.backend.account.repository.employee.profile.EmployeeRoleRepository;
 import com.teamfoundry.backend.account.repository.employee.profile.EmployeeSkillRepository;
 import com.teamfoundry.backend.common.service.CloudinaryService;
+import com.teamfoundry.backend.common.service.ActionLogService;
 import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import com.teamfoundry.backend.teamRequests.service.EmployeeJobHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class EmployeeProfileAndDocumentsService {
     private final EmployeeGeoAreaRepository employeeGeoAreaRepository;
     private final EmployeeJobHistoryService employeeJobHistoryService;
     private final CloudinaryService cloudinaryService;
+    private final ActionLogService actionLogService;
     private final PasswordEncoder passwordEncoder;
     private final AuthTokenRepository authTokenRepository;
 
@@ -123,6 +125,7 @@ public class EmployeeProfileAndDocumentsService {
         document.setPublicId(upload.getPublicId());
         document.setFileName(request.getFileName());
         employeeDocumentRepository.save(document);
+        actionLogService.logUser(account, "Atualizou currículo");
         return upload.getUrl();
     }
 
@@ -152,6 +155,7 @@ public class EmployeeProfileAndDocumentsService {
         document.setPublicId(upload.getPublicId());
         document.setFileName(request.getFileName());
         employeeDocumentRepository.save(document);
+        actionLogService.logUser(account, "Atualizou documento " + type.name());
     }
 
     @Transactional
@@ -162,9 +166,10 @@ public class EmployeeProfileAndDocumentsService {
         EmployeeAccount account = findByEmailOrThrow(email);
         employeeDocumentRepository.findByEmployeeAndType(account, type)
                 .ifPresent(doc -> {
-                    cloudinaryService.delete(doc.getPublicId());
-                    employeeDocumentRepository.delete(doc);
-                });
+            cloudinaryService.delete(doc.getPublicId());
+            employeeDocumentRepository.delete(doc);
+            actionLogService.logUser(account, "Removeu documento " + type.name());
+        });
     }
 
     @Transactional
@@ -177,6 +182,7 @@ public class EmployeeProfileAndDocumentsService {
                 request.getFile(), "profilepicture", request.getFileName());
         account.setProfilePicturePublicId(upload.getPublicId());
         employeeAccountRepository.save(account);
+        actionLogService.logUser(account, "Atualizou foto de perfil");
         return toResponse(account);
     }
 
@@ -187,6 +193,7 @@ public class EmployeeProfileAndDocumentsService {
             cloudinaryService.delete(account.getProfilePicturePublicId());
             account.setProfilePicturePublicId(null);
             employeeAccountRepository.save(account);
+            actionLogService.logUser(account, "Removeu foto de perfil");
         }
     }
 
@@ -199,6 +206,7 @@ public class EmployeeProfileAndDocumentsService {
         account.setDeactivated(true);
         account.setVerified(false);
         employeeAccountRepository.save(account);
+        actionLogService.logUser(account, "Desativou a conta");
         authTokenRepository.deleteAllByUser(account);
     }
 

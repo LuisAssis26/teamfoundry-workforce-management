@@ -31,7 +31,7 @@ export default function FilterDropdown({
   return (
     <div className={`flex items-center gap-2 ${className}`} ref={containerRef}>
       {label && <span className="text-sm font-medium whitespace-nowrap leading-none">{label}</span>}
-      <div className="relative min-w-[140px] md:min-w-[160px]">
+      <div className="relative min-w-36 md:min-w-56">
         <button
           type="button"
           className={`${DROPDOWN_TRIGGER_CLASS} h-10 min-h-10 text-left pr-2 focus-visible:outline-none ${selectClassName}`}

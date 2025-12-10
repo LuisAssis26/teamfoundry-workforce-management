@@ -35,6 +35,7 @@ public class TeamRequestService {
     private final AdminAccountRepository adminAccountRepository;
     private final EmployeeRequestRepository employeeRequestRepository;
     private final EmployeeRequestOfferRepository employeeRequestOfferRepository;
+    private final com.teamfoundry.backend.common.service.ActionLogService actionLogService;
 
     public List<TeamRequestResponse> listAllWorkRequests() {
         List<TeamRequest> requests = teamRequestRepository
@@ -82,6 +83,7 @@ public class TeamRequestService {
 
         request.setResponsibleAdminId(admin.getId());
         TeamRequest saved = teamRequestRepository.save(request);
+        actionLogService.logAdmin(resolveAuthenticatedAdmin(), "Atribuiu requisição " + saved.getId() + " ao admin " + admin.getUsername());
         Map<Integer, Long> workforce = loadWorkforceCounts(List.of(saved));
         return toWorkRequestResponse(saved, workforce.getOrDefault(saved.getId(), 0L));
     }

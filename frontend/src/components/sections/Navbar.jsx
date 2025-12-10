@@ -59,7 +59,7 @@ export default function Navbar({
             <img
               src={logo}
               alt="TeamFoundry"
-              className={`object-contain ${isPublic ? "h-12 w-12" : "h-10 w-10"}`}
+              className={`h-10 w-10 object-contain`}
             />
             <span className="font-semibold tracking-[0.2em] uppercase text-primary-content">
               TeamFoundry

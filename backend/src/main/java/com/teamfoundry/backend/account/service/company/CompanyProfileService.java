@@ -5,14 +5,19 @@ import com.teamfoundry.backend.account.model.company.CompanyAccountManager;
 import com.teamfoundry.backend.account.repository.company.CompanyAccountOwnerRepository;
 import com.teamfoundry.backend.account.repository.company.CompanyAccountRepository;
 import com.teamfoundry.backend.auth.service.VerificationEmailService;
+import com.teamfoundry.backend.account.dto.company.profile.CompanyDeactivateAccountRequest;
 import com.teamfoundry.backend.account.dto.company.profile.CompanyManagerUpdateRequest;
 import com.teamfoundry.backend.account.dto.company.profile.CompanyManagerVerifyRequest;
 import com.teamfoundry.backend.account.dto.company.preferences.CompanyProfileResponse;
 import com.teamfoundry.backend.auth.model.tokens.AuthToken;
 import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
+import com.teamfoundry.backend.teamRequests.enums.State;
+import com.teamfoundry.backend.teamRequests.repository.TeamRequestRepository;
+import com.teamfoundry.backend.common.service.ActionLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,8 +37,11 @@ public class CompanyProfileService {
 
     private final CompanyAccountRepository companyAccountRepository;
     private final CompanyAccountOwnerRepository ownerRepository;
+    private final TeamRequestRepository teamRequestRepository;
     private final AuthTokenRepository authTokenRepository;
     private final VerificationEmailService verificationEmailService;
+    private final PasswordEncoder passwordEncoder;
+    private final ActionLogService actionLogService;
 
     @Value("${app.registration.verification.expiration-minutes:30}")
     private long verificationExpirationMinutes;
@@ -77,6 +85,27 @@ public class CompanyProfileService {
         AuthToken token = buildVerificationToken(account);
         authTokenRepository.save(token);
         verificationEmailService.sendVerificationCode(newEmail.trim().toLowerCase(), token.getToken());
+    }
+
+    /**
+     * Desativa a conta da empresa após validar password e garantir que não há requisições em aberto.
+     */
+    @Transactional
+    public void deactivateAccount(String email, CompanyDeactivateAccountRequest request) {
+        CompanyAccount account = resolveCompany(email);
+        if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password incorreta.");
+        }
+        long pendingRequests = teamRequestRepository.countByCompany_IdAndStateNot(account.getId(), State.COMPLETE);
+        if (pendingRequests > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Não é possível desativar a conta enquanto existirem requisições pendentes ou ativas.");
+        }
+        account.setDeactivated(true);
+        account.setVerified(false);
+        companyAccountRepository.save(account);
+        authTokenRepository.deleteAllByUser(account);
+        actionLogService.logUser(account, "Desativou a conta da empresa");
     }
 
     /**

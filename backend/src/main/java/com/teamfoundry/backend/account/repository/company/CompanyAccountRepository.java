@@ -41,4 +41,8 @@ public interface CompanyAccountRepository extends JpaRepository<CompanyAccount, 
     List<CompanyCredentialResponse> findPendingCompanyCredentials();
 
     Optional<CompanyAccount> findByEmail(String email);
+
+    long countByDeactivatedFalse();
+
+    long countByStatusFalseAndDeactivatedFalse();
 }

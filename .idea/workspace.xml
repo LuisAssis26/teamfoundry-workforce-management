@@ -4,30 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Credencias Fix&#10;Gestão de Trabalho Fix">
-      <change afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyApprovalModal.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/Modal/Company/CompanyInfoModal.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273/storage_v2/_src_/database/teamfoundry_db.UWXKRg/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273/storage_v2/_src_/database/teamfoundry_db.UWXKRg/schema/public.abK9xQ.meta" afterDir="false" />
+    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Credencias Fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TEMP_AccountDetailsService_copy.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/config/admin/AdminAccountInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/config/admin/AdminAccountInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/auth/service/AccountDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/auth/service/AccountDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/auth/service/login/AdminAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/auth/service/login/AdminAuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/superadmin/model/credentials/AdminAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/superadmin/model/credentials/AdminAccount.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/superadmin/repository/credentials/AdminAccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/superadmin/repository/credentials/AdminAccountRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/controller/company/profile/CompanyProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/controller/company/profile/CompanyProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/repository/company/CompanyAccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/repository/company/CompanyAccountRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/repository/employee/EmployeeAccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/repository/employee/EmployeeAccountRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/service/company/CompanyProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/service/company/CompanyProfileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/service/company/CompanyTeamRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/service/company/CompanyTeamRequestService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/service/employee/EmployeeProfileAndDocumentsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/service/employee/EmployeeProfileAndDocumentsService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/superadmin/service/credentials/AdminCredentialService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/superadmin/service/credentials/AdminCredentialService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/teamRequest/TeamRequestResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/teamRequest/TeamRequestResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/superadmin/service/credentials/CompanyCredentialService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/superadmin/service/credentials/CompanyCredentialService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/repository/TeamRequestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/repository/TeamRequestRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/EmployeeJobHistoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/EmployeeJobHistoryService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/TeamRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/TeamRequestService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ui/Button/Button.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ui/Button/Button.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/AppHome/AppHomeContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/AppHome/AppHomeContext.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/Credentials.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/Credentials.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/Credential/CredentialCard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/CompanyCredentialsList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Credentials/components/Credential/CredentialList.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/profile/companyProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/profile/companyProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/auth/tokenStorage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/auth/tokenStorage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/sections/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/sections/Navbar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ui/Dropdown/FilterDropdown.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ui/Dropdown/FilterDropdown.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Metrics/Metrics.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Metrics/Metrics.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Staffing/Staffing.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Staffing/Staffing.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Staffing/components/WorkRequestCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/Staffing/components/WorkRequestCard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tmp_staffing.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/SuperAdminLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/SuperAdminLayout.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/SuperAdminNavbar.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamEmployeeRequests.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamEmployeeRequests.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamManagement.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamManagement.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/components/AdminNavbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/sections/AdminNavbar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/login/AdminLogin/AdminLogin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/login/AdminLogin/AdminLogin.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Settings/Settings.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Settings/Settings.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/company/CompanySettings.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/company/CompanySettings.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,11 +128,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\components\sections" />
       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\components\ui\Input" />
       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\SuperAdmin\Credentials\components\Credentials" />
       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\SuperAdmin\Credentials\components\Modal\Company" />
       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\SuperAdmin\Credentials\components\Modal\Admin" />
-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\SuperAdmin\Credentials\components\Modal" />
     </key>
   </component>
   <component name="RunManager" selected="Docker.docker-compose.yml: Compose Deployment">
@@ -257,7 +264,7 @@
       <workItem from="1765298251028" duration="8634000" />
       <workItem from="1765361066156" duration="2126000" />
       <workItem from="1765365419675" duration="7000" />
-      <workItem from="1765395113142" duration="483000" />
+      <workItem from="1765395113142" duration="5160000" />
     </task>
     <task id="LOCAL-00001" summary="paleta certa">
       <option name="closed" value="true" />
@@ -419,7 +426,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765223114618</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Credencias Fix">
+      <option name="closed" value="true" />
+      <created>1765395698842</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1765395698842</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -479,7 +494,8 @@
     <MESSAGE value="Perfil de Empresa - Falta Eliminação de conta" />
     <MESSAGE value="Fix Preferences.jsx" />
     <MESSAGE value="Fix Preferences.jsx &#10;Dropdown Animado" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix Preferences.jsx &#10;Dropdown Animado" />
+    <MESSAGE value="Credencias Fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="Credencias Fix" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

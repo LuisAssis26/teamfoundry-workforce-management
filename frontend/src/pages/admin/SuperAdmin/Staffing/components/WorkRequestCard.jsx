@@ -39,8 +39,8 @@ const WorkRequestCard = ({
   const buttonLabel = isComplete
       ? 'Requisição concluída'
       : !responsibleAdminName
-          ? 'Atribuir Responsavel'
-          : 'Modificar Responsavel';
+          ? 'Atribuir Responsável'
+          : 'Mudar Responsável';
   const buttonVariant = isComplete ? 'ghost' : !responsibleAdminName ? 'success' : 'primary';
 
   return (
@@ -53,13 +53,13 @@ const WorkRequestCard = ({
                   <span className="font-semibold">Empresa:</span> {company?.name || 'N/A'}
                 </p>
                 <p className="text-label text-base-content">
-                  <span className="font-semibold">Equipe:</span> {teamName || 'N/A'}
+                  <span className="font-semibold">Equipa:</span> {teamName || 'N/A'}
                 </p>
                 <p className="text-label text-base-content">
-                  <span className="font-semibold">Descricao:</span> {description || 'N/A'}
+                  <span className="font-semibold">Descrição:</span> {description || 'N/A'}
                 </p>
                 <p className="text-label text-base-content">
-                  <span className="font-semibold">Responsavel:</span>{' '}
+                  <span className="font-semibold">Responsável:</span>{' '}
                   {responsibleAdminName || 'N/A'}
                 </p>
               </div>
@@ -69,7 +69,7 @@ const WorkRequestCard = ({
                   <span className="font-semibold">Data de inicio:</span> {formatDate(startDate)}
                 </p>
                 <p className="text-label text-base-content">
-                  <span className="font-semibold">Data de finalizacao:</span> {formatDate(endDate)}
+                  <span className="font-semibold">Data de fim prevista:</span> {formatDate(endDate)}
                 </p>
                 <p className="text-label text-base-content">
                   <span className="font-semibold">Criado em:</span> {formatDate(createdAt)}

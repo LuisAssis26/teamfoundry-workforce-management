@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import TeamRequestHeader from "./components/TeamRequestHeader.jsx";
 import TeamRequestGrid from "./components/TeamRequestGrid.jsx";
-import AdminNavbar from "../components/AdminNavbar.jsx";
+import AdminNavbar from "../../../components/sections/AdminNavbar.jsx";
 import { useAdminData } from "../AdminDataContext.jsx";
 
 export default function TeamEmployeeRequests() {

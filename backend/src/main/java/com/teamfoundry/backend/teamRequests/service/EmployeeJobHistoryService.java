@@ -10,6 +10,7 @@ import com.teamfoundry.backend.teamRequests.repository.EmployeeRequestRepository
 import com.teamfoundry.backend.account.model.company.CompanyAccount;
 import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
+import com.teamfoundry.backend.common.service.ActionLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class EmployeeJobHistoryService {
     private final EmployeeRequestRepository employeeRequestRepository;
     private final EmployeeAccountRepository employeeAccountRepository;
     private final EmployeeRequestOfferRepository employeeRequestOfferRepository;
+    private final ActionLogService actionLogService;
 
     @Transactional(readOnly = true)
     public List<EmployeeJobSummary> listJobsForEmployee(String email) {
@@ -132,7 +134,7 @@ public class EmployeeJobHistoryService {
         EmployeeRequest saved = employeeRequestRepository.save(request);
 
         employeeRequestOfferRepository.deactivateInvitesForRequest(requestId, employee.getId());
-
+        actionLogService.logUser(employee, "Aceitou oferta " + requestId);
         return toSummary(saved, "ACCEPTED");
     }
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import AdminNavbar from "../components/AdminNavbar.jsx";
+import AdminNavbar from "../../../components/sections/AdminNavbar.jsx";
 import EmployeeCard from "./components/EmployeeCard.jsx";
 import MultiSelectDropdown from "../../../components/ui/Dropdown/MultiSelectDropdown.jsx";
 import { searchCandidates } from "../../../api/admin/candidates.js";

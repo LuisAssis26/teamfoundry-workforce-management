@@ -33,6 +33,7 @@ public class CompanyTeamRequestService {
     private final EmployeeRequestRepository employeeRequestRepository;
     private final CompanyAccountRepository companyAccountRepository;
     private final AdminAccountRepository adminAccountRepository;
+    private final com.teamfoundry.backend.common.service.ActionLogService actionLogService;
 
     /**
      * Lista todas as requisições da empresa autenticada, ordenadas por criação.
@@ -67,6 +68,7 @@ public class CompanyTeamRequestService {
 
         TeamRequest saved = teamRequestRepository.save(entity);
         createEmployeeRequests(saved, request);
+        actionLogService.logUser(company, "Criou requisição de equipa " + saved.getTeamName());
         return toResponse(saved);
     }
 

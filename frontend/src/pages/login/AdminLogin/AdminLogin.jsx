@@ -66,7 +66,10 @@ export default function AdminLogin() {
 
             localStorage.setItem("tf-user-type", userType);
             if (payload.accessToken) {
-                setTokens({ accessToken: payload.accessToken, refreshToken: payload.refreshToken });
+                setTokens(
+                    { accessToken: payload.accessToken, refreshToken: payload.refreshToken },
+                    { persist: "session" }
+                );
             }
 
             if (payload.role === "SUPERADMIN") {

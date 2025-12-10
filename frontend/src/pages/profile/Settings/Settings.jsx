@@ -110,17 +110,7 @@ function SettingsView({
                     }}
                   />
                 </div>
-              ) : (
-                <div className="rounded-lg border border-base-200 bg-base-200/60 px-4 py-3 flex flex-col gap-2 opacity-60 cursor-not-allowed">
-                  <div>
-                    <p className="font-medium text-base-content/80">Excluir conta</p>
-                    <p className="text-xs text-base-content/60">
-                      Disponível em breve com validação específica para {userType === "COMPANY" ? "empresas" : "contas"}.
-                    </p>
-                  </div>
-                  <Button label="Em breve" variant="outline" className="w-full sm:w-auto btn-disabled pointer-events-none" />
-                </div>
-              )}
+              ) : null}
             </div>
           </div>
 

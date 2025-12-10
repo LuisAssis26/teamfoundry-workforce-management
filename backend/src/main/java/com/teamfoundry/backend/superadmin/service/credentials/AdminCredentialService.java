@@ -7,6 +7,7 @@ import com.teamfoundry.backend.superadmin.model.credentials.AdminAccount;
 import com.teamfoundry.backend.superadmin.repository.credentials.AdminAccountRepository;
 import lombok.RequiredArgsConstructor;
 import com.teamfoundry.backend.teamRequests.repository.TeamRequestRepository;
+import com.teamfoundry.backend.common.service.ActionLogService;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +32,7 @@ public class AdminCredentialService {
     private final AdminAccountRepository adminAccountRepository;
     private final PasswordEncoder passwordEncoder;
     private final TeamRequestRepository teamRequestRepository;
+    private final ActionLogService actionLogService;
     private static final String ADMIN_TOKEN_PREFIX = "admin:";
 
     public List<AdminCredentialResponse> listAdminCredentials() {
@@ -56,6 +58,7 @@ public class AdminCredentialService {
         admin.setDeactivated(false);
 
         AdminAccount saved = adminAccountRepository.save(admin);
+        actionLogService.logAdmin(resolveAuthenticatedAdmin(), "Criou admin " + saved.getUsername());
         return toResponse(saved);
     }
 
@@ -80,6 +83,7 @@ public class AdminCredentialService {
         }
 
         AdminAccount saved = adminAccountRepository.save(admin);
+        actionLogService.logAdmin(resolveAuthenticatedAdmin(), "Atualizou admin " + saved.getUsername());
         return toResponse(saved);
     }
 
@@ -122,6 +126,7 @@ public class AdminCredentialService {
 
         admin.setDeactivated(true);
         adminAccountRepository.save(admin);
+        actionLogService.logAdmin(requester, "Desativou admin " + admin.getUsername());
     }
 
 
