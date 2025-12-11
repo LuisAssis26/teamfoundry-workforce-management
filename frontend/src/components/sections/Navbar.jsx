@@ -145,7 +145,9 @@ export default function Navbar({
                   )}
                   <button
                     type="button"
-                    className="flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-error hover:bg-error/10 transition-colors duration-150 cursor-pointer rounded-b-xl"
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-error hover:bg-error/10 transition-colors duration-150 cursor-pointer ${
+                      userType !== "COMPANY" ? "rounded-b-xl" : ""
+                    }`}
                     onClick={() => {
                       setIsProfileOpen(false);
                       onLogout?.();
@@ -154,6 +156,27 @@ export default function Navbar({
                     <i className="bi bi-box-arrow-right" aria-hidden="true" />
                     <span>Terminar sessão</span>
                   </button>
+                  {userType === "COMPANY" && (
+                    <>
+                      <div className="border-t border-base-200" />
+                      <Link
+                        to="/faq"
+                        className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <i className="bi bi-question-circle" aria-hidden="true" />
+                        <span>FAQ&apos;s</span>
+                      </Link>
+                      <Link
+                        to="/sobre-nos"
+                        className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition rounded-b-xl"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <i className="bi bi-info-circle" aria-hidden="true" />
+                        <span>Sobre nós</span>
+                      </Link>
+                    </>
+                  )}
                 </nav>
               </div>
             )}

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import TeamManagementCard from "./components/TeamManagementCard.jsx";
 import AdminNavbar from "../../../components/sections/AdminNavbar.jsx";
-import { useAdminData } from "../AdminDataContext.jsx";
+import { useAdminData } from "./AdminDataContext.jsx";
 
 const STATUS_OPTIONS = [
   { value: "ALL", label: "Todos" },

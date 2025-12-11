@@ -123,7 +123,7 @@ public class CompanyAccountInitializer {
                 new CompanySeed(
                         "contact@blueorbitlabs.com",
                         509876321,
-                        "blueorbit123",
+                        "password123",
                         "Blue Orbit Labs",
                         "Av. da Liberdade 100, Lisbon, Portugal",
                         "Portugal",
@@ -136,7 +136,7 @@ public class CompanyAccountInitializer {
                 new CompanySeed(
                         "operacoes@ferromec.pt",
                         508112233,
-                        "ferromec123",
+                        "password123",
                         "FerroMec Solutions",
                         "Rua das Oficinas 45, Porto, Portugal",
                         "Portugal",
@@ -149,7 +149,7 @@ public class CompanyAccountInitializer {
                 new CompanySeed(
                         "contato@novalink-automation.com",
                         514882216,
-                        "novalink123",
+                        "password123",
                         "NovaLink Automation",
                         "Parque Empreendedor 210, Aveiro, Portugal",
                         "Portugal",
@@ -162,7 +162,7 @@ public class CompanyAccountInitializer {
                 new CompanySeed(
                         "hr@iberiapower.com",
                         504778899,
-                        "iberia123",
+                        "password123",
                         "Iberia Power Systems",
                         "Av. Energia 250, Madrid, Espanha",
                         "Espanha",
@@ -175,7 +175,7 @@ public class CompanyAccountInitializer {
                 new CompanySeed(
                         "talent@atlantic-dynamics.eu",
                         523198776,
-                        "dynamics123",
+                        "password123",
                         "Atlantic Dynamics",
                         "Via Atlântica 901, Faro, Portugal",
                         "Portugal",
@@ -188,7 +188,7 @@ public class CompanyAccountInitializer {
                 new CompanySeed(
                         "talent@atlantic-robotics.eu",
                         518654987,
-                        "atlantic123",
+                        "password123",
                         "Atlantic Robotics",
                         "Parque Tecnologico 12, Braga, Portugal",
                         "Portugal",
@@ -201,7 +201,7 @@ public class CompanyAccountInitializer {
                 new CompanySeed(
                         "contato@lusanaval.pt",
                         507441122,
-                        "lusanaval123",
+                        "password123",
                         "Lusa Naval Services",
                         "Docas de Leixoes, Matosinhos, Portugal",
                         "Portugal",
@@ -214,7 +214,7 @@ public class CompanyAccountInitializer {
                 new CompanySeed(
                         "credenciais@terrasol.com",
                         516221887,
-                        "terrasol123",
+                        "password123",
                         "TerraSol Renewables",
                         "Estrada das Serras 500, Evora, Portugal",
                         "Portugal",
@@ -227,7 +227,7 @@ public class CompanyAccountInitializer {
                 new CompanySeed(
                         "contato@quantumlog.pt",
                         512903411,
-                        "quantum123",
+                        "password123",
                         "Quantum Logistics",
                         "Centro Logistico 8, Vila Nova de Gaia, Portugal",
                         "Portugal",

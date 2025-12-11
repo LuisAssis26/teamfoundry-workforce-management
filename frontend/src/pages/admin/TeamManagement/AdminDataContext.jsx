@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import PropTypes from "prop-types";
-import { useAuthContext } from "../../auth/AuthContext.jsx";
-import { teamRequestsAPI } from "../../api/admin/teamRequests.js";
-import { fetchGeoAreas, fetchCompetences, fetchFunctions } from "../../api/site/siteManagement.js";
+import { useAuthContext } from "../../../auth/AuthContext.jsx";
+import { teamRequestsAPI } from "../../../api/admin/teamRequests.js";
+import { fetchGeoAreas, fetchCompetences, fetchFunctions } from "../../../api/site/siteManagement.js";
 
 const AdminDataContext = createContext(null);
 

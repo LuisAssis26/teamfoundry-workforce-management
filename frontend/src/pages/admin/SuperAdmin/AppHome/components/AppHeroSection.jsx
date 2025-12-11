@@ -87,7 +87,7 @@ export default function AppHeroSection({ form, saving, onFieldChange, onSubmit }
                   A guardar...
                 </>
               ) : (
-                "Guardar alteracoes"
+                "Guardar alterações"
               )}
             </button>
           </div>

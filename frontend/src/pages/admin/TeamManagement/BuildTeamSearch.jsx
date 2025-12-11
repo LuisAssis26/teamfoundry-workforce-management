@@ -5,7 +5,7 @@ import EmployeeCard from "./components/EmployeeCard.jsx";
 import MultiSelectDropdown from "../../../components/ui/Dropdown/MultiSelectDropdown.jsx";
 import { searchCandidates } from "../../../api/admin/candidates.js";
 import { sendInvites, listInvitedIds, listAcceptedIds } from "../../../api/admin/invitations.js";
-import { useAdminData } from "../AdminDataContext.jsx";
+import { useAdminData } from "./AdminDataContext.jsx";
 
 export default function BuildTeamSearch() {
     const navigate = useNavigate();

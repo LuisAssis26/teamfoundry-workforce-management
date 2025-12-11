@@ -3,6 +3,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 // Home
 import HomeLayout from "./pages/home/HomeLayout.jsx";
 import WeeklyTipsPage from "./pages/home/WeeklyTipsPage.jsx";
+import FAQs from "./pages/other/FAQs.jsx";
+import About from "./pages/other/About.jsx";
 
 // Auth
 import CandidateLogin from "./pages/login/UserLogin/UserLogin.jsx";
@@ -40,7 +42,7 @@ import CompanyRequests from "./pages/profile/company/CompanyRequests.jsx";
 import CompanySettings from "./pages/profile/company/CompanySettings.jsx";
 
 // Admin / SuperAdmin
-import AdminLayout from "./pages/admin/AdminLayout.jsx";
+import AdminLayout from "./pages/admin/TeamManagement/AdminLayout.jsx";
 import SuperAdminLayout from "./pages/admin/SuperAdmin/SuperAdminLayout.jsx";
 import Credentials from "./pages/admin/SuperAdmin/Credentials/Credentials.jsx";
 import Staffing from "./pages/admin/SuperAdmin/Staffing/Staffing.jsx";
@@ -57,6 +59,8 @@ function App() {
     <Routes>
       <Route path="/" element={<HomeLayout />} />
       <Route path="/dicas" element={<WeeklyTipsPage />} />
+      <Route path="/faq" element={<FAQs />} />
+      <Route path="/sobre-nos" element={<About />} />
       <Route path="/login" element={<CandidateLogin />} />
       <Route
         path="/forgot-password"
