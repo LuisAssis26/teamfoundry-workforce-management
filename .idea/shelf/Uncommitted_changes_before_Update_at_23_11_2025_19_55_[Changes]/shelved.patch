@@ -1,0 +1,579 @@
+Index: frontend/src/components/sections/Navbar.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect, useRef, useState } from \"react\";\r\nimport PropTypes from \"prop-types\";\r\nimport { Link, useLocation } from \"react-router-dom\";\r\nimport Button from \"../ui/Button/Button\";\r\nimport logo from \"../../assets/images/logo/teamFoundry_LogoWhite.png\";\r\n\r\nconst NAV_LINKS = [\r\n  { to: \"#industrias\", label: \"As Indústrias\" },\r\n  { to: \"#parceiros\", label: \"Os Parceiros\" },\r\n  { to: \"#sobre\", label: \"Sobre nós\" },\r\n];\r\n\r\nconst PUBLIC_ACTIONS = [{ to: \"/login\", label: \"Entrar\", variant: \"secondary\" }];\r\n\r\nexport default function Navbar({\r\n  variant = \"private\",\r\n  homePath = \"/candidato\",\r\n  links = NAV_LINKS,\r\n  actions = PUBLIC_ACTIONS,\r\n  onLogout,\r\n}) {\r\n  const isPublic = variant === \"public\";\r\n  const [isProfileOpen, setIsProfileOpen] = useState(false);\r\n  const location = useLocation();\r\n  const profileRef = useRef(null);\r\n\r\n  useEffect(() => {\r\n    setIsProfileOpen(false);\r\n  }, [location.pathname]);\r\n\r\n  useEffect(() => {\r\n    function handleOutsideClick(event) {\r\n      if (profileRef.current && !profileRef.current.contains(event.target)) {\r\n        setIsProfileOpen(false);\r\n      }\r\n    }\r\n    if (isProfileOpen) document.addEventListener(\"mousedown\", handleOutsideClick);\r\n    return () => document.removeEventListener(\"mousedown\", handleOutsideClick);\r\n  }, [isProfileOpen]);\r\n\r\n  const wrapperClasses = isPublic\r\n    ? \"bg-primary text-primary-content sticky top-0 z-30\"\r\n    : \"bg-primary text-primary-content\";\r\n\r\n  const actionButtons = isPublic\r\n    ? (actions?.length ? actions : PUBLIC_ACTIONS)\r\n    : [];\r\n\r\n  const navItems = Array.isArray(links) ? links : NAV_LINKS;\r\n\r\n  return (\r\n    <header className={wrapperClasses}>\r\n      <div className=\"max-w-6xl mx-auto px-4 lg:px-6 py-3 flex items-center justify-between gap-6\">\r\n        <Link to={homePath} className=\"flex items-center gap-3 shrink-0 group\">\r\n          <img\r\n            src={logo}\r\n            alt=\"TeamFoundry\"\r\n            className={`object-contain ${isPublic ? \"h-12 w-12\" : \"h-10 w-10\"}`}\r\n          />\r\n          <span className=\"font-semibold font-semibold tracking-[0.2em] uppercase text-primary-content\">\r\n            TeamFoundry\r\n          </span>\r\n        </Link>\r\n\r\n        {(!isPublic && navItems.length > 0) && (\r\n          <nav className=\"hidden md:flex flex-1 justify-center\">\r\n            <ul className=\"flex items-center gap-8 font-medium text-sm uppercase tracking-wide\">\r\n              {navItems.map(({ to, label, internal }) => (\r\n                <li key={label}>\r\n                  {internal ? (\r\n                    <Link\r\n                      to={to}\r\n                      className=\"hover:opacity-90 transition\"\r\n                      aria-label={label}\r\n                    >\r\n                      {label}\r\n                    </Link>\r\n                  ) : (\r\n                    <a href={to} className=\"hover:opacity-90 transition\" aria-label={label}>\r\n                      {label}\r\n                    </a>\r\n                  )}\r\n                </li>\r\n              ))}\r\n            </ul>\r\n          </nav>\r\n        )}\r\n\r\n        {isPublic ? (\r\n          <div className=\"flex items-center gap-3\">\r\n            {actionButtons.map(({ to, label, variant }) => (\r\n              <Button\r\n                key={label}\r\n                as={Link}\r\n                to={to}\r\n                label={label}\r\n                variant={variant}\r\n                className=\"w-auto btn-md px-6 text-white min-w-[10rem]\"\r\n              />\r\n            ))}\r\n          </div>\r\n        ) : (\r\n          <div className=\"relative\" ref={profileRef}>\r\n            <button\r\n              type=\"button\"\r\n              className=\"btn btn-ghost btn-circle h-12 w-12 text-3xl text-primary-content\"\r\n              onClick={() => setIsProfileOpen((o) => !o)}\r\n              aria-haspopup=\"true\"\r\n              aria-expanded={isProfileOpen}\r\n            >\r\n              <i className=\"bi bi-person-circle\" aria-hidden=\"true\" />\r\n              <span className=\"sr-only\">Abrir menu do perfil</span>\r\n            </button>\r\n\r\n            {isProfileOpen && (\r\n              <div className=\"absolute right-0 mt-2 w-48 rounded-xl border border-base-300 bg-base-100 text-base-content shadow-lg z-50\">\r\n                <button\r\n                  type=\"button\"\r\n                  className=\"w-full text-left px-4 py-3 text-sm font-semibold text-error hover:bg-error/10 transition-colors duration-150\"\r\n                  onClick={onLogout}\r\n                >\r\n                  Fazer logout\r\n                </button>\r\n              </div>\r\n            )}\r\n          </div>\r\n        )}\r\n      </div>\r\n    </header>\r\n  );\r\n}\r\n\r\nNavbar.propTypes = {\r\n  variant: PropTypes.oneOf([\"private\", \"public\"]),\r\n  homePath: PropTypes.string,\r\n  links: PropTypes.arrayOf(\r\n    PropTypes.shape({\r\n      to: PropTypes.string.isRequired,\r\n      label: PropTypes.string.isRequired,\r\n      internal: PropTypes.bool,\r\n    })\r\n  ),\r\n  actions: PropTypes.arrayOf(\r\n    PropTypes.shape({\r\n      to: PropTypes.string.isRequired,\r\n      label: PropTypes.string.isRequired,\r\n      variant: PropTypes.oneOf([\r\n        \"primary\",\r\n        \"secondary\",\r\n        \"accent\",\r\n        \"neutral\",\r\n        \"outline\",\r\n        \"ghost\",\r\n        \"warning\",\r\n        \"success\",\r\n      ]),\r\n    })\r\n  ),\r\n  onLogout: PropTypes.func,\r\n};\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/components/sections/Navbar.jsx b/frontend/src/components/sections/Navbar.jsx
+--- a/frontend/src/components/sections/Navbar.jsx	(revision a038a9d6fb5d5ff3a55210abdf1b376c7d09d24b)
++++ b/frontend/src/components/sections/Navbar.jsx	(date 1763919217326)
+@@ -18,6 +18,7 @@
+   links = NAV_LINKS,
+   actions = PUBLIC_ACTIONS,
+   onLogout,
++  mobileMenuButton = null,
+ }) {
+   const isPublic = variant === "public";
+   const [isProfileOpen, setIsProfileOpen] = useState(false);
+@@ -51,16 +52,19 @@
+   return (
+     <header className={wrapperClasses}>
+       <div className="max-w-6xl mx-auto px-4 lg:px-6 py-3 flex items-center justify-between gap-6">
+-        <Link to={homePath} className="flex items-center gap-3 shrink-0 group">
+-          <img
+-            src={logo}
+-            alt="TeamFoundry"
+-            className={`object-contain ${isPublic ? "h-12 w-12" : "h-10 w-10"}`}
+-          />
+-          <span className="font-semibold font-semibold tracking-[0.2em] uppercase text-primary-content">
+-            TeamFoundry
+-          </span>
+-        </Link>
++        <div className="flex items-center gap-3 shrink-0 group">
++          {mobileMenuButton && <div className="md:hidden">{mobileMenuButton}</div>}
++          <Link to={homePath} className="hidden md:flex items-center gap-3">
++            <img
++              src={logo}
++              alt="TeamFoundry"
++              className={`object-contain ${isPublic ? "h-12 w-12" : "h-10 w-10"}`}
++            />
++            <span className="font-semibold tracking-[0.2em] uppercase text-primary-content">
++              TeamFoundry
++            </span>
++          </Link>
++        </div>
+ 
+         {(!isPublic && navItems.length > 0) && (
+           <nav className="hidden md:flex flex-1 justify-center">
+@@ -95,7 +99,7 @@
+                 to={to}
+                 label={label}
+                 variant={variant}
+-                className="w-auto btn-md px-6 text-white min-w-[10rem]"
++                className="w-auto btn-md px-6 text-white max-w-[10rem]"
+               />
+             ))}
+           </div>
+@@ -103,7 +107,7 @@
+           <div className="relative" ref={profileRef}>
+             <button
+               type="button"
+-              className="btn btn-ghost btn-circle h-12 w-12 text-3xl text-primary-content"
++              className="btn btn-ghost btn-circle h-12 w-12 text-3xl text-primary-content hover:bg-transparent active:bg-transparent focus:bg-transparent"
+               onClick={() => setIsProfileOpen((o) => !o)}
+               aria-haspopup="true"
+               aria-expanded={isProfileOpen}
+@@ -113,14 +117,52 @@
+             </button>
+ 
+             {isProfileOpen && (
+-              <div className="absolute right-0 mt-2 w-48 rounded-xl border border-base-300 bg-base-100 text-base-content shadow-lg z-50">
+-                <button
+-                  type="button"
+-                  className="w-full text-left px-4 py-3 text-sm font-semibold text-error hover:bg-error/10 transition-colors duration-150"
+-                  onClick={onLogout}
+-                >
+-                  Fazer logout
+-                </button>
++              <div className="absolute right-0 mt-2 w-56 rounded-xl border border-base-300 bg-base-100 text-base-content shadow-lg z-50">
++                <nav>
++                  <Link
++                    to="/candidato/dados-pessoais"
++                    className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition rounded-t-xl"
++                    onClick={() => setIsProfileOpen(false)}
++                  >
++                    <i className="bi bi-person" aria-hidden="true" />
++                    <span>Perfil</span>
++                  </Link>
++                  <Link
++                    to="/candidato/ofertas"
++                    className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition"
++                    onClick={() => setIsProfileOpen(false)}
++                  >
++                    <i className="bi bi-bell" aria-hidden="true" />
++                    <span>Ofertas</span>
++                  </Link>
++                  <Link
++                    to="/candidato/documentos"
++                    className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition"
++                    onClick={() => setIsProfileOpen(false)}
++                  >
++                    <i className="bi bi-file-earmark-text" aria-hidden="true" />
++                    <span>Documentos</span>
++                  </Link>
++                  <Link
++                    to="/candidato/proximos-passos"
++                    className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition"
++                    onClick={() => setIsProfileOpen(false)}
++                  >
++                    <i className="bi bi-flag" aria-hidden="true" />
++                    <span>Próximos passos</span>
++                  </Link>
++                  <button
++                    type="button"
++                    className="flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-error hover:bg-error/10 transition-colors duration-150 border-t border-base-200 cursor-pointer rounded-b-xl"
++                    onClick={() => {
++                      setIsProfileOpen(false);
++                      onLogout?.();
++                    }}
++                  >
++                    <i className="bi bi-box-arrow-right" aria-hidden="true" />
++                    <span>Terminar sessão</span>
++                  </button>
++                </nav>
+               </div>
+             )}
+           </div>
+@@ -157,4 +199,5 @@
+     })
+   ),
+   onLogout: PropTypes.func,
++  mobileMenuButton: PropTypes.node,
+ };
+Index: frontend/src/pages/profile/Employee/EmployeeSidebar.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { NavLink, useLocation } from \"react-router-dom\";\r\n\r\nconst PROFILE_INFO_ROUTES = [\r\n  \"/candidato/dados-pessoais\",\r\n  \"/candidato/formacao\",\r\n  \"/candidato/ultimos-trabalhos\",\r\n  \"/candidato/preferencias\",\r\n];\r\n\r\nconst SIDEBAR_LINKS = [\r\n  {\r\n    to: \"/candidato/dados-pessoais\",\r\n    label: \"Perfil\",\r\n    icon: \"bi-person\",\r\n    matches: PROFILE_INFO_ROUTES,\r\n  },\r\n  { to: \"/candidato/alertas\", label: \"Alerta de Emprego\", icon: \"bi-bell\" },\r\n  { to: \"/candidato/documentos\", label: \"Documentos\", icon: \"bi-file-earmark-text\" },\r\n  { to: \"/candidato/proximos-passos\", label: \"Próximos passos\", icon: \"bi-flag\" },\r\n];\r\n\r\nexport default function EmployeeSidebar() {\r\n  const location = useLocation();\r\n\r\n  return (\r\n    <aside className=\"hidden md:block w-64 px-4\">\r\n      <div className=\"bg-accent text-primary-content rounded-lg shadow-lg sticky top-6 px-0 py-6 h-full\">\r\n        <ul className=\"flex flex-col gap-2\">\r\n          {SIDEBAR_LINKS.map(({ to, label, icon, matches }) => (\r\n            <li key={to}>\r\n              <NavLink\r\n                to={to}\r\n                className={({ isActive }) => {\r\n                  const isProfileSection =\r\n                    matches?.some((path) => location.pathname.startsWith(path)) ?? false;\r\n                  const active = isActive || isProfileSection;\r\n                  return [\r\n                    \"flex items-center gap-3 px-6 py-3 transition-colors\",\r\n                    active ? \"bg-primary-content/10 font-semibold\" : \"hover:bg-primary-content/10\",\r\n                  ].join(\" \");\r\n                }}\r\n              >\r\n                <i className={`bi ${icon} text-xl`} aria-hidden=\"true\" />\r\n                <span>{label}</span>\r\n              </NavLink>\r\n            </li>\r\n          ))}\r\n        </ul>\r\n      </div>\r\n    </aside>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/pages/profile/Employee/EmployeeSidebar.jsx b/frontend/src/pages/profile/Employee/EmployeeSidebar.jsx
+--- a/frontend/src/pages/profile/Employee/EmployeeSidebar.jsx	(revision a038a9d6fb5d5ff3a55210abdf1b376c7d09d24b)
++++ b/frontend/src/pages/profile/Employee/EmployeeSidebar.jsx	(date 1763927389647)
+@@ -1,4 +1,7 @@
+ import { NavLink, useLocation } from "react-router-dom";
++import { useEffect, useRef, useState } from "react";
++import PropTypes from "prop-types";
++import logo from "../../../assets/images/logo/teamFoundry_LogoWhite.png";
+ 
+ const PROFILE_INFO_ROUTES = [
+   "/candidato/dados-pessoais",
+@@ -14,30 +17,81 @@
+     icon: "bi-person",
+     matches: PROFILE_INFO_ROUTES,
+   },
+-  { to: "/candidato/alertas", label: "Alerta de Emprego", icon: "bi-bell" },
++  { to: "/candidato/ofertas", label: "Ofertas", icon: "bi-bell" },
+   { to: "/candidato/documentos", label: "Documentos", icon: "bi-file-earmark-text" },
+   { to: "/candidato/proximos-passos", label: "Próximos passos", icon: "bi-flag" },
+ ];
+ 
+-export default function EmployeeSidebar() {
++export default function EmployeeSidebar({ isMobile = false, onNavigate, animateOut = false }) {
+   const location = useLocation();
++  const itemRefs = useRef([]);
++  const [indicator, setIndicator] = useState({ top: 0, height: 0 });
++
++  useEffect(() => {
++    const activeIndex = SIDEBAR_LINKS.findIndex(({ to, matches }) => {
++      const isProfileSection =
++        matches?.some((path) => location.pathname.startsWith(path)) ?? false;
++      return location.pathname.startsWith(to) || isProfileSection;
++    });
++    const el = itemRefs.current[activeIndex];
++    if (el) {
++      setIndicator({ top: el.offsetTop, height: el.offsetHeight });
++    }
++  }, [location.pathname]);
++
++  const navWrapperClasses = isMobile ? "w-72 max-w-xs h-full" : "hidden md:block w-64 px-4";
++  const navClasses = isMobile
++    ? "bg-accent text-primary-content h-full flex flex-col rounded-r-2xl shadow-xl"
++    : "bg-accent text-primary-content rounded-lg shadow-lg sticky top-6 px-0 py-6 h-screen";
+ 
+   return (
+-    <aside className="hidden md:block w-64 px-4">
+-      <div className="bg-accent text-primary-content rounded-lg shadow-lg sticky top-6 px-0 py-6 h-full">
+-        <ul className="flex flex-col gap-2">
++    <aside className={`${navWrapperClasses} ${isMobile ? (animateOut ? "animate-drawer-out" : "animate-drawer-in") : ""}`}>
++      <div className={navClasses}>
++        {isMobile && (
++          <div className="flex items-center justify-between px-4 py-3 border-b border-primary-content/20">
++            <div className="flex items-center gap-2">
++              <img src={logo} alt="TeamFoundry" className="h-8 w-8 object-contain" />
++              <span className="font-semibold tracking-wide">TeamFoundry</span>
++            </div>
++            <button
++              type="button"
++              className="btn btn-ghost btn-sm text-primary-content"
++              onClick={onNavigate}
++            >
++              <i className="bi bi-x-lg text-lg" aria-hidden="true" />
++              <span className="sr-only">Fechar menu</span>
++            </button>
++          </div>
++        )}
++
++        <ul className="relative flex flex-col gap-4 py-4 pl-3">
++          {indicator.height > 0 && (
++            <span
++              className="absolute left-1 w-1 rounded-full bg-primary-content/80 transition-all duration-300 ease-out"
++              style={{ top: indicator.top + 4, height: indicator.height - 8 }}
++              aria-hidden="true"
++            />
++          )}
+           {SIDEBAR_LINKS.map(({ to, label, icon, matches }) => (
+-            <li key={to}>
++            <li key={to} className="pr-2">
+               <NavLink
+                 to={to}
+                 className={({ isActive }) => {
+                   const isProfileSection =
+                     matches?.some((path) => location.pathname.startsWith(path)) ?? false;
+                   const active = isActive || isProfileSection;
+-                  return [
+-                    "flex items-center gap-3 px-6 py-3 transition-colors",
+-                    active ? "bg-primary-content/10 font-semibold" : "hover:bg-primary-content/10",
+-                  ].join(" ");
++                  const base = "flex items-center gap-3 px-6 py-3 rounded-lg transition-all";
++                  const state = active
++                    ? "bg-primary-content/15 font-semibold shadow-sm"
++                    : "hover:bg-primary-content/10";
++                  return `${base} ${state}`;
++                }}
++                onClick={onNavigate}
++                ref={(el) => {
++                  if (el) {
++                    const idx = SIDEBAR_LINKS.findIndex((link) => link.to === to);
++                    itemRefs.current[idx] = el;
++                  }
+                 }}
+               >
+                 <i className={`bi ${icon} text-xl`} aria-hidden="true" />
+@@ -50,3 +104,9 @@
+     </aside>
+   );
+ }
++
++EmployeeSidebar.propTypes = {
++  isMobile: PropTypes.bool,
++  onNavigate: PropTypes.func,
++  animateOut: PropTypes.bool,
++};
+Index: frontend/src/pages/profile/Employee/JobAlerts/AlertasEmprego.jsx
+===================================================================
+diff --git a/frontend/src/pages/profile/Employee/JobAlerts/AlertasEmprego.jsx b/frontend/src/pages/profile/Employee/JobAlerts/AlertasEmprego.jsx
+deleted file mode 100644
+--- a/frontend/src/pages/profile/Employee/JobAlerts/AlertasEmprego.jsx	(revision a038a9d6fb5d5ff3a55210abdf1b376c7d09d24b)
++++ /dev/null	(revision a038a9d6fb5d5ff3a55210abdf1b376c7d09d24b)
+@@ -1,71 +0,0 @@
+-import { useState } from "react";
+-import Modal from "../../../../components/ui/Modal/Modal.jsx";
+-
+-export default function AlertasEmprego() {
+-  const [open, setOpen] = useState(false);
+-
+-  return (
+-    <section className="w-full">
+-      <div className="flex items-center gap-4 mb-6">
+-        <i className="bi bi-bell-fill text-4xl text-primary" aria-hidden="true" />
+-        <h2 className="text-3xl font-semibold">Alerta de Emprego</h2>
+-      </div>
+-
+-      <div className="rounded-xl border border-base-300 bg-base-100 shadow min-h-[55vh]">
+-        <div className="p-4 md:p-6">
+-          {/* Card de alerta */}
+-          <div className="rounded-xl border border-base-300 bg-base-100 shadow-sm overflow-hidden max-w-3xl mx-auto">
+-            {/* Linha 1: Empresa + Local/ Data */}
+-            <div className="flex items-start justify-between px-4 py-3">
+-              <div className="flex items-center gap-3 text-sm">
+-                <i className="bi bi-building" aria-hidden="true" />
+-                <span className="font-medium">Empresa: Blabla Corp</span>
+-              </div>
+-              <div className="text-right text-xs text-base-content/80 flex flex-col items-end gap-1">
+-                <div className="flex items-center gap-2"><span>Angra dos reis</span><i className="bi bi-person-fill" /></div>
+-                <div className="flex items-center gap-2"><span>24/12/2024</span><i className="bi bi-calendar-event" /></div>
+-              </div>
+-            </div>
+-
+-            {/* Linha 2: Função + Ver mais */}
+-            <div className="border-t border-base-300 px-4 py-3 grid grid-cols-1 md:grid-cols-3 items-center gap-3 text-sm">
+-              <div className="md:col-span-2 flex items-center gap-2">
+-                <i className="bi bi-tools" aria-hidden="true" />
+-                <span className="text-base-content/90">Função: Tubista</span>
+-              </div>
+-              <div className="flex justify-end">
+-                <button type="button" className="btn btn-primary btn-sm w-32" onClick={() => setOpen(true)}>Ver mais</button>
+-              </div>
+-            </div>
+-
+-            {/* Linha 3: Pagamento */}
+-            <div className="border-t border-base-300 px-4 py-3 flex items-center gap-2 text-sm">
+-              <i className="bi bi-cash-coin" aria-hidden="true" />
+-              <span className="text-base-content/90">Pagamento: 17€/ hora</span>
+-            </div>
+-          </div>
+-        </div>
+-      </div>
+-
+-      <Modal
+-        open={open}
+-        onClose={() => setOpen(false)}
+-        title="Emprego"
+-        actions={(
+-          <>
+-            <button type="button" className="btn btn-error" onClick={() => setOpen(false)}>Recusar</button>
+-            <button type="button" className="btn btn-success" onClick={() => setOpen(false)}>Aceitar</button>
+-          </>
+-        )}
+-      >
+-        <p className="leading-relaxed text-justify">
+-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+-        </p>
+-        <p className="leading-relaxed text-justify mt-3">
+-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+-        </p>
+-        <p className="mt-4">Ass. Louco</p>
+-      </Modal>
+-    </section>
+-  );
+-}
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"a7dae958-fb9c-447a-93ab-f5d1d5d4e299\" name=\"Changes\" comment=\"Comentários Login e Register\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273/storage_v2/_src_/database/teamfoundry_db.UWXKRg/schema/public.abK9xQ.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273/storage_v2/_src_/database/teamfoundry_db.UWXKRg/schema/public.abK9xQ.meta\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_12_11_2025_19_25_[Changes]/shelved.patch\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_12_11_2025_19_25__Changes_.xml\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_11_2025_12_14_[Changes]1/shelved.patch\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_11_2025_12_14__Changes_1.xml\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_11_2025_17_49_[Changes]/shelved.patch\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_11_2025_17_49__Changes_.xml\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/admin/model/TeamRequest.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/admin/model/TeamRequest.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/frontend/src/components/ThemePreview.jsx\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/frontend/src/components/sections/Navbar.jsx\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/frontend/src/components/sections/Navbar.jsx\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/frontend/src/pages/home/HomeNoLogin/HomeNoLogin.jsx\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/frontend/src/pages/home/HomeNoLogin/HomeNoLogin.jsx\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/frontend/src/pages/profile/Employee/EmployeeLayout.jsx\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/frontend/src/pages/profile/Employee/EmployeeLayout.jsx\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/frontend/src/pages/profile/Employee/EmployeeSidebar.jsx\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/frontend/src/pages/profile/Employee/EmployeeSidebar.jsx\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ComposerSettings\">\r\n    <execution />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"JavaScript File\" />\r\n        <option value=\"JSX File\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"EmplyeeRegister\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;LuisAssis24&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/LuisAssis24/teamfoundry-workforce-management&quot;,\r\n    &quot;accountId&quot;: &quot;744e2a3a-bde5-4768-bf04-afd756c9b8e6&quot;\r\n  }\r\n}</component>\r\n  <component name=\"KubernetesApiPersistence\">{}</component>\r\n  <component name=\"KubernetesApiProvider\">{\r\n  &quot;isMigrated&quot;: true\r\n}</component>\r\n  <component name=\"PhpWorkspaceProjectConfiguration\" interpreter_name=\"PHP\" />\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 8\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"34vCubPTpiW0fbRzlf0VXysOloh\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,\r\n    &quot;Jest.findNameReturnsValueFromRepository.executor&quot;: &quot;Run&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\r\n    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;C:/Users/draga/Ambiente de Trabalho/Trabalhos Uni/teamfoundry-workforce-management&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/joaog/Desktop/TeamFoundry/teamfoundry-workforce-management/frontend/node_modules/jest&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  },\r\n  &quot;keyToStringList&quot;: {\r\n    &quot;DatabaseDriversLRU&quot;: [\r\n      &quot;postgresql&quot;\r\n    ]\r\n  }\r\n}</component>\r\n  <component name=\"ReactDesignerToolWindowState\">\r\n    <option name=\"myId2Visible\">\r\n      <map>\r\n        <entry key=\"com.intellij.reactbuddy.reactComponents\" value=\"false\" />\r\n        <entry key=\"com.intellij.reactbuddy.reactInspector\" value=\"false\" />\r\n        <entry key=\"com.intellij.reactbuddy.storybook\" value=\"false\" />\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\draga\\Ambiente de Trabalho\\Trabalhos Uni\\teamfoundry-workforce-management\\frontend\\src\\pages\\login\\UserLogin\" />\r\n      <recent name=\"C:\\Users\\draga\\Ambiente de Trabalho\\Trabalhos Uni\\teamfoundry-workforce-management\\frontend\\src\\pages\\admin\\SuperAdmin\\Metrics\" />\r\n      <recent name=\"C:\\Users\\draga\\Ambiente de Trabalho\\Trabalhos Uni\\teamfoundry-workforce-management\\frontend\\src\\pages\\admin\\SuperAdmin\\Staffing\" />\r\n      <recent name=\"C:\\Users\\draga\\Ambiente de Trabalho\\Trabalhos Uni\\teamfoundry-workforce-management\\frontend\\src\\pages\\admin\\SuperAdmin\\Credentials\\components\" />\r\n      <recent name=\"C:\\Users\\draga\\Ambiente de Trabalho\\Trabalhos Uni\\teamfoundry-workforce-management\\frontend\\src\\pages\\admin\\SuperAdmin\\Credentials\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Docker.docker-compose.yml: Compose Deployment\">\r\n    <configuration name=\"findNameReturnsValueFromRepository\" type=\"JavaScriptTestRunnerJest\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <node-interpreter value=\"project\" />\r\n      <jest-package value=\"$PROJECT_DIR$/frontend/node_modules/jest\" />\r\n      <working-dir value=\"$PROJECT_DIR$/frontend\" />\r\n      <envs />\r\n      <scope-kind value=\"TEST\" />\r\n      <test-file value=\"$PROJECT_DIR$/frontend/src/components/Testes/SampleComponent.test.jsx\" />\r\n      <test-names>\r\n        <test-name value=\"findNameReturnsValueFromRepository\" />\r\n      </test-names>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration default=\"true\" type=\"docker-deploy\" factoryName=\"docker-compose.yml\" temporary=\"true\">\r\n      <deployment type=\"docker-compose.yml\">\r\n        <settings />\r\n      </deployment>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"docker-compose.yml: Compose Deployment\" type=\"docker-deploy\" factoryName=\"docker-compose.yml\" temporary=\"true\" server-name=\"Docker\">\r\n      <deployment type=\"docker-compose.yml\">\r\n        <settings>\r\n          <option name=\"sourceFilePath\" value=\"docker-compose.yml\" />\r\n        </settings>\r\n      </deployment>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Jest.findNameReturnsValueFromRepository\" />\r\n        <item itemvalue=\"Docker.docker-compose.yml: Compose Deployment\" />\r\n        <item itemvalue=\"Docker.docker-compose.yml: Compose Deployment\" />\r\n        <item itemvalue=\"Jest.findNameReturnsValueFromRepository\" />\r\n        <item itemvalue=\"Jest.findNameReturnsValueFromRepository\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129\" />\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"a7dae958-fb9c-447a-93ab-f5d1d5d4e299\" name=\"Changes\" comment=\"\" />\r\n      <created>1762084882236</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1762084882236</updated>\r\n      <workItem from=\"1762084883878\" duration=\"21000\" />\r\n      <workItem from=\"1762091469964\" duration=\"76000\" />\r\n      <workItem from=\"1762094001251\" duration=\"2765000\" />\r\n      <workItem from=\"1762246782593\" duration=\"518000\" />\r\n      <workItem from=\"1762251955265\" duration=\"1640000\" />\r\n      <workItem from=\"1762269561409\" duration=\"37000\" />\r\n      <workItem from=\"1762342213231\" duration=\"34000\" />\r\n      <workItem from=\"1762342346529\" duration=\"11000\" />\r\n      <workItem from=\"1762342365107\" duration=\"12000\" />\r\n      <workItem from=\"1762343724969\" duration=\"31000\" />\r\n      <workItem from=\"1762343772875\" duration=\"5000\" />\r\n      <workItem from=\"1762344150441\" duration=\"327000\" />\r\n      <workItem from=\"1762345186853\" duration=\"419000\" />\r\n      <workItem from=\"1762358190210\" duration=\"6393000\" />\r\n      <workItem from=\"1762436874748\" duration=\"230000\" />\r\n      <workItem from=\"1762438641421\" duration=\"5000\" />\r\n      <workItem from=\"1762441766047\" duration=\"281000\" />\r\n      <workItem from=\"1762442119332\" duration=\"49000\" />\r\n      <workItem from=\"1762442232719\" duration=\"101000\" />\r\n      <workItem from=\"1762443631079\" duration=\"16000\" />\r\n      <workItem from=\"1762512585602\" duration=\"531000\" />\r\n      <workItem from=\"1762515533644\" duration=\"32000\" />\r\n      <workItem from=\"1762627382488\" duration=\"2600000\" />\r\n      <workItem from=\"1762702866572\" duration=\"121000\" />\r\n      <workItem from=\"1762704320510\" duration=\"6000\" />\r\n      <workItem from=\"1762704336685\" duration=\"680000\" />\r\n      <workItem from=\"1762809067972\" duration=\"13000\" />\r\n      <workItem from=\"1762948677077\" duration=\"233000\" />\r\n      <workItem from=\"1762949436526\" duration=\"21000\" />\r\n      <workItem from=\"1762949521722\" duration=\"12000\" />\r\n      <workItem from=\"1762949627915\" duration=\"1635000\" />\r\n      <workItem from=\"1762969694442\" duration=\"2838000\" />\r\n      <workItem from=\"1762972598953\" duration=\"721000\" />\r\n      <workItem from=\"1763463924704\" duration=\"6320000\" />\r\n      <workItem from=\"1763480340076\" duration=\"218000\" />\r\n      <workItem from=\"1763550194133\" duration=\"345000\" />\r\n      <workItem from=\"1763554962973\" duration=\"1118000\" />\r\n      <workItem from=\"1763569777382\" duration=\"325000\" />\r\n      <workItem from=\"1763583755763\" duration=\"84000\" />\r\n      <workItem from=\"1763588064716\" duration=\"321000\" />\r\n      <workItem from=\"1763590834566\" duration=\"38000\" />\r\n      <workItem from=\"1763902860713\" duration=\"34000\" />\r\n      <workItem from=\"1763904317542\" duration=\"3778000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"paleta certa\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1762094139652</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1762094139652</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"small changes\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1762342221517</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1762342221517</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"small changes\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1762345285968</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1762345285968</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"Implement password reset functionality and update email service\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1762628616017</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1762628616017</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\"Backend inicia, server email com problemas\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1762704711746</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1762704711746</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"correçao Navbar.jsx\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1763467462690</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1763467462690</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"Login e Register feitos&#10;Faltam logins por email e linkedin&#10;Aguarda testes estruturais\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1763471752630</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1763471752630</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"Verificaçoes Reset Password\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1763472392588</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1763472392589</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00009\" summary=\"Comentários Login e Register\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1763473395563</created>\r\n      <option name=\"number\" value=\"00009\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1763473395563</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"10\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"paleta certa\" />\r\n    <MESSAGE value=\"small changes\" />\r\n    <MESSAGE value=\"Implement password reset functionality and update email service\" />\r\n    <MESSAGE value=\"Backend inicia, server email com problemas\" />\r\n    <MESSAGE value=\"correçao Navbar.jsx\" />\r\n    <MESSAGE value=\"Login e Register feitos&#10;Faltam logins por email e linkedin&#10;Aguarda testes estruturais\" />\r\n    <MESSAGE value=\"Verificaçoes Reset Password\" />\r\n    <MESSAGE value=\"Comentários Login e Register\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Comentários Login e Register\" />\r\n  </component>\r\n  <component name=\"github-copilot-workspace\">\r\n    <instructionFileLocations>\r\n      <option value=\".github/instructions\" />\r\n    </instructionFileLocations>\r\n    <promptFileLocations>\r\n      <option value=\".github/prompts\" />\r\n    </promptFileLocations>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision a038a9d6fb5d5ff3a55210abdf1b376c7d09d24b)
++++ b/.idea/workspace.xml	(date 1763927732631)
+@@ -4,22 +4,15 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Comentários Login e Register">
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273/storage_v2/_src_/database/teamfoundry_db.UWXKRg/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273/storage_v2/_src_/database/teamfoundry_db.UWXKRg/schema/public.abK9xQ.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_12_11_2025_19_25_[Changes]/shelved.patch" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_12_11_2025_19_25__Changes_.xml" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_11_2025_12_14_[Changes]1/shelved.patch" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_11_2025_12_14__Changes_1.xml" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_11_2025_17_49_[Changes]/shelved.patch" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_11_2025_17_49__Changes_.xml" beforeDir="false" />
++    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Ajustes Layout">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/admin/model/TeamRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/admin/model/TeamRequest.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ThemePreview.jsx" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/frontend/src/components/sections/Footer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/sections/Footer.jsx" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/frontend/src/components/sections/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/sections/Navbar.jsx" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/home/HomeNoLogin/HomeNoLogin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/home/HomeNoLogin/HomeNoLogin.jsx" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/frontend/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/EmployeeLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/EmployeeLayout.jsx" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/EmployeeSidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/EmployeeSidebar.jsx" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/JobAlerts/AlertasEmprego.jsx" beforeDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -210,7 +203,7 @@
+       <workItem from="1763588064716" duration="321000" />
+       <workItem from="1763590834566" duration="38000" />
+       <workItem from="1763902860713" duration="34000" />
+-      <workItem from="1763904317542" duration="3778000" />
++      <workItem from="1763904317542" duration="7095000" />
+     </task>
+     <task id="LOCAL-00001" summary="paleta certa">
+       <option name="closed" value="true" />
+@@ -284,7 +277,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1763473395563</updated>
+     </task>
+-    <option name="localTasksCounter" value="10" />
++    <task id="LOCAL-00010" summary="Ajustes Layout">
++      <option name="closed" value="true" />
++      <created>1763916689947</created>
++      <option name="number" value="00010" />
++      <option name="presentableId" value="LOCAL-00010" />
++      <option name="project" value="LOCAL" />
++      <updated>1763916689947</updated>
++    </task>
++    <option name="localTasksCounter" value="11" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -299,7 +300,8 @@
+     <MESSAGE value="Login e Register feitos&#10;Faltam logins por email e linkedin&#10;Aguarda testes estruturais" />
+     <MESSAGE value="Verificaçoes Reset Password" />
+     <MESSAGE value="Comentários Login e Register" />
+-    <option name="LAST_COMMIT_MESSAGE" value="Comentários Login e Register" />
++    <MESSAGE value="Ajustes Layout" />
++    <option name="LAST_COMMIT_MESSAGE" value="Ajustes Layout" />
+   </component>
+   <component name="github-copilot-workspace">
+     <instructionFileLocations>
+Index: frontend/src/components/sections/Footer.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import logo from \"../../assets/images/logo/teamFoundry_LogoPrimary.png\";\r\n\r\nexport default function Footer() {\r\n  return (\r\n    <footer className=\"bg-primary text-primary-content\">\r\n      <div className=\"max-w-6xl mx-auto px-6 py-12 space-y-10\">\r\n        <div className=\"flex flex-col md:flex-row md:items-center md:justify-between gap-8\">\r\n          <div className=\"flex items-center gap-4\">\r\n            <img src={logo} alt=\"TeamFoundry\" className=\"h-14 w-14 object-contain\" />\r\n            <div>\r\n              <p className=\"text-lg font-semibold tracking-[0.25em] uppercase\">TeamFoundry</p>\r\n              <p className=\"text-sm text-primary-content/80\">\r\n                Forjamos equipas, movemos a indústria.\r\n              </p>\r\n            </div>\r\n          </div>\r\n          <div className=\"grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm\">\r\n            <div>\r\n              <p className=\"font-semibold uppercase tracking-wide text-xs mb-2\">Contactos</p>\r\n              <p>hello@teamfoundry.pt</p>\r\n              <p>+351 21 000 0000</p>\r\n            </div>\r\n            <div>\r\n              <p className=\"font-semibold uppercase tracking-wide text-xs mb-2\">Escritório</p>\r\n              <p>R. João Saraiva 7</p>\r\n              <p>Lisboa — Portugal</p>\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div className=\"border-t border-white/20 pt-6 flex flex-col md:flex-row gap-3 items-center justify-between text-sm text-primary-content/80\">\r\n          <p>© {new Date().getFullYear()} TeamFoundry. Todos os direitos reservados.</p>\r\n          <div className=\"flex gap-4\">\r\n            <a href=\"/privacy\" className=\"hover:text-white transition-colors\">\r\n              Privacidade\r\n            </a>\r\n            <a href=\"/terms\" className=\"hover:text-white transition-colors\">\r\n              Termos\r\n            </a>\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </footer>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/components/sections/Footer.jsx b/frontend/src/components/sections/Footer.jsx
+--- a/frontend/src/components/sections/Footer.jsx	(revision a038a9d6fb5d5ff3a55210abdf1b376c7d09d24b)
++++ b/frontend/src/components/sections/Footer.jsx	(date 1763917628421)
+@@ -1,4 +1,4 @@
+-import logo from "../../assets/images/logo/teamFoundry_LogoPrimary.png";
++import logo from "../../assets/images/logo/teamFoundry_LogoWhite.png";
+ 
+ export default function Footer() {
+   return (
+Index: frontend/src/index.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>@import \"tailwindcss\";\r\n@import url(\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@500;600;700&display=swap\");\r\n\r\n@plugin \"daisyui\";\r\n@plugin \"daisyui/theme\" {\r\n    name: \"foundry\";\r\n    default: true;\r\n    prefersdark: false;\r\n    color-scheme: light;\r\n\r\n    /* === Base === */\r\n    --color-base-100: #f5f5f5;\r\n    --color-base-200: #f0f0f0;\r\n    --color-base-content: #111827;\r\n\r\n    /* === Brand === */\r\n    --color-primary: #1f2959;\r\n    --color-primary-focus: #2c3a74;\r\n    --color-primary-content: #f5f5f5;\r\n\r\n    --color-secondary: #4c63d9;\r\n    --color-secondary-focus: #8a93c2;\r\n    --color-secondary-content: #f5f5f5;\r\n\r\n    --color-accent: #344495;\r\n    --color-accent-focus: #4057b5;\r\n    --color-accent-content: #f5f5f5;\r\n\r\n    /* === Neutral === */\r\n    --color-neutral: #b1b9c7;\r\n    --color-neutral-content: #111827;\r\n\r\n    /* === Feedback === */\r\n    --color-info: #5DD1FF;\r\n    --color-info-content: #111827;\r\n    --color-success: #15D458;\r\n    --color-success-content: #111827;\r\n    --color-warning: #f59e0b;\r\n    --color-warning-content: #111827;\r\n    --color-error: #FF2B2B;\r\n    --color-error-content: #111827;\r\n\r\n    /* === Fonts === */\r\n    --font-heading: \"Poppins\", sans-serif;\r\n    --font-body: \"Inter\", sans-serif;\r\n\r\n    /* === Typography === */\r\n    --fs-h1: 2.5rem;\r\n    --fs-h2: 2rem;\r\n    --fs-h3: 1.5rem;\r\n    --fs-body: 1rem;\r\n    --fs-label: 0.875rem;\r\n\r\n    --lh-h1: 1.2;\r\n    --lh-h2: 1.25;\r\n    --lh-h3: 1.3;\r\n    --lh-body: 1.5;\r\n    --lh-label: 1.4;\r\n\r\n    --fw-bold: 700;\r\n    --fw-semibold: 600;\r\n    --fw-medium: 500;\r\n    --fw-regular: 400;\r\n\r\n    /* === Radius === */\r\n    --radius-selector: 1rem;\r\n    --radius-field: 0.5rem;\r\n    --radius-box: 0.5rem;\r\n\r\n    /* === Base Sizes === */\r\n    --size-selector: 0.25rem;\r\n    --size-field: 0.25rem;\r\n\r\n    /* === Border === */\r\n    --border: 1px;\r\n\r\n    /* === Effects === */\r\n    --depth: 1;\r\n    --noise: 0;\r\n}\r\n\r\n@layer components {\r\n    .company-credentials-scroll {\r\n        scrollbar-width: auto;\r\n        scrollbar-color: #1f2959 transparent;\r\n    }\r\n\r\n  .pseudo-underline::after {\r\n    content: \"\";\r\n    position: absolute;\r\n    left: 0;\r\n    right: 0;\r\n    bottom: -0.35rem;\r\n    height: 0.25rem;\r\n    border-radius: 999px;\r\n    background-color: currentColor;\r\n  }\r\n\r\n  .sr-only {\r\n    position: absolute;\r\n    width: 1px;\r\n    height: 1px;\r\n    padding: 0;\r\n    margin: -1px;\r\n    overflow: hidden;\r\n    clip: rect(0, 0, 0, 0);\r\n    white-space: nowrap;\r\n    border: 0;\r\n  }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/index.css b/frontend/src/index.css
+--- a/frontend/src/index.css	(revision a038a9d6fb5d5ff3a55210abdf1b376c7d09d24b)
++++ b/frontend/src/index.css	(date 1763927140076)
+@@ -108,4 +108,35 @@
+     border: 0;
+   }
+ 
++  /* Animações para drawer mobile do perfil */
++  @keyframes drawer-in {
++    from {
++      transform: translateX(-16px);
++      opacity: 0;
++    }
++    to {
++      transform: translateX(0);
++      opacity: 1;
++    }
++  }
++
++  @keyframes drawer-out {
++    from {
++      transform: translateX(0);
++      opacity: 1;
++    }
++    to {
++      transform: translateX(-16px);
++      opacity: 0;
++    }
++  }
++
++  .animate-drawer-in {
++    animation: drawer-in 0.2s ease-out both;
++  }
++
++  .animate-drawer-out {
++    animation: drawer-out 0.15s ease-in both;
++  }
++
+ }
+Index: frontend/src/App.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Navigate, Route, Routes } from \"react-router-dom\";\r\n\r\nimport CandidateLogin from \"./pages/login/UserLogin/UserLogin.jsx\";\r\nimport AdminLogin from \"./pages/login/AdminLogin/AdminLogin.jsx\";\r\n\r\nimport EmployeeRegisterLayout from \"./pages/register/EmployeeRegister/EmployeeRegisterLayout.jsx\";\r\nimport EmployeeRegisterStep1 from \"./pages/register/EmployeeRegister/EmployeeRegisterStep1.jsx\";\r\nimport EmployeeRegisterStep2 from \"./pages/register/EmployeeRegister/EmployeeRegisterStep2.jsx\";\r\nimport EmployeeRegisterStep3 from \"./pages/register/EmployeeRegister/EmployeeRegisterStep3.jsx\";\r\nimport EmployeeRegisterStep4 from \"./pages/register/EmployeeRegister/EmployeeRegisterStep4.jsx\";\r\nimport CompanyRegisterLayout from \"./pages/register/CompanyRegister/CompanyRegisterLayout.jsx\";\r\nimport CompanyRegisterStep1 from \"./pages/register/CompanyRegister/CompanyRegisterStep1.jsx\";\r\nimport CompanyRegisterStep2 from \"./pages/register/CompanyRegister/CompanyRegisterStep2.jsx\";\r\nimport CompanyRegisterStep3 from \"./pages/register/CompanyRegister/CompanyRegisterStep3.jsx\";\r\n\r\nimport EmployeeLayout, {\r\n  CandidateIndexRedirect,\r\n} from \"./pages/profile/Employee/EmployeeLayout.jsx\";\r\nimport PersonalDetails from \"./pages/profile/Employee/Info/PersonalDetails.jsx\";\r\nimport Education from \"./pages/profile/Employee/Info/Education.jsx\";\r\nimport RecentJobs from \"./pages/profile/Employee/Info/RecentJobs.jsx\";\r\nimport Preferences from \"./pages/profile/Employee/Info/Preferences.jsx\";\r\nimport AlertasEmprego from \"./pages/profile/Employee/JobAlerts/AlertasEmprego.jsx\";\r\nimport Documentos from \"./pages/profile/Employee/Documents/Documentos.jsx\";\r\nimport ProximosPassos from \"./pages/profile/Employee/NextSteps/ProximosPassos.jsx\";\r\n\r\nimport SuperAdminLayout from \"./pages/admin/SuperAdmin/SuperAdminLayout.jsx\";\r\nimport Credentials from \"./pages/admin/SuperAdmin/Credentials/Credentials.jsx\";\r\nimport Staffing from \"./pages/admin/SuperAdmin/Staffing/Staffing.jsx\";\r\nimport VariableManagement from \"./pages/admin/SuperAdmin/VariableManagement/VariableManagement.jsx\";\r\nimport Metrics from \"./pages/admin/SuperAdmin/Metrics/Metrics.jsx\";\r\nimport TeamManagement from \"./pages/admin/TeamManagement/TeamManagement.jsx\";\r\nimport BuildTeamSearch from \"./pages/admin/TeamManagement/BuildTeamSearch.jsx\";\r\nimport { HomeNoLogin } from \"./pages/home/HomeNoLogin/HomeNoLogin.jsx\";\r\nimport HomeAuthenticated from \"./pages/home/HomeAuthenticated/HomeAuthenticated.jsx\";\r\n\r\nfunction App() {\r\n  return (\r\n    <Routes>\r\n      <Route path=\"/\" element={<HomeNoLogin />} />\r\n      <Route path=\"/home-login\" element={<HomeAuthenticated />} />\r\n      <Route path=\"/login\" element={<CandidateLogin />} />\r\n      <Route\r\n        path=\"/forgot-password\"\r\n        element={<Navigate to=\"/login\" state={{ openForgotModal: true }} replace />}\r\n      />\r\n      <Route path=\"/home-login\" element={<HomeAuthenticated />} />\r\n\r\n      <Route path=\"/employee-register\" element={<EmployeeRegisterLayout />}>\r\n        <Route index element={<Navigate to=\"step1\" replace />} />\r\n        <Route path=\"step1\" element={<EmployeeRegisterStep1 />} />\r\n        <Route path=\"step2\" element={<EmployeeRegisterStep2 />} />\r\n        <Route path=\"step3\" element={<EmployeeRegisterStep3 />} />\r\n        <Route path=\"step4\" element={<EmployeeRegisterStep4 />} />\r\n      </Route>\r\n\r\n      <Route path=\"/company-register\" element={<CompanyRegisterLayout />}>\r\n        <Route index element={<Navigate to=\"step1\" replace />} />\r\n        <Route path=\"step1\" element={<CompanyRegisterStep1 />} />\r\n        <Route path=\"step2\" element={<CompanyRegisterStep2 />} />\r\n        <Route path=\"step3\" element={<CompanyRegisterStep3 />} />\r\n      </Route>\r\n\r\n      <Route path=\"/admin\" element={<AdminLogin />} />\r\n      <Route path=\"/admin/team-management\" element={<TeamManagement />} />\r\n      <Route path=\"/admin/team-management/build\" element={<BuildTeamSearch />} />\r\n\r\n      <Route path=\"/admin/super\" element={<SuperAdminLayout />}>\r\n        <Route index element={<Navigate to=\"credenciais\" replace />} />\r\n        <Route path=\"credenciais\" element={<Credentials />} />\r\n        <Route path=\"gestao-trabalho\" element={<Staffing />} />\r\n        <Route path=\"gestao-site\" element={<VariableManagement />} />\r\n        <Route path=\"metricas\" element={<Metrics />} />\r\n      </Route>\r\n\r\n      <Route path=\"/candidato\" element={<EmployeeLayout />}>\r\n        <Route index element={<CandidateIndexRedirect />} />\r\n        <Route path=\"dados-pessoais\" element={<PersonalDetails />} />\r\n        <Route path=\"formacao\" element={<Education />} />\r\n        <Route path=\"ultimos-trabalhos\" element={<RecentJobs />} />\r\n        <Route path=\"preferencias\" element={<Preferences />} />\r\n        <Route path=\"alertas\" element={<AlertasEmprego />} />\r\n        <Route path=\"documentos\" element={<Documentos />} />\r\n        <Route path=\"proximos-passos\" element={<ProximosPassos />} />\r\n      </Route>\r\n    </Routes>\r\n  );\r\n}\r\n\r\nexport default App;\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/App.jsx b/frontend/src/App.jsx
+--- a/frontend/src/App.jsx	(revision a038a9d6fb5d5ff3a55210abdf1b376c7d09d24b)
++++ b/frontend/src/App.jsx	(date 1763918583758)
+@@ -20,7 +20,7 @@
+ import Education from "./pages/profile/Employee/Info/Education.jsx";
+ import RecentJobs from "./pages/profile/Employee/Info/RecentJobs.jsx";
+ import Preferences from "./pages/profile/Employee/Info/Preferences.jsx";
+-import AlertasEmprego from "./pages/profile/Employee/JobAlerts/AlertasEmprego.jsx";
++import OfertasEmprego from "./pages/profile/Employee/JobAlerts/OfertasEmprego.jsx";
+ import Documentos from "./pages/profile/Employee/Documents/Documentos.jsx";
+ import ProximosPassos from "./pages/profile/Employee/NextSteps/ProximosPassos.jsx";
+ 
+@@ -79,7 +79,7 @@
+         <Route path="formacao" element={<Education />} />
+         <Route path="ultimos-trabalhos" element={<RecentJobs />} />
+         <Route path="preferencias" element={<Preferences />} />
+-        <Route path="alertas" element={<AlertasEmprego />} />
++        <Route path="ofertas" element={<OfertasEmprego />} />
+         <Route path="documentos" element={<Documentos />} />
+         <Route path="proximos-passos" element={<ProximosPassos />} />
+       </Route>
+Index: frontend/src/pages/profile/Employee/EmployeeLayout.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Outlet, Navigate } from \"react-router-dom\";\r\nimport Navbar from \"../../../components/sections/Navbar.jsx\";\r\nimport EmployeeSidebar from \"./EmployeeSidebar.jsx\";\r\n\r\nexport default function EmployeeLayout() {\r\n  return (\r\n    <div className=\"min-h-screen bg-base-100 text-base-content\">\r\n      <Navbar />\r\n\r\n      <div className=\"max-w-6xl mx-auto px-1 md:px-2 py-6 flex gap-6\">\r\n        <EmployeeSidebar />\r\n        <main className=\"flex-1\">\r\n          <Outlet />\r\n        </main>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n\r\n// Fallback element if used as index route\r\nexport function CandidateIndexRedirect() {\r\n  return <Navigate to=\"dados-pessoais\" replace />;\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/pages/profile/Employee/EmployeeLayout.jsx b/frontend/src/pages/profile/Employee/EmployeeLayout.jsx
+--- a/frontend/src/pages/profile/Employee/EmployeeLayout.jsx	(revision a038a9d6fb5d5ff3a55210abdf1b376c7d09d24b)
++++ b/frontend/src/pages/profile/Employee/EmployeeLayout.jsx	(date 1763927403432)
+@@ -1,18 +1,65 @@
+-import { Outlet, Navigate } from "react-router-dom";
++import { Outlet, Navigate, useNavigate } from "react-router-dom";
++import { useState } from "react";
+ import Navbar from "../../../components/sections/Navbar.jsx";
+ import EmployeeSidebar from "./EmployeeSidebar.jsx";
++import { clearTokens } from "../../../auth/tokenStorage.js";
+ 
+ export default function EmployeeLayout() {
++  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
++  const [animatingOut, setAnimatingOut] = useState(false);
++  const navigate = useNavigate();
++
++  const closeMobileMenu = () => {
++    if (!mobileMenuOpen) return;
++    setAnimatingOut(true);
++    setTimeout(() => {
++      setMobileMenuOpen(false);
++      setAnimatingOut(false);
++    }, 150);
++  };
++
++  const handleLogout = () => {
++    clearTokens();
++    navigate("/login", { replace: true });
++  };
++
+   return (
+     <div className="min-h-screen bg-base-100 text-base-content">
+-      <Navbar />
++      <Navbar
++        onLogout={handleLogout}
++        mobileMenuButton={
++          <button
++            type="button"
++            className="btn btn-ghost btn-circle text-primary-content"
++            onClick={() => setMobileMenuOpen(true)}
++          >
++            <i className="bi bi-list text-2xl" aria-hidden="true" />
++            <span className="sr-only">Abrir menu</span>
++          </button>
++        }
++      />
+ 
+-      <div className="max-w-6xl mx-auto px-1 md:px-2 py-6 flex gap-6">
++      <div className="max-w-6xl mx-auto px-2 md:px-2 py-6 flex gap-6">
+         <EmployeeSidebar />
+         <main className="flex-1">
+           <Outlet />
+         </main>
+       </div>
++
++      {mobileMenuOpen && (
++        <div className="fixed inset-0 z-50 md:hidden">
++          <div
++            className="absolute inset-0 bg-black/40"
++            onClick={closeMobileMenu}
++            aria-hidden="true"
++          />
++          <div className="absolute inset-y-0 left-0 w-72 max-w-[80%]">
++            <div className="h-full translate-x-0 transform transition-transform duration-200 ease-out">
++              <EmployeeSidebar isMobile animateOut={animatingOut} onNavigate={closeMobileMenu} />
++            </div>
++          </div>
++        </div>
++      )}
+     </div>
+   );
+ }
+@@ -21,4 +68,3 @@
+ export function CandidateIndexRedirect() {
+   return <Navigate to="dados-pessoais" replace />;
+ }
+-
