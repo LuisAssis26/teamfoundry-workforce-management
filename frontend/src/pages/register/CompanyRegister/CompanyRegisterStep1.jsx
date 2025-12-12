@@ -12,10 +12,9 @@ const passwordRequirements = [
 ];
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const phoneRegex = /^[0-9+()\s-]{6,20}$/;
 
 /**
- * Passo 1 do registo de empresa: credenciais e responsável.
+ * Passo 1 do registo de empresa: credenciais de acesso.
  */
 export default function CompanyRegisterStep1() {
   const { companyData, updateStepData, completeStep } = useOutletContext();
@@ -23,10 +22,6 @@ export default function CompanyRegisterStep1() {
   const [credentialEmail, setCredentialEmail] = useState(companyData.credentials?.credentialEmail || "");
   const [password, setPassword] = useState(companyData.credentials?.password || "");
   const [confirmPassword, setConfirmPassword] = useState(companyData.credentials?.password || "");
-  const [responsibleName, setResponsibleName] = useState(companyData.credentials?.responsibleName || "");
-  const [responsibleRole, setResponsibleRole] = useState(companyData.credentials?.responsibleRole || "");
-  const [responsibleEmail, setResponsibleEmail] = useState(companyData.credentials?.responsibleEmail || "");
-  const [responsiblePhone, setResponsiblePhone] = useState(companyData.credentials?.responsiblePhone || "");
   const [errors, setErrors] = useState({});
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -51,20 +46,6 @@ export default function CompanyRegisterStep1() {
     if (password !== confirmPassword) {
       newErrors.confirmPassword = "As passwords não coincidem.";
     }
-    if (!responsibleName.trim()) {
-      newErrors.responsibleName = "Informe o nome do responsável.";
-    }
-    if (!responsibleRole.trim()) {
-      newErrors.responsibleRole = "Informe o cargo.";
-    }
-    if (!responsibleEmail.trim() || !emailRegex.test(responsibleEmail.trim())) {
-      newErrors.responsibleEmail = "Informe um email corporativo válido.";
-    }
-    if (!responsiblePhone.trim()) {
-      newErrors.responsiblePhone = "Informe um telefone.";
-    } else if (!phoneRegex.test(responsiblePhone.trim())) {
-      newErrors.responsiblePhone = "Formato de telefone inválido.";
-    }
     return newErrors;
   };
 
@@ -80,10 +61,6 @@ export default function CompanyRegisterStep1() {
     updateStepData("credentials", {
       credentialEmail: credentialEmail.trim(),
       password,
-      responsibleName: responsibleName.trim(),
-      responsibleRole: responsibleRole.trim(),
-      responsibleEmail: responsibleEmail.trim(),
-      responsiblePhone: responsiblePhone.trim(),
     });
     completeStep(1, 2);
     setLoading(false);
@@ -92,10 +69,10 @@ export default function CompanyRegisterStep1() {
   return (
     <section className="flex h-full flex-col">
       <div>
-        <p className="text-sm font-semibold text-primary uppercase tracking-wide">Passo 1 de 3</p>
-        <h1 className="mt-2 text-3xl font-bold text-accent">Credenciais e Responsável</h1>
+        <p className="text-sm font-semibold text-primary uppercase tracking-wide">Passo 1 de 4</p>
+        <h1 className="mt-2 text-3xl font-bold text-accent">Credenciais de acesso</h1>
         <p className="mt-4 text-base text-base-content/70">
-          Crie a credencial de acesso e identifique o responsável pela empresa.
+          Crie o email e password que irão aceder à área da empresa.
         </p>
       </div>
 
@@ -107,21 +84,23 @@ export default function CompanyRegisterStep1() {
           icon={<i className="bi bi-envelope" />}
           value={credentialEmail}
           onChange={(event) => setCredentialEmail(event.target.value)}
+          autoComplete="email"
           error={errors.credentialEmail}
         />
 
         <div className="relative">
           <InputField
-            label="Password"
-            type="password"
-            placeholder="Crie uma password"
-            icon={<i className="bi bi-lock" />}
-            value={password}
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
-            onFocus={() => setPasswordFocused(true)}
-            onBlur={() => setPasswordFocused(false)}
+          label="Password"
+          type="password"
+          placeholder="Crie uma password"
+          icon={<i className="bi bi-lock" />}
+          value={password}
+          autoComplete="new-password"
+          onChange={(event) => {
+            setPassword(event.target.value);
+          }}
+          onFocus={() => setPasswordFocused(true)}
+          onBlur={() => setPasswordFocused(false)}
             error={errors.password}
           />
 
@@ -149,39 +128,10 @@ export default function CompanyRegisterStep1() {
           placeholder="Repita a password"
           icon={<i className="bi bi-shield-lock" />}
           value={confirmPassword}
+          autoComplete="new-password"
           onChange={(event) => setConfirmPassword(event.target.value)}
           error={errors.confirmPassword}
         />
-
-        
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <InputField
-            label="Nome do responsável"
-            value={responsibleName}
-            onChange={(event) => setResponsibleName(event.target.value)}
-            error={errors.responsibleName}
-          />
-          <InputField
-            label="Cargo"
-            value={responsibleRole}
-            onChange={(event) => setResponsibleRole(event.target.value)}
-            error={errors.responsibleRole}
-          />
-          <InputField
-            label="Email corporativo"
-            type="email"
-            value={responsibleEmail}
-            onChange={(event) => setResponsibleEmail(event.target.value)}
-            error={errors.responsibleEmail}
-          />
-          <InputField
-            label="Telefone"
-            value={responsiblePhone}
-            onChange={(event) => setResponsiblePhone(event.target.value)}
-            error={errors.responsiblePhone}
-          />
-        </div>
 
         <div className="mt-10 grid grid-cols-2 gap-4">
           <Button label="Anterior" variant="outline" disabled className="btn-outline border-base-300 text-base-content/60" />

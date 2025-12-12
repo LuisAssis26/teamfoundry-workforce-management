@@ -1,4 +1,4 @@
-import { API_URL } from '../config.js';
+import { API_URL } from '../config/config.js';
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from '../../auth/tokenStorage.js';
 
 async function doFetch(path, options = {}) {

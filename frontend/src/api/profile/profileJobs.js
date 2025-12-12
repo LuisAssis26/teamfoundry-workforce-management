@@ -1,4 +1,4 @@
-import { httpGet, httpPost } from "../http.js";
+import { httpGet, httpPost } from "../config/http.js";
 
 const BASE_PATH = "/api/employee/jobs";
 const OFFERS_PATH = "/api/employee/offers";

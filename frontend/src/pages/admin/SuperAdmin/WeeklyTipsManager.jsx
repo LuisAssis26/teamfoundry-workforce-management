@@ -6,7 +6,7 @@ import {
   toggleWeeklyTipVisibility,
   markWeeklyTipFeatured,
   reorderWeeklyTips,
-} from "../../../api/siteManagement.js";
+} from "../../../api/site/siteManagement.js";
 import Modal from "/src/components/ui/Modal/Modal.jsx";
 import { useSuperAdminData } from "./SuperAdminDataContext.jsx";
 import { moveItemInList, sortWeeklyTips } from "./VariableManagement/utils.js";

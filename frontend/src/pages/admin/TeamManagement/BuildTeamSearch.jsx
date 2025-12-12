@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import AdminNavbar from "../components/AdminNavbar.jsx";
+import AdminNavbar from "../../../components/sections/AdminNavbar.jsx";
 import EmployeeCard from "./components/EmployeeCard.jsx";
-import MultiSelectDropdown from "../../../components/ui/MultiSelect/MultiSelectDropdown.jsx";
-import { teamRequestsAPI } from "../../../api/teamRequests.js";
-import { fetchGeoAreas, fetchCompetences } from "../../../api/siteManagement.js";
-import { searchCandidates } from "../../../api/candidates.js";
-import { sendInvites, listInvitedIds, listAcceptedIds } from "../../../api/invitations.js";
+import MultiSelectDropdown from "../../../components/ui/Dropdown/MultiSelectDropdown.jsx";
+import { searchCandidates } from "../../../api/admin/candidates.js";
+import { sendInvites, listInvitedIds, listAcceptedIds } from "../../../api/admin/invitations.js";
+import { useAdminData } from "./AdminDataContext.jsx";
 
 export default function BuildTeamSearch() {
     const navigate = useNavigate();
@@ -14,16 +13,28 @@ export default function BuildTeamSearch() {
     const teamId = searchParams.get("team");
     const role = searchParams.get("role") || "";
 
-    const [geoOptions, setGeoOptions] = useState([]);
-    const [skillOptions, setSkillOptions] = useState([]);
+    const {
+        requests: {
+            details: { refresh: refreshDetails },
+        },
+        options: {
+            data: optionsData,
+            error: optionsError,
+            refresh: refreshOptions,
+        },
+    } = useAdminData();
+
+    const geoOptions = optionsData.geoAreas ?? [];
+    const skillOptions = optionsData.competences ?? [];
+    const functionOptions = optionsData.functions ?? [];
+
     const [geoSelected, setGeoSelected] = useState([]);
     const [skillsSelected, setSkillsSelected] = useState([]);
+    const [preferredRolesSelected, setPreferredRolesSelected] = useState([]);
 
     const [teamInfo, setTeamInfo] = useState(null);
     const [isLoadingTeam, setIsLoadingTeam] = useState(true);
     const [teamError, setTeamError] = useState("");
-    const [geoError, setGeoError] = useState("");
-    const [skillError, setSkillError] = useState("");
 
     const [candidates, setCandidates] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
@@ -32,16 +43,16 @@ export default function BuildTeamSearch() {
     const [selectedIds, setSelectedIds] = useState([]);
     const [acceptedIds, setAcceptedIds] = useState([]);
     const [inviteFeedback, setInviteFeedback] = useState("");
-  const [inviteError, setInviteError] = useState("");
-  const [isInviting, setIsInviting] = useState(false);
-  const isComplete = teamInfo?.state === "COMPLETE";
+    const [inviteError, setInviteError] = useState("");
+    const [isInviting, setIsInviting] = useState(false);
+    const isComplete = teamInfo?.state === "COMPLETE";
 
     useEffect(() => {
         let canceled = false;
 
         async function loadTeam() {
             if (!teamId) {
-                setTeamError("Selecione uma requisição antes de montar a equipa.");
+                setTeamError("Selecione uma requisicao antes de montar a equipa.");
                 setIsLoadingTeam(false);
                 return;
             }
@@ -49,7 +60,7 @@ export default function BuildTeamSearch() {
             setIsLoadingTeam(true);
             setTeamError("");
             try {
-                const details = await teamRequestsAPI.getAssignedRequest(teamId);
+                const details = await refreshDetails(teamId);
                 if (!canceled) setTeamInfo(details);
             } catch (err) {
                 if (!canceled) setTeamError(err.message || "Erro ao carregar dados da equipa.");
@@ -62,43 +73,11 @@ export default function BuildTeamSearch() {
         return () => {
             canceled = true;
         };
-    }, [teamId]);
+    }, [teamId, refreshDetails]);
 
     useEffect(() => {
-        let canceled = false;
-
-        async function loadGeoAreas() {
-            setGeoError("");
-            try {
-                const data = await fetchGeoAreas();
-                if (!canceled) {
-                    const names = Array.isArray(data) ? data.map((item) => item.name).filter(Boolean) : [];
-                    setGeoOptions(names);
-                }
-            } catch (err) {
-                if (!canceled) setGeoError(err.message || "Erro ao carregar áreas geográficas.");
-            }
-        }
-
-        async function loadCompetences() {
-            setSkillError("");
-            try {
-                const data = await fetchCompetences();
-                if (!canceled) {
-                    const names = Array.isArray(data) ? data.map((item) => item.name).filter(Boolean) : [];
-                    setSkillOptions(names);
-                }
-            } catch (err) {
-                if (!canceled) setSkillError(err.message || "Erro ao carregar competências.");
-            }
-        }
-
-        loadGeoAreas();
-        loadCompetences();
-        return () => {
-            canceled = true;
-        };
-    }, []);
+        refreshOptions().catch(() => {});
+    }, [refreshOptions]);
 
     useEffect(() => {
         let canceled = false;
@@ -112,6 +91,7 @@ export default function BuildTeamSearch() {
                     role,
                     areas: geoSelected,
                     skills: skillsSelected,
+                    preferredRoles: preferredRolesSelected,
                 });
                 if (!canceled) setCandidates(data);
             } catch (err) {
@@ -125,7 +105,7 @@ export default function BuildTeamSearch() {
         return () => {
             canceled = true;
         };
-    }, [teamId, role, geoSelected, skillsSelected]);
+    }, [teamId, role, geoSelected, skillsSelected, preferredRolesSelected]);
 
     useEffect(() => {
         let canceled = false;
@@ -163,9 +143,8 @@ export default function BuildTeamSearch() {
             return {
                 id: c.id,
                 name: fullName,
-                role: c.role || "Sem função",
+                role: c.role || "Sem funcao",
                 city: preferredArea,
-                preference: preferredArea,
                 skills,
                 experiences,
                 accepted,
@@ -174,16 +153,16 @@ export default function BuildTeamSearch() {
         });
     }, [candidates, selectedIds, acceptedIds]);
 
-  const toggleSelect = (id, accepted) => {
-    if (accepted || isComplete) return;
-    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
-  };
+    const toggleSelect = (id, accepted) => {
+        if (accepted || isComplete) return;
+        setSelectedIds((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
+    };
 
     const handleSendInvites = async () => {
-    if (!teamId || !role || selectedIds.length === 0) return;
-    setInviteError("");
-    setInviteFeedback("");
-    setIsInviting(true);
+        if (!teamId || !role || selectedIds.length === 0) return;
+        setInviteError("");
+        setInviteFeedback("");
+        setIsInviting(true);
         try {
             const resp = await sendInvites(teamId, role, selectedIds);
             const created = resp?.invitesCreated ?? selectedIds.length;
@@ -221,9 +200,9 @@ export default function BuildTeamSearch() {
                         <>
                             <HeroHeader teamName={teamInfo?.teamName || "Equipa"} role={role} />
 
-                            {(geoError || skillError || searchError) && (
+                            {(optionsError || searchError) && (
                                 <div className="alert alert-warning shadow">
-                                    <span>{geoError || skillError || searchError}</span>
+                                    <span>{optionsError || searchError}</span>
                                 </div>
                             )}
                             {inviteFeedback && (
@@ -237,27 +216,30 @@ export default function BuildTeamSearch() {
                                 </div>
                             )}
 
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <FiltersPanel
-          companyName={teamInfo?.companyName || "Empresa"}
-          role={role || "Função"}
-          geoOptions={geoOptions}
-          geoSelected={geoSelected}
-          skillOptions={skillOptions}
-          skillsSelected={skillsSelected}
-          onGeoChange={setGeoSelected}
-          onSkillsChange={setSkillsSelected}
-        />
-        <CandidatesPanel
-          employees={mappedCandidates}
-          isLoading={isSearching}
-          selectedIds={selectedIds}
-          onToggle={toggleSelect}
-          onSendInvites={handleSendInvites}
-          isInviting={isInviting}
-          disabled={isComplete}
-        />
-      </div>
+                            <div className="flex flex-col gap-6 lg:flex-row">
+                                <FiltersPanel
+                                    companyName={teamInfo?.companyName || "Empresa"}
+                                    role={role || "Funcao"}
+                                    geoOptions={geoOptions}
+                                    geoSelected={geoSelected}
+                                    skillOptions={skillOptions}
+                                    skillsSelected={skillsSelected}
+                                    functionOptions={functionOptions}
+                                    preferredRolesSelected={preferredRolesSelected}
+                                    onGeoChange={setGeoSelected}
+                                    onSkillsChange={setSkillsSelected}
+                                    onPreferredRolesChange={setPreferredRolesSelected}
+                                />
+                                <CandidatesPanel
+                                    employees={mappedCandidates}
+                                    isLoading={isSearching}
+                                    selectedIds={selectedIds}
+                                    onToggle={toggleSelect}
+                                    onSendInvites={handleSendInvites}
+                                    isInviting={isInviting}
+                                    disabled={isComplete}
+                                />
+                            </div>
                         </>
                     )}
                 </div>
@@ -269,7 +251,7 @@ export default function BuildTeamSearch() {
 function HeroHeader({ teamName, role }) {
     return (
         <header className="space-y-1">
-            <p className="text-sm text-[#1F2959]/80">Selecionar funcionários</p>
+            <p className="text-sm text-[#1F2959]/80">Selecionar funcionarios</p>
             <h1 className="text-3xl font-bold leading-tight text-[#1F2959]">
                 {teamName} {role ? `- ${role}` : ""}
             </h1>
@@ -280,18 +262,21 @@ function HeroHeader({ teamName, role }) {
 function FiltersPanel({
                           companyName,
                           role,
-                          geoOptions,
-                          geoSelected,
-                          skillOptions,
-                          skillsSelected,
-                          onGeoChange,
-                          onSkillsChange,
-                      }) {
+                                  geoOptions,
+                                  geoSelected,
+                                  skillOptions,
+                                  skillsSelected,
+                                  functionOptions,
+                                  preferredRolesSelected,
+                                  onGeoChange,
+                                  onSkillsChange,
+                                  onPreferredRolesChange,
+                              }) {
     return (
         <aside className="w-full rounded-2xl bg-white p-6 shadow-md lg:w-80">
             <div className="space-y-4">
                 <FilterTitle label="Empresa" value={companyName} />
-                <FilterTitle label="Função" value={role} />
+                <FilterTitle label="Funcao" value={role} />
             </div>
 
             <div className="mt-6 space-y-6">
@@ -309,6 +294,13 @@ function FiltersPanel({
                     onChange={onSkillsChange}
                     placeholder="Selecione competencias"
                 />
+                <MultiSelectDropdown
+                    label="Funcao preferencial"
+                    options={functionOptions}
+                    selectedOptions={preferredRolesSelected}
+                    onChange={onPreferredRolesChange}
+                    placeholder="Selecione funcao(oes)"
+                />
             </div>
         </aside>
     );
@@ -325,19 +317,19 @@ function FilterTitle({ label, value }) {
 }
 
 function CandidatesPanel({ employees, isLoading, selectedIds, onToggle, onSendInvites, isInviting, disabled }) {
-  return (
-    <section className="flex-1 rounded-2xl border border-[#111827]/20 bg-white p-4 shadow-inner space-y-4">
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-base-content/70">Selecionados: {selectedIds.length}</span>
-        <button
-          type="button"
-          className="btn btn-primary btn-sm"
-          disabled={disabled || isLoading || isInviting || selectedIds.length === 0}
-          onClick={onSendInvites}
-        >
-          {isInviting ? "Enviando..." : disabled ? "Concluída" : "Enviar convites"}
-        </button>
-      </div>
+    return (
+        <section className="flex-1 rounded-2xl border border-[#111827]/20 bg-white p-4 shadow-inner space-y-4">
+            <div className="flex items-center justify-between">
+                <span className="text-sm text-base-content/70">Selecionados: {selectedIds.length}</span>
+                <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    disabled={disabled || isLoading || isInviting || selectedIds.length === 0}
+                    onClick={onSendInvites}
+                >
+                    {isInviting ? "Enviando..." : disabled ? "Concluida" : "Enviar convites"}
+                </button>
+            </div>
 
             {isLoading ? (
                 <div className="py-8 text-center text-base-content/70">Carregando candidatos...</div>

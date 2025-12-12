@@ -148,21 +148,23 @@ export default function EmployeeRegisterStep1() {
                     icon={<i className="bi bi-envelope"></i>}
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
+                    autoComplete="email"
                     error={errors.email}
                 />
 
                 <div className="relative">
                     <InputField
                         label="Password"
-                        placeholder="Crie uma password"
-                        type="password"
-                        icon={<i className="bi bi-lock"></i>}
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        onFocus={() => setPasswordFocused(true)}
-                        onBlur={() => setPasswordFocused(false)}
-                        error={errors.password}
-                    />
+                    placeholder="Crie uma password"
+                    type="password"
+                    icon={<i className="bi bi-lock"></i>}
+                    value={password}
+                    autoComplete="new-password"
+                    onChange={(event) => setPassword(event.target.value)}
+                    onFocus={() => setPasswordFocused(true)}
+                    onBlur={() => setPasswordFocused(false)}
+                    error={errors.password}
+                />
 
                     {showPasswordTooltip && (
                         <div className="absolute left-0 right-0 mt-2 rounded-2xl border border-base-200 bg-base-100 p-4 shadow-lg z-20">
@@ -196,6 +198,7 @@ export default function EmployeeRegisterStep1() {
                     type="password"
                     icon={<i className="bi bi-shield-check"></i>}
                     value={confirmPassword}
+                    autoComplete="new-password"
                     onChange={(event) => setConfirmPassword(event.target.value)}
                     error={errors.confirmPassword}
                 />

@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import Button from "../ui/Button/Button";
 import logo from "../../assets/images/logo/teamFoundry_LogoWhite.png";
 import { useAuthContext } from "../../auth/AuthContext.jsx";
+import { useEmployeeProfile } from "../../pages/profile/Employee/EmployeeProfileContext.jsx";
 
 const NAV_LINKS = [];
 
@@ -19,9 +20,11 @@ export default function Navbar({
 }) {
   const isPublic = variant === "public";
   const { userType } = useAuthContext();
+  const { profile } = useEmployeeProfile();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const location = useLocation();
   const profileRef = useRef(null);
+  const profileImageUrl = profile?.profilePictureUrl;
 
   useEffect(() => {
     setIsProfileOpen(false);
@@ -56,7 +59,7 @@ export default function Navbar({
             <img
               src={logo}
               alt="TeamFoundry"
-              className={`object-contain ${isPublic ? "h-12 w-12" : "h-10 w-10"}`}
+              className={`h-10 w-10 object-contain`}
             />
             <span className="font-semibold tracking-[0.2em] uppercase text-primary-content">
               TeamFoundry
@@ -102,7 +105,7 @@ export default function Navbar({
             ))}
           </div>
         ) : (
-          <div className="relative" ref={profileRef}>
+          <div className="relative " ref={profileRef}>
             <button
               type="button"
               className="btn btn-ghost btn-circle h-12 w-12 text-3xl text-primary-content hover:bg-transparent active:bg-transparent focus:bg-transparent"
@@ -110,7 +113,15 @@ export default function Navbar({
               aria-haspopup="true"
               aria-expanded={isProfileOpen}
             >
-              <i className="bi bi-person-circle" aria-hidden="true" />
+              {profileImageUrl ? (
+                <img
+                  src={profileImageUrl}
+                  alt="Foto do perfil"
+                  className="w-full h-full rounded-full object-cover border-2 border-primary-content/30"
+                />
+              ) : (
+                <i className="bi bi-person-circle" aria-hidden="true" />
+              )}
               <span className="sr-only">Abrir menu do perfil</span>
             </button>
 
@@ -134,7 +145,9 @@ export default function Navbar({
                   )}
                   <button
                     type="button"
-                    className="flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-error hover:bg-error/10 transition-colors duration-150 cursor-pointer rounded-b-xl"
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-error hover:bg-error/10 transition-colors duration-150 cursor-pointer ${
+                      userType !== "COMPANY" ? "rounded-b-xl" : ""
+                    }`}
                     onClick={() => {
                       setIsProfileOpen(false);
                       onLogout?.();
@@ -143,6 +156,27 @@ export default function Navbar({
                     <i className="bi bi-box-arrow-right" aria-hidden="true" />
                     <span>Terminar sessão</span>
                   </button>
+                  {userType === "COMPANY" && (
+                    <>
+                      <div className="border-t border-base-200" />
+                      <Link
+                        to="/faq"
+                        className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <i className="bi bi-question-circle" aria-hidden="true" />
+                        <span>FAQ&apos;s</span>
+                      </Link>
+                      <Link
+                        to="/sobre-nos"
+                        className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition rounded-b-xl"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <i className="bi bi-info-circle" aria-hidden="true" />
+                        <span>Sobre nós</span>
+                      </Link>
+                    </>
+                  )}
                 </nav>
               </div>
             )}
@@ -188,9 +222,11 @@ const EMPLOYEE_MENU = [
   { to: "/candidato/ofertas", label: "Ofertas", icon: "bi-bell" },
   { to: "/candidato/documentos", label: "Documentos", icon: "bi-file-earmark-text" },
   { to: "/candidato/proximos-passos", label: "Próximos passos", icon: "bi-flag" },
+  { to: "/candidato/definicoes", label: "Definições", icon: "bi-gear" },
 ];
 
 const COMPANY_MENU = [
   { to: "/empresa/informacoes", label: "Informações", icon: "bi-buildings" },
   { to: "/empresa/requisicoes", label: "Requisições", icon: "bi-list-check" },
+  { to: "/empresa/definicoes", label: "Definições", icon: "bi-gear" },
 ];

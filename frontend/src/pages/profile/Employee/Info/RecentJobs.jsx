@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import InfoLayout from "./InfoLayout.jsx";
 import { useEmployeeProfile } from "../EmployeeProfileContext.jsx";
-import RecentJobCard from "./components/RecentJobCard.jsx";
+import JobCard from "../JobOffers/JobCard.jsx";
 import { listEmployeeJobs } from "../../../../api/profile/profileJobs.js";
 import { formatName } from "../utils/profileUtils.js";
 import Button from "../../../../components/ui/Button/Button.jsx";
@@ -67,7 +67,7 @@ export default function RecentJobs() {
           ) : (
             <div className="space-y-4 max-w-3xl mx-auto">
               {jobs.map((job) => (
-                <RecentJobCard
+                <JobCard
                   key={job.requestId ?? job.id}
                   job={job}
                   actionSlot={<Button label="Ver contrato" variant="primary" fullWidth={false} />}

@@ -1,8 +1,8 @@
 package com.teamfoundry.backend.account.service;
 
 import com.teamfoundry.backend.account.enums.UserType;
-import com.teamfoundry.backend.account.model.AdminAccount;
-import com.teamfoundry.backend.account.repository.AdminAccountRepository;
+import com.teamfoundry.backend.superadmin.model.credentials.AdminAccount;
+import com.teamfoundry.backend.superadmin.repository.credentials.AdminAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,9 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.teamfoundry.backend.security.service.AdminAuthService;
-import com.teamfoundry.backend.security.dto.login.AdminLoginResponse;
-import com.teamfoundry.backend.security.service.JwtService;
+import com.teamfoundry.backend.auth.service.login.AdminAuthService;
+import com.teamfoundry.backend.auth.dto.login.AdminLoginResponse;
+import com.teamfoundry.backend.auth.service.login.JwtService;
 
 
 import java.util.Optional;

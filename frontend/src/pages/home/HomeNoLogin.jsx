@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { fetchPublicHomepage } from "../../api/siteManagement.js";
+import { fetchPublicHomepage } from "../../api/site/siteManagement.js";
 import Navbar from "../../components/sections/Navbar.jsx";
 import Footer from "../../components/sections/Footer.jsx";
 
@@ -7,12 +7,6 @@ const SECTION_COMPONENTS = {
   HERO: HeroSection,
   INDUSTRIES: IndustriesSection,
   PARTNERS: PartnersSection,
-};
-
-const SECTION_NAV_LINKS = {
-  HERO: { to: "#hero", label: "Topo" },
-  INDUSTRIES: { to: "#industrias", label: "Indǧstrias" },
-  PARTNERS: { to: "#parceiros", label: "Parceiros" },
 };
 
 export function HomeNoLogin() {
@@ -88,7 +82,7 @@ export function HomeNoLogin() {
             orderedSections.map(renderSection)
           ) : (
             <div className="max-w-6xl mx-auto px-6 py-24">
-              <EmptyState message="Nenhuma sec��ǜo foi ativada ainda." />
+              <EmptyState message="Nenhuma secção foi ativada ainda." />
             </div>
           )}
           <Footer />
@@ -101,12 +95,12 @@ export function HomeNoLogin() {
 function HeroSection({ section }) {
   const subtitle =
     section?.subtitle ??
-    "A forma mais fǭcil de conectar profissionais a projetos industriais e criar equipas de alto desempenho.";
+    "A forma mais fácil de conectar profissionais a projetos industriais e criar equipas de alto desempenho.";
 
   return (
     <section
       id="hero"
-      className="relative text-primary-content overflow-hidden"
+      className="relative text-primary-content overflow-hidden min-h-[24rem] md:min-h-[28rem] flex items-center"
       style={{
         backgroundImage: "url('/hero-home.jpg')",
         backgroundSize: "cover",
@@ -114,8 +108,7 @@ function HeroSection({ section }) {
       }}
     >
       <div className="absolute inset-0 bg-primary/50" aria-hidden="true" />
-      <div className="relative max-w-6xl mx-auto px-6 py-20 text-center space-y-5">
-        <div className="flex items-center justify-center gap-3" />
+      <div className="relative max-w-6xl mx-auto px-6 py-16 md:py-20 text-center space-y-5 w-full">
         <h1 className="text-4xl md:text-5xl font-extrabold">
           Team Foundry
         </h1>
@@ -176,12 +169,12 @@ function IndustriesSection({ section, industries }) {
 
 function PartnersSection({ section, partners }) {
   return (
-    <section id="parceiros" className="bg-base-100 py-16">
+    <section id="parceiros" className="bg-base-100 py-16 mb-16">
       <div className="max-w-6xl mx-auto px-6 space-y-10">
         <SectionHeader
           section={section}
           fallbackTitle="Parceiros principais"
-          fallbackSubtitle="Empresas que confiam na TeamFoundry para acelerar os seus projetos."
+          fallbackSubtitle="Empresas que confiam na Team Foundry para acelerar os seus projetos."
         />
         {partners?.length ? (
           <div className="grid gap-10 md:grid-cols-2">

@@ -8,6 +8,7 @@ import { CompanyProfileProvider } from "./CompanyProfileContext.jsx";
 const SIDEBAR_LINKS = [
   { to: "/empresa/informacoes", label: "Informações", icon: "bi-buildings" },
   { to: "/empresa/requisicoes", label: "Requisições", icon: "bi-list-check" },
+  { to: "/empresa/definicoes", label: "Definições", icon: "bi-gear" },
 ];
 
 /**

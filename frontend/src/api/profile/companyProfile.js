@@ -1,4 +1,4 @@
-import { httpGet, httpPut, httpPost } from "../http.js";
+import { httpGet, httpPut, httpPost } from "../config/http.js";
 
 /**
  * Busca o perfil da empresa autenticada.
@@ -23,3 +23,10 @@ export const sendCompanyManagerCode = (newEmail) =>
  */
 export const confirmCompanyManagerEmail = (payload) =>
   httpPost("/api/company/verification/confirm", payload);
+
+/**
+ * Desativa a conta da empresa (mantém dados, remove acesso).
+ * @param {string} password
+ */
+export const deactivateCompanyAccount = (password) =>
+  httpPost("/api/company/profile/deactivate", { password });

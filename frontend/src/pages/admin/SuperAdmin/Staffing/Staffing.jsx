@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import WorkRequestCard from "./components/WorkRequestCard.jsx";
 import AssignAdminModal from "./components/AssignAdminModal.jsx";
-import { teamRequestsAPI } from "../../../../api/teamRequests.js";
+import { teamRequestsAPI } from "../../../../api/admin/teamRequests.js";
 import { useSuperAdminData } from "../SuperAdminDataContext.jsx";
+import FilterDropdown from "../../../../components/ui/Dropdown/FilterDropdown.jsx";
+import SearchBar from "../../../../components/ui/Input/SearchBar.jsx";
 
 const STATUS_FILTERS = [
   { value: "ALL", label: "Todas" },
@@ -14,8 +16,6 @@ export default function GestaoTrabalho() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [responsibleFilter, setResponsibleFilter] = useState("ALL");
-  const [responsibleQuery, setResponsibleQuery] = useState("");
-  const [responsibleOpen, setResponsibleOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [selectedRequestId, setSelectedRequestId] = useState(null);
 
@@ -57,12 +57,8 @@ export default function GestaoTrabalho() {
   }, [adminOptionsLoaded, refreshAdminOptions]);
 
   const filteredResponsibleOptions = useMemo(() => {
-    const term = responsibleQuery.trim().toLowerCase();
-    const list = term
-        ? adminOptions.filter((a) => a.name.toLowerCase().includes(term))
-        : adminOptions;
-    return list.slice(0, 5);
-  }, [adminOptions, responsibleQuery]);
+    return adminOptions.map((a) => ({ value: String(a.id), label: a.name }));
+  }, [adminOptions]);
 
   const filteredRequests = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -104,6 +100,9 @@ export default function GestaoTrabalho() {
     try {
       const updated = await teamRequestsAPI.assignToAdmin(selectedRequestId, admin.id);
       setWorkRequests((prev) => prev.map((request) => (request.id === updated.id ? updated : request)));
+      // Garantir que os contadores de requisições por admin reflitam a atribuição mais recente
+      refreshRequests({ force: true }).catch(() => {});
+      refreshAdminOptions({ force: true }).catch(() => {});
       handleCloseModal();
     } catch (err) {
       setAssignError(err.message || "Erro inesperado ao atribuir administrador.");
@@ -118,19 +117,8 @@ export default function GestaoTrabalho() {
     return admin ? admin.name : null;
   };
 
-  const handleSelectResponsible = (adminId, adminName) => {
-    setResponsibleFilter(String(adminId));
-    setResponsibleQuery(adminName);
-    setResponsibleOpen(false);
-  };
-
   return (
       <section className="space-y-6">
-        <header>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-primary">Gestao de Trabalho</h1>
-          <p className="text-body text-base-content/70 mt-2">Configure fluxos de trabalho, cargos e equipes empresariais.</p>
-        </header>
-
         {requestsError && (
             <div className="alert alert-error shadow">
               <span>{requestsError}</span>
@@ -141,99 +129,36 @@ export default function GestaoTrabalho() {
               <span>{adminError}</span>
             </div>
         )}
-
+        <h2 className="text-3xl md:text-4xl font-extrabold text-primary">Requisições</h2>
         <section className="bg-base-100 border border-base-200 rounded-3xl shadow-xl p-8 space-y-6 md:p-10">
           <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-primary">Requisicoes</h2>
+              <FilterDropdown
+                  label="Status"
+                  value={statusFilter}
+                  onChange={(val) => setStatusFilter(val)}
+                  options={STATUS_FILTERS}
+                  className="items-center gap-2 w-full"
+                  selectClassName="w-full"
+              />
 
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4 w-full md:w-auto md:justify-end">
-              <div className="flex items-center gap-2">
-                <label className="input input-bordered flex items-center gap-2 w-full md:w-64">
-                  <input
-                      type="search"
-                      className="grow text-sm"
-                      placeholder="Equipe ou empresa"
-                      value={searchTerm}
-                      onChange={(event) => setSearchTerm(event.target.value)}
-                  />
-                  <span className="btn btn-ghost btn-circle btn-sm pointer-events-none">
-                  <i className="bi bi-search" aria-hidden="true" />
-                </span>
-                </label>
-              </div>
+              <FilterDropdown
+                  label="Responsável"
+                  value={responsibleFilter}
+                  onChange={(val) => setResponsibleFilter(val)}
+                  options={[{ value: "ALL", label: "Todos" }, ...filteredResponsibleOptions]}
+                  className="items-center gap-2 w-full"
+                  selectClassName="w-full"
+              />
 
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-base-content">Status:</span>
-                <select
-                    className="select select-bordered select-sm w-full md:w-40 text-sm"
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                >
-                  {STATUS_FILTERS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                  ))}
-                </select>
+              <div className="form-control w-full md:w-64 shrink-0 ml-20">
+                <SearchBar
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                    placeholder="Equipe ou empresa"
+                    className="w-full"
+                    size="md"
+                />
               </div>
-
-              <div className="flex items-center gap-2 relative w-full md:w-60">
-                <span className="text-sm font-medium text-base-content">Responsável:</span>
-                <div className="relative flex-1">
-                  <button
-                      type="button"
-                      className="input input-bordered input-sm w-full text-sm flex items-center justify-between"
-                      onClick={() => setResponsibleOpen((prev) => !prev)}
-                  >
-                    <span className="truncate">{responsibleQuery || "Todos"}</span>
-                    <i className="bi bi-chevron-down" aria-hidden="true" />
-                  </button>
-                  {responsibleOpen && (
-                      <div className="absolute z-40 mt-1 w-full bg-base-100 border border-base-200 rounded-xl shadow max-h-60 overflow-auto text-sm">
-                        <div className="p-2">
-                          <input
-                              type="text"
-                              className="input input-bordered input-sm w-full text-sm"
-                              placeholder="Pesquisar..."
-                              value={responsibleQuery}
-                              onChange={(e) => {
-                                setResponsibleQuery(e.target.value);
-                                setResponsibleFilter("ALL");
-                              }}
-                              autoFocus
-                          />
-                        </div>
-                        <ul>
-                          <li>
-                            <button
-                                type="button"
-                                className="w-full text-left px-3 py-2 hover:bg-base-200"
-                                onClick={() => {
-                                  setResponsibleFilter("ALL");
-                                  setResponsibleQuery("");
-                                  setResponsibleOpen(false);
-                                }}
-                            >
-                              Todos
-                            </button>
-                          </li>
-                          {filteredResponsibleOptions.map((admin) => (
-                              <li key={admin.id}>
-                                <button
-                                    type="button"
-                                    className="w-full text-left px-3 py-2 hover:bg-base-200"
-                                    onClick={() => handleSelectResponsible(admin.id, admin.name)}
-                                >
-                                  {admin.name}
-                                </button>
-                              </li>
-                          ))}
-                        </ul>
-                      </div>
-                  )}
-                </div>
-              </div>
-            </div>
           </header>
 
           {isLoadingRequests ? (

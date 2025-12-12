@@ -30,6 +30,12 @@ export default function Footer() {
         <div className="border-t border-white/20 pt-6 flex flex-col md:flex-row gap-3 items-center justify-between text-sm text-primary-content/80">
           <p>© {new Date().getFullYear()} TeamFoundry. Todos os direitos reservados.</p>
           <div className="flex gap-4">
+            <a href="/faq" className="hover:text-white transition-colors">
+              FAQ&apos;s
+            </a>
+            <a href="/sobre-nos" className="hover:text-white transition-colors">
+              Sobre nós
+            </a>
             <a href="/privacy" className="hover:text-white transition-colors">
               Privacidade
             </a>

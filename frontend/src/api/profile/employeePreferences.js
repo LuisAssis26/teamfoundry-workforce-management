@@ -1,4 +1,4 @@
-import { httpGet, httpPut } from "../http.js";
+import { httpGet, httpPut } from "../config/http.js";
 
 const PREFERENCES_ENDPOINT = "/api/employee/preferences";
 

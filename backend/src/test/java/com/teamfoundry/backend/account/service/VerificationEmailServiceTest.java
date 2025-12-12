@@ -1,5 +1,6 @@
 package com.teamfoundry.backend.account.service;
 
+import com.teamfoundry.backend.auth.service.VerificationEmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -2,11 +2,12 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-// Contexto partilhado pelos 3 passos do registo de empresa.
+// Contexto partilhado pelos passos do registo de empresa.
 const CompanyRegisterContext = createContext(null);
 
 const buildInitialData = () => ({
   credentials: {},
+  responsible: {},
   company: {},
   submission: {},
 });

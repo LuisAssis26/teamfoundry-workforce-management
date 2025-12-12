@@ -1,86 +1,222 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import DropZone from "../../../../components/ui/Upload/DropZone.jsx";
-import Tabs from "../../../../components/sections/Tabs.jsx";
+import {
+  deleteEmployeeCurriculum,
+  fetchEmployeeCurriculum,
+  uploadEmployeeCurriculum,
+  uploadIdentificationDocument,
+  deleteIdentificationDocument,
+} from "../../../../api/profile/employeeProfile.js";
+import { useEmployeeProfile } from "../EmployeeProfileContext.jsx";
+
+const DEFAULT_NAMES = {
+  cv: "curriculo.pdf",
+  idFront: "documento-frente.pdf",
+  idBack: "documento-verso.pdf",
+};
+
+const ALLOWED_DOC_TYPES = [
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+];
+const MAX_DOC_MB = 5;
+
+const DOC_ITEMS = [
+  { key: "idFront", label: "Documento de Identificação (frente)", type: "IDENTIFICATION_FRONT" },
+  { key: "idBack", label: "Documento de Identificação (verso)", type: "IDENTIFICATION_BACK" },
+  { key: "cv", label: "Curriculo" },
+];
 
 export default function Documentos() {
-  const [active, setActive] = useState("identificacao");
-  const [cvFile, setCvFile] = useState(null);
-  const fileInputRef = useRef(null);
+  const { documentsData, documentsLoaded, setDocumentsData, setDocumentsLoaded } = useEmployeeProfile();
+  const [docs, setDocs] = useState({
+    idFront: { url: null, fileName: DEFAULT_NAMES.idFront },
+    idBack: { url: null, fileName: DEFAULT_NAMES.idBack },
+    cv: { url: null, fileName: DEFAULT_NAMES.cv },
+  });
+  const [loading, setLoading] = useState(true);
+  const [processingKey, setProcessingKey] = useState(null);
+  const [error, setError] = useState("");
 
-  const cvUrl = useMemo(() => (cvFile ? URL.createObjectURL(cvFile) : null), [cvFile]);
+  useEffect(() => {
+    if (documentsLoaded && documentsData) {
+      applyProfileData(documentsData);
+      setLoading(false);
+      return;
+    }
+    loadDocuments();
+  }, [documentsLoaded, documentsData]);
 
-  function downloadCv() {
-    if (!cvFile) return;
-    const link = document.createElement("a");
-    link.href = cvUrl;
-    link.download = cvFile.name || "curriculo";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
+  const loadDocuments = () => {
+    setLoading(true);
+    fetchEmployeeCurriculum()
+      .then((data) => {
+        setDocumentsData(data);
+        setDocumentsLoaded(true);
+        applyProfileData(data);
+      })
+      .catch((err) => {
+        setError(err.message || "Nao foi possivel carregar os documentos.");
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const applyProfileData = (data, overrides = {}) => {
+    setDocs((prev) => ({
+      idFront: {
+        url: data?.identificationFrontUrl ?? null,
+        fileName:
+          overrides.idFront ??
+          (data?.identificationFrontUrl ? prev.idFront.fileName : DEFAULT_NAMES.idFront),
+      },
+      idBack: {
+        url: data?.identificationBackUrl ?? null,
+        fileName:
+          overrides.idBack ??
+          (data?.identificationBackUrl ? prev.idBack.fileName : DEFAULT_NAMES.idBack),
+      },
+      cv: {
+        url: data?.curriculumUrl ?? null,
+        fileName: overrides.cv ?? (data?.curriculumUrl ? prev.cv.fileName : DEFAULT_NAMES.cv),
+      },
+    }));
+  };
+
+  const handleCvSelect = async (file) => {
+    if (!file) return;
+    setError("");
+    setProcessingKey("cv");
+    try {
+      const base64 = await fileToBase64(file);
+      const data = await uploadEmployeeCurriculum({ file: base64, fileName: file.name });
+      setDocumentsData(data);
+      setDocumentsLoaded(true);
+      applyProfileData(data, { cv: file.name });
+    } catch (err) {
+      setError(err.message || "Falha ao carregar o curriculo.");
+    } finally {
+      setProcessingKey(null);
+    }
+  };
+
+  const handleCvDelete = async () => {
+    if (!docs.cv.url) return;
+    setError("");
+    setProcessingKey("cv");
+    try {
+      await deleteEmployeeCurriculum();
+      setDocumentsData((prev) => (prev ? { ...prev, curriculumUrl: null } : prev));
+      setDocs((prev) => ({
+        ...prev,
+        cv: { url: null, fileName: DEFAULT_NAMES.cv },
+      }));
+    } catch (err) {
+      setError(err.message || "Falha ao eliminar o curriculo.");
+    } finally {
+      setProcessingKey(null);
+    }
+  };
+
+  const handleIdentificationSelect = (key, type) => async (file) => {
+    if (!file) return;
+    setError("");
+    setProcessingKey(key);
+    try {
+      const base64 = await fileToBase64(file);
+      const data = await uploadIdentificationDocument({
+        file: base64,
+        fileName: file.name,
+        type,
+      });
+      setDocumentsData(data);
+      setDocumentsLoaded(true);
+      const overrideKey = key === "idFront" ? { idFront: file.name } : { idBack: file.name };
+      applyProfileData(data, overrideKey);
+    } catch (err) {
+      setError(err.message || "Falha ao carregar o documento.");
+    } finally {
+      setProcessingKey(null);
+    }
+  };
+
+  const handleIdentificationDelete = (key, type) => async () => {
+    if (!docs[key].url) return;
+    setError("");
+    setProcessingKey(key);
+    try {
+      await deleteIdentificationDocument(type);
+      setDocumentsData((prev) =>
+        prev
+          ? {
+              ...prev,
+              identificationFrontUrl: type === "IDENTIFICATION_FRONT" ? null : prev.identificationFrontUrl,
+              identificationBackUrl: type === "IDENTIFICATION_BACK" ? null : prev.identificationBackUrl,
+            }
+          : prev
+      );
+      setDocs((prev) => ({
+        ...prev,
+        [key]: { url: null, fileName: key === "idFront" ? DEFAULT_NAMES.idFront : DEFAULT_NAMES.idBack },
+      }));
+    } catch (err) {
+      setError(err.message || "Falha ao eliminar o documento.");
+    } finally {
+      setProcessingKey(null);
+    }
+  };
+
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 
   return (
     <section className="w-full">
       <div className="flex items-center gap-3 mb-6">
-        <i className="bi bi-file-earmark-text text-3xl text-primary" />
-        <h2 className="text-2xl font-semibold">Documentos</h2>
+        <h2 className="text-3xl font-semibold text-center sm:text-center md:text-left w-full">Upload de Documentos</h2>
       </div>
 
-      <Tabs
-        tabs={[
-          { key: "identificacao", label: "Identificação" },
-          { key: "curriculo", label: "Currículo" },
-        ]}
-        activeKey={active}
-        onTabChange={setActive}
-        className="mt-0"
-      />
-
-      {active === "identificacao" && (
-        <div className="rounded-xl border border-base-300 bg-base-100 shadow p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <DropZone label="Documento de Identificação (frente)" onSelect={() => {}} />
-            <DropZone label="Documento de Identificação (verso)" onSelect={() => {}} />
-            <DropZone label="Comprovativo de Morada" onSelect={() => {}} />
-          </div>
+      <div className="rounded-xl border border-base-300 bg-base-100 shadow p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+          {DOC_ITEMS.map((item) => {
+            const doc = docs[item.key];
+            const isCv = item.key === "cv";
+            const disabled = loading || processingKey === item.key;
+            const hasFile = !!doc?.url;
+            return (
+              <DropZone
+                key={item.key}
+                label={item.label}
+                onSelect={
+                  isCv
+                    ? handleCvSelect
+                    : handleIdentificationSelect(item.key, item.type)
+                }
+                hasFile={hasFile}
+                fileName={doc?.fileName}
+                onRemove={
+                  hasFile
+                    ? isCv
+                      ? handleCvDelete
+                      : handleIdentificationDelete(item.key, item.type)
+                    : undefined
+                }
+                disabled={disabled}
+                allowedTypes={ALLOWED_DOC_TYPES}
+                maxSizeMB={MAX_DOC_MB}
+                onError={setError}
+              />
+            );
+          })}
         </div>
-      )}
-
-      {active === "curriculo" && (
-        <div className="rounded-xl border border-base-300 bg-base-100 shadow p-4 md:p-6">
-          <div className="max-w-3xl mx-auto">
-            {/* Barra de título do ficheiro */}
-            <div className="rounded-t-xl border border-base-300 bg-base-200 px-4 py-2 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm">
-                <i className="bi bi-paperclip" />
-                <span>{cvFile ? cvFile.name : "curriculum.docx"}</span>
-              </div>
-            </div>
-
-            {/* Moldura do preview */}
-            <div className="border-x border-b border-base-300 rounded-b-xl overflow-hidden bg-base-100">
-              {cvUrl ? (
-                <iframe title="preview" src={cvUrl} className="w-full h-[60vh] bg-white" />
-              ) : (
-                <div className="w-full h-[60vh] bg-white flex items-center justify-center">
-                  <div className="text-center text-base-content/70">
-                    <i className="bi bi-file-earmark-text display-block text-4xl" />
-                    <p className="mt-2">Pré-visualização indisponível. Carregue o seu currículo.</p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Ações */}
-            <div className="mt-4 flex items-center justify-center gap-4">
-              <button className="btn btn-success" onClick={() => fileInputRef.current?.click()}>Alterar</button>
-              <input ref={fileInputRef} type="file" className="hidden" onChange={(e)=> setCvFile(e.target.files?.[0] || null)} />
-              <button className="btn btn-accent" disabled={!cvFile} onClick={downloadCv}>Baixar</button>
-              <button className="btn btn-error" disabled={!cvFile} onClick={() => setCvFile(null)}>Eliminar</button>
-            </div>
-          </div>
-        </div>
-      )}
+        {error && <p className="text-error text-sm mt-4">{error}</p>}
+      </div>
     </section>
   );
 }

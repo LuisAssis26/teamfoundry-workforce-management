@@ -1,4 +1,4 @@
-import { httpPost } from "../http.js";
+import { httpPost } from "../config/http.js";
 import { setTokens, clearTokens } from "../../auth/tokenStorage.js";
 
 /**

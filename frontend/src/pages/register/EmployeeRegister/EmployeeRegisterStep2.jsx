@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import InputField from "../../../components/ui/Input/InputField.jsx";
+import PhoneInput from "../../../components/ui/Input/PhoneInput.jsx";
 import Button from "../../../components/ui/Button/Button.jsx";
 import { registerStep2 } from "../../../api/auth/auth.js";
 
-const phoneRegex = /^\+?[0-9\s\-().]{9,15}$/;
+const phoneRegex = /^\+\d{7,20}$/;
 const nifRegex = /^\d{9}$/;
 
 /**
@@ -154,7 +155,7 @@ export default function EmployeeRegisterStep2() {
                     Passo 2 de 4
                 </p>
                 <h1 className="mt-2 text-3xl font-bold text-accent">
-                    Informações pessoais
+                    Informações Pessoais
                 </h1>
                 <p className="mt-4 text-base text-base-content/70">
                     Complete os seus dados pessoais para personalizar a sua experiência na plataforma.
@@ -194,20 +195,19 @@ export default function EmployeeRegisterStep2() {
                         error={errors.birthDate}
                     />
                     <InputField
-                        label="Telemóvel"
-                        placeholder="Ex.: +351 910 000 000"
-                        value={formData.phone}
-                        onChange={updateField("phone")}
-                        error={errors.phone}
-                    />
-                </div>
-
-                <InputField
                     label="Nacionalidade"
                     placeholder="Ex.: Portuguesa"
                     value={formData.nationality}
                     onChange={updateField("nationality")}
                     error={errors.nationality}
+                />
+                    
+                </div>
+                <PhoneInput
+                        label="Telemóvel"
+                        value={formData.phone}
+                        onChange={(val) => setFormData((prev) => ({ ...prev, phone: val }))}
+                        error={errors.phone}
                 />
 
                 <InputField

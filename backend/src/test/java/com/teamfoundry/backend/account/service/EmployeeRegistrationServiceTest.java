@@ -1,34 +1,37 @@
 package com.teamfoundry.backend.account.service;
 
-import com.teamfoundry.backend.account.dto.GenericResponse;
-import com.teamfoundry.backend.account.dto.employee.Step1Request;
-import com.teamfoundry.backend.account.dto.employee.Step2Request;
-import com.teamfoundry.backend.account.dto.employee.Step3Request;
-import com.teamfoundry.backend.account.dto.employee.Step4Request;
-import com.teamfoundry.backend.account.dto.employee.VerificationResendRequest;
+import com.teamfoundry.backend.common.dto.GenericResponse;
+import com.teamfoundry.backend.auth.dto.register.employee.Step1Request;
+import com.teamfoundry.backend.auth.dto.register.employee.Step2Request;
+import com.teamfoundry.backend.auth.dto.register.employee.Step3Request;
+import com.teamfoundry.backend.auth.dto.register.employee.Step4Request;
+import com.teamfoundry.backend.auth.dto.register.employee.VerificationResendRequest;
 import com.teamfoundry.backend.account.enums.RegistrationStatus;
 import com.teamfoundry.backend.account.enums.UserType;
 import com.teamfoundry.backend.account.model.Account;
-import com.teamfoundry.backend.account.model.EmployeeAccount;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.AccountRepository;
-import com.teamfoundry.backend.account.repository.EmployeeAccountRepository;
-import com.teamfoundry.backend.account.service.exception.DuplicateEmailException;
-import com.teamfoundry.backend.account.service.exception.EmployeeRegistrationException;
-import com.teamfoundry.backend.account_options.model.Competence;
-import com.teamfoundry.backend.account_options.model.EmployeeCompetence;
-import com.teamfoundry.backend.account_options.model.EmployeeFunction;
-import com.teamfoundry.backend.account_options.model.EmployeeGeoArea;
-import com.teamfoundry.backend.account_options.model.Function;
-import com.teamfoundry.backend.account_options.model.GeoArea;
-import com.teamfoundry.backend.account_options.repository.CompetenceRepository;
-import com.teamfoundry.backend.account_options.repository.CurriculumRepository;
-import com.teamfoundry.backend.account_options.repository.EmployeeCompetenceRepository;
-import com.teamfoundry.backend.account_options.repository.EmployeeFunctionRepository;
-import com.teamfoundry.backend.account_options.repository.EmployeeGeoAreaRepository;
-import com.teamfoundry.backend.account_options.repository.FunctionRepository;
-import com.teamfoundry.backend.account_options.repository.GeoAreaRepository;
-import com.teamfoundry.backend.security.model.AuthToken;
-import com.teamfoundry.backend.security.repository.AuthTokenRepository;
+import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
+import com.teamfoundry.backend.auth.service.exception.DuplicateEmailException;
+import com.teamfoundry.backend.auth.service.exception.EmployeeRegistrationException;
+import com.teamfoundry.backend.account.enums.DocumentType;
+import com.teamfoundry.backend.account.model.preferences.PrefSkill;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeSkill;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeRole;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeGeoArea;
+import com.teamfoundry.backend.account.model.preferences.PrefRole;
+import com.teamfoundry.backend.account.model.preferences.PrefGeoArea;
+import com.teamfoundry.backend.account.repository.preferences.PrefSkillRepository;
+import com.teamfoundry.backend.account.repository.employee.documents.EmployeeDocumentRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeSkillRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeRoleRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeGeoAreaRepository;
+import com.teamfoundry.backend.account.repository.preferences.PrefRoleRepository;
+import com.teamfoundry.backend.account.repository.preferences.PrefGeoAreaRepository;
+import com.teamfoundry.backend.auth.service.VerificationEmailService;
+import com.teamfoundry.backend.auth.service.register.EmployeeRegistrationService;
+import com.teamfoundry.backend.auth.model.tokens.AuthToken;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +56,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -70,19 +72,19 @@ class EmployeeRegistrationServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
-    private FunctionRepository functionRepository;
+    private PrefRoleRepository prefRoleRepository;
     @Mock
-    private EmployeeFunctionRepository employeeFunctionRepository;
+    private EmployeeRoleRepository employeeRoleRepository;
     @Mock
-    private CompetenceRepository competenceRepository;
+    private PrefSkillRepository prefSkillRepository;
     @Mock
-    private EmployeeCompetenceRepository employeeCompetenceRepository;
+    private EmployeeSkillRepository employeeSkillRepository;
     @Mock
-    private GeoAreaRepository geoAreaRepository;
+    private PrefGeoAreaRepository prefGeoAreaRepository;
     @Mock
     private EmployeeGeoAreaRepository employeeGeoAreaRepository;
     @Mock
-    private CurriculumRepository curriculumRepository;
+    private EmployeeDocumentRepository employeeDocumentRepository;
     @Mock
     private VerificationEmailService verificationEmailService;
 
@@ -103,7 +105,7 @@ class EmployeeRegistrationServiceTest {
         baseAccount.setEmail("candidate@test.com");
         baseAccount.setRegistrationStatus(RegistrationStatus.PENDING);
         baseAccount.setRole(UserType.EMPLOYEE);
-        baseAccount.setActive(false);
+        baseAccount.setVerified(false);
 
         // @Value nǜo Ǹ processado em testes unitǭrios com Mockito, for��ando um valor.
         ReflectionTestUtils.setField(employeeRegistrationService, "verificationExpirationMinutes", 30L);
@@ -134,7 +136,7 @@ class EmployeeRegistrationServiceTest {
         assertThat(persisted.getEmail()).isEqualTo("candidate@test.com");
         assertThat(persisted.getRole()).isEqualTo(UserType.EMPLOYEE);
         assertThat(persisted.getRegistrationStatus()).isEqualTo(RegistrationStatus.PENDING);
-        assertThat(persisted.isActive()).isFalse();
+        assertThat(persisted.isVerified()).isFalse();
         assertThat(persisted.getPassword()).isEqualTo("encoded-pass");
         verify(passwordEncoder).encode("StrongPass123");
     }
@@ -153,11 +155,11 @@ class EmployeeRegistrationServiceTest {
         existing.setNationality("Portugal");
         existing.setNif(111111111);
         existing.setRegistrationStatus(RegistrationStatus.PENDING);
-        existing.setActive(false);
+        existing.setVerified(false);
 
         when(accountRepository.findByEmail("candidate@test.com")).thenReturn(Optional.of(existing));
         when(employeeAccountRepository.findByEmail("candidate@test.com")).thenReturn(Optional.of(existing));
-        when(curriculumRepository.findByEmployee(existing)).thenReturn(Optional.empty());
+        when(employeeDocumentRepository.findByEmployeeAndType(existing, DocumentType.CURRICULUM)).thenReturn(Optional.empty());
         when(employeeAccountRepository.save(any(EmployeeAccount.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         GenericResponse response = employeeRegistrationService.handleStep1(step1Request);
@@ -171,10 +173,10 @@ class EmployeeRegistrationServiceTest {
         assertThat(existing.getNationality()).isNull();
         assertThat(existing.getNif()).isNull();
         assertThat(existing.getRegistrationStatus()).isEqualTo(RegistrationStatus.PENDING);
-        assertThat(existing.isActive()).isFalse();
+        assertThat(existing.isVerified()).isFalse();
 
-        verify(employeeFunctionRepository).deleteByEmployee(existing);
-        verify(employeeCompetenceRepository).deleteByEmployee(existing);
+        verify(employeeRoleRepository).deleteByEmployee(existing);
+        verify(employeeSkillRepository).deleteByEmployee(existing);
         verify(employeeGeoAreaRepository).deleteByEmployee(existing);
         verify(employeeAccountRepository).save(existing);
     }
@@ -185,7 +187,7 @@ class EmployeeRegistrationServiceTest {
         EmployeeAccount existing = new EmployeeAccount();
         existing.setEmail("candidate@test.com");
         existing.setRegistrationStatus(RegistrationStatus.COMPLETED);
-        existing.setActive(true);
+        existing.setVerified(true);
 
         when(employeeAccountRepository.findByEmail("candidate@test.com")).thenReturn(Optional.of(existing));
         when(accountRepository.findByEmail("candidate@test.com")).thenReturn(Optional.of(existing));
@@ -262,49 +264,49 @@ class EmployeeRegistrationServiceTest {
         request.setSkills(List.of("Java"));
         request.setTermsAccepted(true);
 
-        Function function = new Function();
+        PrefRole function = new PrefRole();
         function.setId(1);
         function.setName("Developer");
 
-        GeoArea area = new GeoArea();
+        PrefGeoArea area = new PrefGeoArea();
         area.setId(1);
         area.setName("Lisbon");
 
-        Competence competence = new Competence();
-        competence.setId(1);
-        competence.setName("Java");
+        PrefSkill prefSkill = new PrefSkill();
+        prefSkill.setId(1);
+        prefSkill.setName("Java");
 
         when(employeeAccountRepository.findByEmail("candidate@test.com")).thenReturn(Optional.of(baseAccount));
-        when(functionRepository.findByName("Developer")).thenReturn(Optional.of(function));
-        when(geoAreaRepository.findByName("Lisbon")).thenReturn(Optional.of(area));
-        when(competenceRepository.findByName("Java")).thenReturn(Optional.of(competence));
+        when(prefRoleRepository.findByName("Developer")).thenReturn(Optional.of(function));
+        when(prefGeoAreaRepository.findByName("Lisbon")).thenReturn(Optional.of(area));
+        when(prefSkillRepository.findByName("Java")).thenReturn(Optional.of(prefSkill));
         when(authTokenRepository.save(any(AuthToken.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         GenericResponse response = employeeRegistrationService.handleStep3(request);
 
         assertThat(response.getMessage()).contains("Prefer");
 
-        verify(employeeFunctionRepository).deleteByEmployee(baseAccount);
+        verify(employeeRoleRepository).deleteByEmployee(baseAccount);
         verify(employeeGeoAreaRepository).deleteByEmployee(baseAccount);
-        verify(employeeCompetenceRepository).deleteByEmployee(baseAccount);
+        verify(employeeSkillRepository).deleteByEmployee(baseAccount);
 
-        ArgumentCaptor<EmployeeFunction> functionCaptor = ArgumentCaptor.forClass(EmployeeFunction.class);
-        verify(employeeFunctionRepository).save(functionCaptor.capture());
+        ArgumentCaptor<EmployeeRole> functionCaptor = ArgumentCaptor.forClass(EmployeeRole.class);
+        verify(employeeRoleRepository).save(functionCaptor.capture());
         assertThat(functionCaptor.getValue().getFunction()).isEqualTo(function);
         assertThat(functionCaptor.getValue().getEmployee()).isEqualTo(baseAccount);
 
-        ArgumentCaptor<List> competenceCaptor = ArgumentCaptor.forClass(List.class);
-        verify(employeeCompetenceRepository).saveAll(competenceCaptor.capture());
         @SuppressWarnings("unchecked")
-        List<EmployeeCompetence> competences = competenceCaptor.getValue();
+        ArgumentCaptor<List<EmployeeSkill>> competenceCaptor = ArgumentCaptor.forClass((Class) List.class);
+        verify(employeeSkillRepository).saveAll(competenceCaptor.capture());
+        List<EmployeeSkill> competences = competenceCaptor.getValue();
         assertThat(competences)
                 .singleElement()
-                .extracting(EmployeeCompetence::getCompetence)
-                .isEqualTo(competence);
+                .extracting(EmployeeSkill::getPrefSkill)
+                .isEqualTo(prefSkill);
 
-        ArgumentCaptor<List> geoCaptor = ArgumentCaptor.forClass(List.class);
-        verify(employeeGeoAreaRepository).saveAll(geoCaptor.capture());
         @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<EmployeeGeoArea>> geoCaptor = ArgumentCaptor.forClass((Class) List.class);
+        verify(employeeGeoAreaRepository).saveAll(geoCaptor.capture());
         List<EmployeeGeoArea> geoAreas = geoCaptor.getValue();
         assertThat(geoAreas)
                 .singleElement()
@@ -338,7 +340,7 @@ class EmployeeRegistrationServiceTest {
                 .isInstanceOf(EmployeeRegistrationException.class)
                 .satisfies(ex -> assertThat(((EmployeeRegistrationException) ex).getStatus()).isEqualTo(HttpStatus.BAD_REQUEST));
 
-        verifyNoInteractions(functionRepository, competenceRepository, geoAreaRepository, authTokenRepository, verificationEmailService);
+        verifyNoInteractions(prefRoleRepository, prefSkillRepository, prefGeoAreaRepository, authTokenRepository, verificationEmailService);
     }
 
     @Test
@@ -361,7 +363,7 @@ class EmployeeRegistrationServiceTest {
         GenericResponse response = employeeRegistrationService.handleStep4(request);
 
         assertThat(response.getMessage()).isEqualTo("Conta verificada e ativa.");
-        assertThat(baseAccount.isActive()).isTrue();
+        assertThat(baseAccount.isVerified()).isTrue();
         assertThat(baseAccount.getRegistrationStatus()).isEqualTo(RegistrationStatus.COMPLETED);
         verify(authTokenRepository).delete(token);
     }

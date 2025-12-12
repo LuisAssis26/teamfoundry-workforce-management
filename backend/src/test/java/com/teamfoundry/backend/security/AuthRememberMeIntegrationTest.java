@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamfoundry.backend.account.enums.RegistrationStatus;
 import com.teamfoundry.backend.account.enums.UserType;
-import com.teamfoundry.backend.account.model.EmployeeAccount;
-import com.teamfoundry.backend.account.repository.EmployeeAccountRepository;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
+import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
 import com.teamfoundry.backend.account.repository.AccountRepository;
-import com.teamfoundry.backend.security.repository.AuthTokenRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ class AuthRememberMeIntegrationTest {
         account.setPassword(passwordEncoder.encode(rawPassword));
         account.setNif(111222333);
         account.setRole(UserType.EMPLOYEE);
-        account.setActive(true);
+        account.setVerified(true);
         account.setRegistrationStatus(RegistrationStatus.COMPLETED);
         employeeAccountRepository.save(account);
     }

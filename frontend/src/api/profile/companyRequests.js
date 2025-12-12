@@ -1,4 +1,4 @@
-import { httpGet, httpPost } from "../http.js";
+import { httpGet, httpPost } from "../config/http.js";
 
 /**
  * Lista requisições da empresa autenticada.

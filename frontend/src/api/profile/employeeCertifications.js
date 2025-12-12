@@ -1,4 +1,4 @@
-import { httpDelete, httpGet, httpPost, httpPut } from "../http.js";
+import { httpDelete, httpGet, httpPost, httpPut } from "../config/http.js";
 
 const BASE_PATH = "/api/employee/certifications";
 

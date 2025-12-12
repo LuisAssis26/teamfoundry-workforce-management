@@ -1,17 +1,21 @@
 package com.teamfoundry.backend.common.util;
 
-import com.teamfoundry.backend.account.model.EmployeeAccount;
-import com.teamfoundry.backend.account.repository.EmployeeAccountRepository;
-import com.teamfoundry.backend.account_options.repository.CurriculumRepository;
-import com.teamfoundry.backend.account_options.repository.EmployeeCompetenceRepository;
-import com.teamfoundry.backend.account_options.repository.EmployeeFunctionRepository;
-import com.teamfoundry.backend.account_options.repository.EmployeeGeoAreaRepository;
-import com.teamfoundry.backend.security.repository.AuthTokenRepository;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
+import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
+import com.teamfoundry.backend.account.model.employee.documents.EmployeeDocument;
+import com.teamfoundry.backend.account.repository.employee.documents.EmployeeDocumentRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeSkillRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeRoleRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeGeoAreaRepository;
+import com.teamfoundry.backend.common.service.CloudinaryService;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Utilitário que remove um candidato e todas as relações dependentes (funções, competências, etc.).
@@ -23,11 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountCleanupService {
 
     private final EmployeeAccountRepository employeeAccountRepository;
-    private final EmployeeFunctionRepository employeeFunctionRepository;
-    private final EmployeeCompetenceRepository employeeCompetenceRepository;
+    private final EmployeeRoleRepository employeeRoleRepository;
+    private final EmployeeSkillRepository employeeSkillRepository;
     private final EmployeeGeoAreaRepository employeeGeoAreaRepository;
-    private final CurriculumRepository curriculumRepository;
+    private final EmployeeDocumentRepository employeeDocumentRepository;
     private final AuthTokenRepository authTokenRepository;
+    private final CloudinaryService cloudinaryService;
 
     /**
      * Remove um EmployeeAccount e todas as dependências pelo email informado.
@@ -41,10 +46,13 @@ public class AccountCleanupService {
                 .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada para o email informado."));
 
         log.info("Eliminando dados dependentes do candidato {}", email);
-        employeeFunctionRepository.deleteByEmployee(account);
-        employeeCompetenceRepository.deleteByEmployee(account);
+        employeeRoleRepository.deleteByEmployee(account);
+        employeeSkillRepository.deleteByEmployee(account);
         employeeGeoAreaRepository.deleteByEmployee(account);
-        curriculumRepository.deleteByEmployee(account);
+        List<EmployeeDocument> documents = employeeDocumentRepository.findAllByEmployee(account);
+        documents.forEach(doc -> cloudinaryService.delete(doc.getPublicId()));
+        employeeDocumentRepository.deleteAll(documents);
+        cloudinaryService.delete(account.getProfilePicturePublicId());
         authTokenRepository.deleteAllByUser(account);
 
         employeeAccountRepository.delete(account);

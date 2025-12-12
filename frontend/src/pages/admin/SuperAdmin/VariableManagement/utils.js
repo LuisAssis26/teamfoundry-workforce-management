@@ -28,7 +28,6 @@ export function normalizeHomepageConfig(payload) {
 export function normalizeAppHomeConfig(payload) {
   return {
     sections: sortByOrder(payload?.sections ?? []),
-    metrics: sortByOrder(payload?.metrics ?? []),
   };
 }
 

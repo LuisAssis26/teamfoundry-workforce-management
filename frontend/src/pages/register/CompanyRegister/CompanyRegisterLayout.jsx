@@ -3,11 +3,12 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import registerIllustration from "../../../assets/images/logo/teamFoundry_LogoPrimary.png";
 import { CompanyRegistrationProvider, useCompanyRegistration } from "./CompanyRegisterContext.jsx";
 
-// Configura o wizard da empresa (3 etapas).
+// Configura o wizard da empresa (4 etapas).
 const steps = [
   { id: "step1", path: "/company-register/step1", label: "Credenciais" },
-  { id: "step2", path: "/company-register/step2", label: "Dados da empresa" },
-  { id: "step3", path: "/company-register/step3", label: "Submissão" },
+  { id: "step2", path: "/company-register/step2", label: "Responsável" },
+  { id: "step3", path: "/company-register/step3", label: "Dados da empresa" },
+  { id: "step4", path: "/company-register/step4", label: "Submissão" },
 ];
 
 /**

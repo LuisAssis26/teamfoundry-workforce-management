@@ -1,4 +1,4 @@
-import { httpGet } from "../http.js";
+import { httpGet } from "../config/http.js";
 
 /**
  * Obtém funções, competências e áreas disponíveis para o passo 3.

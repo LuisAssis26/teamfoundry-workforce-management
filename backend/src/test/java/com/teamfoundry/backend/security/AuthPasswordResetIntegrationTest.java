@@ -3,11 +3,11 @@ package com.teamfoundry.backend.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamfoundry.backend.account.enums.RegistrationStatus;
 import com.teamfoundry.backend.account.enums.UserType;
-import com.teamfoundry.backend.account.model.EmployeeAccount;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.AccountRepository;
-import com.teamfoundry.backend.account.repository.EmployeeAccountRepository;
-import com.teamfoundry.backend.security.model.PasswordResetToken;
-import com.teamfoundry.backend.security.repository.PasswordResetTokenRepository;
+import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
+import com.teamfoundry.backend.auth.model.tokens.PasswordResetToken;
+import com.teamfoundry.backend.auth.repository.PasswordResetTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class AuthPasswordResetIntegrationTest {
         acc.setPassword(passwordEncoder.encode(rawPassword));
         acc.setNif(123456789);
         acc.setRole(UserType.EMPLOYEE);
-        acc.setActive(true);
+        acc.setVerified(true);
         acc.setRegistrationStatus(RegistrationStatus.COMPLETED);
         employeeAccountRepository.save(acc);
     }

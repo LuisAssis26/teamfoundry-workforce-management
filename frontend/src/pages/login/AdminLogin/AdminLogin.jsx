@@ -60,11 +60,16 @@ export default function AdminLogin() {
                 throw new Error("Resposta inesperada do servidor. Tente novamente.");
             }
 
-            const roleLabel = payload.role === "SUPERADMIN" ? "Superadmin" : "Admin";
+            const userType = payload.role === "SUPERADMIN" ? "SUPERADMIN" : "ADMIN";
+            const roleLabel = userType === "SUPERADMIN" ? "Superadmin" : "Admin";
             setFeedback({ type: "success", message: `Bem-vindo, ${roleLabel}` });
 
+            localStorage.setItem("tf-user-type", userType);
             if (payload.accessToken) {
-                setTokens({ accessToken: payload.accessToken, refreshToken: payload.refreshToken });
+                setTokens(
+                    { accessToken: payload.accessToken, refreshToken: payload.refreshToken },
+                    { persist: "session" }
+                );
             }
 
             if (payload.role === "SUPERADMIN") {
