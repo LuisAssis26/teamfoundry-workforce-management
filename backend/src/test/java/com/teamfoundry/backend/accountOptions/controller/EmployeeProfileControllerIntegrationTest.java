@@ -144,6 +144,27 @@ class EmployeeProfileControllerIntegrationTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    @DisplayName("PUT profile com payload invalido devolve 400 Bad Request")
+    void updateProfile_withInvalidPayload_returnsBadRequest() throws Exception {
+        String accessToken = loginAndGetAccessToken();
+
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("firstName", "A"); // curto demais
+        payload.put("lastName", "");   // obrigat¢rio
+        payload.put("gender", "invalid");
+        payload.put("birthDate", "2030-01-01"); // futuro
+        payload.put("nationality", "");
+        // nif omitido -> @NotNull deve falhar
+        payload.put("phone", "abc");
+
+        mockMvc.perform(put("/api/employee/profile")
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload)))
+                .andExpect(status().isBadRequest());
+    }
+
     private String loginAndGetAccessToken() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "email", email,
