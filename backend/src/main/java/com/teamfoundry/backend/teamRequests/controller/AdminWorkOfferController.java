@@ -35,6 +35,11 @@ public class AdminWorkOfferController {
         return adminWorkOfferService.listActiveInviteIds(teamId, role);
     }
 
+    @GetMapping("/{teamId}/invites")
+    public List<Integer> listInvitedAnyRole(@PathVariable Integer teamId) {
+        return adminWorkOfferService.listActiveInviteIds(teamId, null);
+    }
+
     @GetMapping("/{teamId}/accepted")
     public List<Integer> listAccepted(@PathVariable Integer teamId) {
         return adminWorkOfferService.listAcceptedIds(teamId);

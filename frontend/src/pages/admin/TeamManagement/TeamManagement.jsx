@@ -1,18 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import TeamManagementCard from "./components/TeamManagementCard.jsx";
-import AdminNavbar from "../../../components/sections/AdminNavbar.jsx";
 import { useAdminData } from "./AdminDataContext.jsx";
-import BackButton from "../../../components/ui/Button/BackButton.jsx";
 import FilterDropdown from "../../../components/ui/Dropdown/FilterDropdown.jsx";
 import SearchBar from "../../../components/ui/Input/SearchBar.jsx";
 
 const STATUS_OPTIONS = [
   { value: "ALL", label: "Todos" },
-  { value: "PENDING", label: "Pendente" },
-  { value: "ACCEPTED", label: "Aceite" },
   { value: "COMPLETE", label: "Concluida" },
   { value: "INCOMPLETE", label: "Incompleta" },
-  { value: "REJECTED", label: "Rejeitada" },
 ];
 
 const DATE_ORDER_OPTIONS = [
@@ -160,7 +155,7 @@ export default function TeamManagement() {
                 <SearchBar
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
-                  placeholder="Equipe ou empresa"
+                  placeholder="Equipa ou empresa"
                   className="w-full"
                   size="md"
                 />

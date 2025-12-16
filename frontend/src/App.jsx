@@ -50,7 +50,7 @@ import VariableManagement from "./pages/admin/SuperAdmin/VariableManagement/Vari
 import Metrics from "./pages/admin/SuperAdmin/MetricsAndLogs/Metrics.jsx";
 import Logs from "./pages/admin/SuperAdmin/MetricsAndLogs/Logs.jsx";
 import TeamManagement from "./pages/admin/TeamManagement/TeamManagement.jsx";
-import BuildTeamSearch from "./pages/admin/TeamManagement/BuildTeamSeach/BuildTeamSearch.jsx";
+import BuildTeamSearch from "./pages/admin/TeamManagement/BuildTeamSearch/BuildTeamSearch.jsx";
 import TeamEmployeeRequests from "./pages/admin/TeamManagement/TeamEmployeeRequests.jsx";
 import ProtectedRoute from "./auth/ProtectedRoute.jsx";
 

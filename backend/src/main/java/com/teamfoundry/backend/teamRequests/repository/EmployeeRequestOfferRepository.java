@@ -48,6 +48,14 @@ public interface EmployeeRequestOfferRepository extends JpaRepository<EmployeeRe
                                                            @Param("role") String role);
 
     @Query("""
+            SELECT DISTINCT ere.employee.id
+            FROM EmployeeRequestOffer ere
+            WHERE ere.employeeRequest.teamRequest.id = :teamId
+              AND ere.active = true
+            """)
+    List<Integer> findActiveInviteEmployeeIdsByTeam(@Param("teamId") Integer teamId);
+
+    @Query("""
             SELECT ere
             FROM EmployeeRequestOffer ere
             JOIN FETCH ere.employeeRequest er
