@@ -69,15 +69,6 @@ public class AdminEmployeeSearchService {
         List<String> normRoles = normalizeList(preferredRoles);
         List<String> normStatuses = normalizeList(statuses);
 
-        // inclui a funÇõÇœ requisitada no filtro de funÇõÇæes para a vaga
-        if (StringUtils.hasText(role)) {
-            String normRole = role.trim().toLowerCase(Locale.ROOT);
-            if (!normRoles.contains(normRole)) {
-                normRoles = new java.util.ArrayList<>(normRoles);
-                normRoles.add(normRole);
-            }
-        }
-
         List<EmployeeAccount> results = employeeAccountRepository.searchCandidates(
                 normAreas,
                 normAreas.isEmpty(),

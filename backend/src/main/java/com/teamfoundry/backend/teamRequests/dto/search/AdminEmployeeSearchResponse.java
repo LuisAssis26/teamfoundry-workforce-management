@@ -11,5 +11,6 @@ public record AdminEmployeeSearchResponse(
         String role,
         List<String> skills,
         List<String> areas,
-        List<String> experiences
+        List<String> experiences,
+        String profilePicturePublicId
 ) {}

@@ -50,7 +50,7 @@ import VariableManagement from "./pages/admin/SuperAdmin/VariableManagement/Vari
 import Metrics from "./pages/admin/SuperAdmin/MetricsAndLogs/Metrics.jsx";
 import Logs from "./pages/admin/SuperAdmin/MetricsAndLogs/Logs.jsx";
 import TeamManagement from "./pages/admin/TeamManagement/TeamManagement.jsx";
-import BuildTeamSearch from "./pages/admin/TeamManagement/BuildTeamSearch.jsx";
+import BuildTeamSearch from "./pages/admin/TeamManagement/BuildTeamSeach/BuildTeamSearch.jsx";
 import TeamEmployeeRequests from "./pages/admin/TeamManagement/TeamEmployeeRequests.jsx";
 import ProtectedRoute from "./auth/ProtectedRoute.jsx";
 
@@ -83,9 +83,9 @@ function App() {
         <Route path="step4" element={<CompanyRegisterStep4 />} />
       </Route>
 
+      <Route path="admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="login" replace />} />
-        <Route path="login" element={<AdminLogin />} />
         <Route
           element={
           <ProtectedRoute redirectTo="/admin/login" allowedTypes={["ADMIN", "SUPERADMIN"]} />

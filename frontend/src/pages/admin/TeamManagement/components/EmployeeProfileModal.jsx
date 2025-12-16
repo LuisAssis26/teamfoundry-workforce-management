@@ -38,7 +38,7 @@ export default function EmployeeProfileModal({ open, onClose, employeeId, fallba
       open={open}
       onClose={onClose}
       title=""
-      className="w-full max-w-4xl max-h-[80vh] overflow-y-auto bg-[#F0F0F0] mx-auto"
+      className="w-full max-w-4xl max-h-[80vh] overflow-y-auto bg-base-200 mx-auto"
       actions={
         <>
           <Button label="Fechar" variant="ghost" fullWidth={false} onClick={onClose} />
@@ -48,7 +48,7 @@ export default function EmployeeProfileModal({ open, onClose, employeeId, fallba
     >
       <div className="space-y-6 px-2 lg:px-0">
         <div className="flex items-center justify-center px-4">
-          <h2 className="text-center text-3xl font-bold text-[#1F2959] lg:text-4xl">Perfil de Funcionário</h2>
+          <h2 className="text-center text-3xl font-bold text-primary lg:text-4xl">Perfil de Funcionário</h2>
         </div>
 
         {error && (
@@ -62,7 +62,7 @@ export default function EmployeeProfileModal({ open, onClose, employeeId, fallba
         ) : (
           <>
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-              <div className="flex h-44 w-44 shrink-0 items-center justify-center rounded-full bg-[#1F2959] text-white shadow-inner">
+              <div className="flex h-44 w-44 shrink-0 items-center justify-center rounded-full bg-primary text-primary-content shadow-inner">
                 <i className="bi bi-person-fill text-6xl" aria-hidden="true" />
               </div>
               <div className="w-full">
@@ -118,9 +118,9 @@ export default function EmployeeProfileModal({ open, onClose, employeeId, fallba
 
 function SectionCard({ title, children }) {
   return (
-    <section className="rounded-xl border border-[#111827] bg-white shadow-md">
-      <header className="border-b border-[#E5E7EB] px-4 py-3">
-        <h3 className="text-xl font-semibold text-[#1F2959] lg:text-2xl">{title}</h3>
+    <section className="rounded-xl border border-base-300 bg-base-100 shadow-md">
+      <header className="border-b border-base-200 px-4 py-3">
+        <h3 className="text-xl font-semibold text-primary lg:text-2xl">{title}</h3>
       </header>
       <div className="p-4 lg:p-6">{children}</div>
     </section>
@@ -129,9 +129,9 @@ function SectionCard({ title, children }) {
 
 function InfoRow({ label, value, accent = false }) {
   return (
-    <p className="text-base leading-relaxed text-[#111827]">
-      <span className="font-semibold text-[#1F2959]">{label}: </span>
-      <span className={accent ? "text-[#1F2959]" : "text-[#111827]"}>{value}</span>
+    <p className="text-base leading-relaxed text-base-content">
+      <span className="font-semibold text-primary">{label}: </span>
+      <span className={accent ? "text-primary" : "text-base-content"}>{value}</span>
     </p>
   );
 }
@@ -139,8 +139,8 @@ function InfoRow({ label, value, accent = false }) {
 function WorkHistoryCard({ experience }) {
   const value = typeof experience === "string" ? experience : "";
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-[#111827] bg-[#F5F5F5] p-4 shadow-sm md:flex-row md:items-center md:justify-between">
-      <p className="text-sm text-[#111827]">{value || "Experiência não informada."}</p>
+    <div className="flex flex-col gap-3 rounded-lg border border-base-300 bg-base-100 p-4 shadow-sm md:flex-row md:items-center md:justify-between">
+      <p className="text-sm text-base-content">{value || "Experiência não informada."}</p>
     </div>
   );
 }

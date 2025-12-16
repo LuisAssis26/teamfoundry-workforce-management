@@ -107,7 +107,7 @@ export default function JobOffers() {
         
           <div className="space-y-4">
             {/* Filtros */}
-            <div className="flex flex-wrap items-center gap-4 justify-start w-full px-0">
+            <div className="flex flex-no-wrap items-center gap-4 justify-start w-full px-0">
               <FilterDropdown
                   label="Status:"
                   value={statusFilter}

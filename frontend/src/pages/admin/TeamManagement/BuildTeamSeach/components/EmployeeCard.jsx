@@ -1,5 +1,5 @@
 import { useState } from "react";
-import EmployeeProfileModal from "./EmployeeProfileModal.jsx";
+import EmployeeProfileModal from "../../components/EmployeeProfileModal.jsx";
 
 export default function EmployeeCard({
   id,
@@ -10,6 +10,8 @@ export default function EmployeeCard({
   experiences = [],
   selected = false,
   accepted = false,
+  invited = false,
+  photoUrl = null,
   onSelect,
 }) {
   const [open, setOpen] = useState(false);
@@ -19,30 +21,35 @@ export default function EmployeeCard({
   const hasMoreSkills = skills.length > 3;
   const preferredRoles = Array.isArray(role) ? role.join(", ") : role;
 
-  const buttonLabel = accepted ? "Aceite" : selected ? "Selecionado" : "Escolher";
-  const buttonClasses = accepted
-    ? "bg-[#1CA74F] cursor-not-allowed"
+  const buttonLabel = accepted
+    ? "Aceite"
+    : invited
+    ? "Enviado"
     : selected
-    ? "bg-[#60678E]"
-    : "bg-[#1F2959]";
-  const borderColor = selected ? "border-[#1CA74F]" : "border-[#111827]";
+    ? "Selecionado"
+    : "Escolher";
+  const buttonClasses = accepted
+    ? "btn btn-success btn-sm text-success-content cursor-not-allowed"
+    : invited
+    ? "btn btn-neutral btn-sm text-neutral-content cursor-not-allowed"
+    : selected
+    ? "btn btn-accent btn-sm text-primary-content"
+    : "btn btn-neutral btn-sm text-neutral-content";
+  const borderColor = selected ? "border-success" : "border-base-300";
 
   return (
     <>
       <article
-        className={`flex h-full flex-col items-start gap-4 rounded-2xl border ${borderColor} bg-[#F5F5F5] p-5 shadow`}
+        className={`flex h-full flex-col items-start gap-4 rounded-2xl border ${borderColor} bg-base-100 p-5 shadow`}
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1F2959] text-white shadow-inner text-2xl">
-            <i className="bi bi-person-fill" aria-hidden="true"></i>
-          </div>
           <div>
-            <p className="text-lg font-semibold text-[#111827]">{name}</p>
+            <p className="text-lg font-semibold text-base-content">{name}</p>
           </div>
         </div>
 
-        <dl className="space-y-4 text-sm text-[#111827] w-full">
-          <InfoLine label="Funcoes preferidas" value={preferredRoles || "N/A"} />
+        <dl className="space-y-4 text-sm text-base-content w-full">
+          <InfoLine label="Funcoes preferenciais" value={preferredRoles || "N/A"} />
           <InfoLine label="Preferencia geografica" value={city || "N/A"} />
           {skills.length > 0 && (
             <InfoLine
@@ -53,27 +60,27 @@ export default function EmployeeCard({
         </dl>
 
         <div className="space-y-2 text-sm w-full">
-          <p className="font-semibold text-[#1F2959]">Ultima experiencia:</p>
+          <p className="font-semibold text-primary">Ultima experiencia:</p>
           {lastExperience ? (
-            <p className="text-[#8A93C2]">{lastExperience}</p>
+            <p className="text-base-content/70">{lastExperience}</p>
           ) : (
-            <p className="text-[#8A93C2]">Sem experiencias anteriores.</p>
+            <p className="text-base-content/70">Sem experiencias anteriores.</p>
           )}
         </div>
 
         <div className="mt-auto flex w-full flex-wrap justify-center gap-3">
           <button
             type="button"
-            className="flex-1 rounded-xl bg-[#1F2959] py-2 text-sm font-semibold text-white shadow"
+            className="flex-1 rounded-xl btn btn-primary btn-sm py-2 text-xs font-semibold shadow"
             onClick={() => setOpen(true)}
           >
             Ver mais
           </button>
           <button
             type="button"
-            className={`flex-1 rounded-xl py-2 text-sm font-semibold text-white shadow ${buttonClasses}`}
-            onClick={!accepted ? onSelect : undefined}
-            disabled={accepted}
+            className={`flex-1 rounded-xl py-2 text-xs font-semibold shadow ${buttonClasses}`}
+            onClick={!accepted && !invited ? onSelect : undefined}
+            disabled={accepted || invited}
           >
             {buttonLabel}
           </button>
@@ -101,8 +108,8 @@ export default function EmployeeCard({
 function InfoLine({ label, value }) {
   return (
     <div className="flex flex-col items-start gap-1">
-      <dt className="font-semibold text-[#1F2959]">{label}:</dt>
-      <dd className="text-[#111827]">{value}</dd>
+      <dt className="font-semibold text-primary">{label}:</dt>
+      <dd className="text-base-content">{value}</dd>
     </div>
   );
 }

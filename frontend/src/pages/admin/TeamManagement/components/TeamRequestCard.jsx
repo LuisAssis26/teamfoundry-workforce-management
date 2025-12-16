@@ -16,10 +16,9 @@ export default function TeamRequestCard({
 
   return (
     <div
-      className="relative rounded-2xl border border-[#111827] bg-[#F5F5F5] px-6 py-4"
-      style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
+      className="relative rounded-2xl border border-base-300 bg-base-100 px-6 py-4 shadow-lg"
     >
-      <dl className="grid grid-cols-1 gap-1 text-base text-[#111827] sm:grid-cols-2">
+      <dl className="grid grid-cols-1 gap-1 text-base text-base-content sm:grid-cols-2">
         <InfoRow label="Funcao" value={role} />
         <InfoRow label="Mao de Obra" value={`${workforceCurrent} de ${workforceTotal}`} />
         <InfoRow label="Propostas Enviadas" value={proposalsSent} />
@@ -31,8 +30,8 @@ export default function TeamRequestCard({
           onClick={handleClick}
           className={`rounded-xl px-8 py-2 text-center text-sm font-semibold text-white shadow transition ${
             isComplete
-              ? "bg-[#1CA74F] hover:bg-[#168C41]"
-              : "bg-[#1F2959] hover:bg-[#172145]"
+              ? "btn btn-success"
+              : "btn btn-primary"
           }`}
         >
           {buttonLabel}
@@ -45,8 +44,8 @@ export default function TeamRequestCard({
 function InfoRow({ label, value }) {
   return (
     <div className="flex flex-wrap gap-2">
-      <dt className="font-medium text-[#2C3A74]">{label}:</dt>
-      <dd className="text-[#111827]">{value}</dd>
+      <dt className="font-medium text-primary">{label}:</dt>
+      <dd className="text-base-content">{value}</dd>
     </div>
   );
 }

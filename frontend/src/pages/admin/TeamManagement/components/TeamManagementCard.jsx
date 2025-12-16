@@ -3,14 +3,15 @@ import { Link } from "react-router-dom";
 export default function TeamManagementCard({ id, company, email, phone, workforce, status }) {
   const isComplete = (status || "").toUpperCase() === "COMPLETE";
   const buttonLabel = isComplete ? "Concluída" : "Montar";
-  const buttonClass = isComplete ? "bg-gray-500 hover:bg-gray-600" : "bg-[#1F2959] hover:bg-[#172145]";
+  const buttonClass = isComplete
+    ? "btn btn-success"
+    : "btn btn-primary";
 
   return (
     <div
-      className="relative rounded-2xl border border-[#111827] bg-[#F5F5F5] px-6 py-4"
-      style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
+      className="relative rounded-2xl border border-base-300 bg-base-100 px-6 py-4 shadow-lg"
     >
-      <dl className="grid grid-cols-1 gap-1 text-base text-[#111827] sm:grid-cols-2">
+      <dl className="grid grid-cols-1 gap-1 text-base text-base-content sm:grid-cols-2">
         <InfoRow label="Nome Empresa" value={company} />
         <InfoRow label="Email Responsavel" value={email} />
         <InfoRow label="Telefone Empresa" value={phone} />
@@ -30,7 +31,7 @@ export default function TeamManagementCard({ id, company, email, phone, workforc
 function InfoRow({ label, value }) {
   return (
     <div className="flex flex-wrap gap-2">
-      <dt className="font-medium text-[#2C3A74]">{label}:</dt>
+      <dt className="font-medium text-primary">{label}:</dt>
       <dd>{value}</dd>
     </div>
   );

@@ -91,7 +91,7 @@ public class EmployeeAccountInitializer {
                             "+351918889900", "Portugal", "MALE", LocalDate.of(1993, 1, 29), "password123",
                             List.of("Pedreiro"), List.of("Eletricista"), List.of("Açores")),
 
-                    // extras
+                    // Extras
                     new EmployeeSeed("sofia.lima@teamfoundry.com", 501234567, "Sofia", "Lima",
                             "+351910000111", "Portugal", "FEMALE", LocalDate.of(1994, 6, 12), "password123",
                             List.of("Eletricista"), List.of("Eletricista"), List.of("Lisboa")),

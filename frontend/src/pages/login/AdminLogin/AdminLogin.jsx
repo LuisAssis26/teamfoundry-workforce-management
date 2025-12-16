@@ -66,9 +66,11 @@ export default function AdminLogin() {
 
             localStorage.setItem("tf-user-type", userType);
             if (payload.accessToken) {
+                // Mantém a sessão enquanto o browser estiver aberto (sessionStorage) e também no localStorage
+                // para que o admin não perca a sessão em refresh dentro da mesma janela.
                 setTokens(
                     { accessToken: payload.accessToken, refreshToken: payload.refreshToken },
-                    { persist: "session" }
+                    { persist: "both" }
                 );
             }
 

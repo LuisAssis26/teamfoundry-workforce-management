@@ -17,12 +17,13 @@ async function handleResponse(resp, fallbackMessage) {
     throw new Error(payload?.error || fallbackMessage);
 }
 
-export async function searchCandidates({ role, areas = [], skills = [], preferredRoles = [] }) {
+export async function searchCandidates({ role, areas = [], skills = [], preferredRoles = [], statuses = [] }) {
     const params = new URLSearchParams();
     if (role) params.append("role", role);
     areas.forEach((area) => params.append("areas", area));
     skills.forEach((skill) => params.append("skills", skill));
     preferredRoles.forEach((pr) => params.append("preferredRoles", pr));
+    statuses.forEach((st) => params.append("statuses", st));
 
     const data = await handleResponse(
         await apiFetch(`/api/admin/candidates/search?${params.toString()}`),

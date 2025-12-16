@@ -23,13 +23,16 @@ public interface EmployeeAccountRepository extends JpaRepository<EmployeeAccount
             LEFT JOIN com.teamfoundry.backend.account.model.employee.profile.EmployeeSkill es ON es.employee = e
             LEFT JOIN es.prefSkill c
             WHERE e.verified = true AND e.deactivated = false
-              AND (:role IS NULL OR LOWER(f.name) = LOWER(:role))
+              AND (:rolesEmpty = true OR LOWER(f.name) IN :roles)
               AND (:areasEmpty = true OR LOWER(ga.name) IN :areas)
               AND (:skillsEmpty = true OR LOWER(c.name) IN :skills)
             """)
-    List<EmployeeAccount> searchCandidates(@Param("role") String role,
-                                           @Param("areas") List<String> areas,
+    List<EmployeeAccount> searchCandidates(@Param("areas") List<String> areas,
                                            @Param("areasEmpty") boolean areasEmpty,
                                            @Param("skills") List<String> skills,
-                                           @Param("skillsEmpty") boolean skillsEmpty);
+                                           @Param("skillsEmpty") boolean skillsEmpty,
+                                           @Param("roles") List<String> roles,
+                                           @Param("rolesEmpty") boolean rolesEmpty,
+                                           @Param("statuses") List<String> statuses,
+                                           @Param("statusesEmpty") boolean statusesEmpty);
 }

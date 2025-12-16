@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import TeamRequestHeader from "./components/TeamRequestHeader.jsx";
 import TeamRequestGrid from "./components/TeamRequestGrid.jsx";
 import AdminNavbar from "../../../components/sections/AdminNavbar.jsx";
 import { useAdminData } from "./AdminDataContext.jsx";
+import BackButton from "../../../components/ui/Button/BackButton.jsx";
 
 export default function TeamEmployeeRequests() {
   const navigate = useNavigate();
@@ -81,38 +81,32 @@ export default function TeamEmployeeRequests() {
   };
 
   return (
-      <div className="min-h-screen bg-[#F5F5F5]">
-        <AdminNavbar />
-        <div className="mx-auto flex max-w-screen-xl flex-col gap-8 px-8 py-10">
-          <button
-              type="button"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#1F2959] transition hover:text-[#0f1635]"
-              onClick={() => navigate("/admin/team-management")}
-          >
-            <span aria-hidden="true">&larr;</span>
-            Voltar
-          </button>
+    <div className="min-h-screen bg-base-200">
+      <div className="mx-auto flex max-w-screen-xl flex-col gap-8 px-8 py-10">
+        <BackButton to="/admin/team-management" />
 
-          <TeamRequestHeader teamName={teamName} />
-
-          {error && (
-              <div className="alert alert-error shadow">
-                <span>{error}</span>
-              </div>
-          )}
-
-          {isLoading ? (
-              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center text-base-content/70 shadow">
-                Carregando funcoes requisitadas...
-              </div>
-          ) : requests.length === 0 ? (
-              <div className="alert alert-info shadow">
-                <span>Nao ha funcoes requisitadas para esta equipa.</span>
-              </div>
-          ) : (
-              <TeamRequestGrid requests={requests} onSelect={handleSelect} />
-          )}
+        <div className="flex flex-col items-center gap-3 text-center">
+          <h1 className="text-4xl font-bold leading-tight text-primary">Equipa - {teamName}</h1>
         </div>
+
+        {error && (
+          <div className="alert alert-error shadow">
+            <span>{error}</span>
+          </div>
+        )}
+
+        {isLoading ? (
+          <div className="rounded-2xl border border-base-200 bg-base-100 p-8 text-center text-base-content/70 shadow">
+            Carregando funcoes requisitadas...
+          </div>
+        ) : requests.length === 0 ? (
+          <div className="alert alert-info shadow">
+            <span>Nao ha funcoes requisitadas para esta equipa.</span>
+          </div>
+        ) : (
+          <TeamRequestGrid requests={requests} onSelect={handleSelect} />
+        )}
       </div>
+    </div>
   );
 }

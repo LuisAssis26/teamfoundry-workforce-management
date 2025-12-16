@@ -4,7 +4,7 @@ import TeamRequestCard from "./TeamRequestCard.jsx";
 
 export default function TeamRequestGrid({ requests, onSelect }) {
   return (
-    <section className="rounded-2xl border border-[#E5E7EB] bg-white p-8 shadow-lg">
+    <section className="rounded-2xl border border-base-200 bg-base-100 p-8 shadow-lg">
       <div className="flex flex-col gap-4">
         {requests.map((request) => (
           <TeamRequestCard
