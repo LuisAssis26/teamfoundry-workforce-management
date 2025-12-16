@@ -13,7 +13,7 @@ export default function ShowcaseList({ title, description, items, onCreate, onEd
             <p className="text-base-content/70">{description}</p>
           </div>
           <button type="button" className="btn btn-primary" onClick={onCreate}>
-            Adicionar {isIndustry ? "industria" : "parceiro"}
+            Adicionar {isIndustry ? "indústria" : "parceiro"}
           </button>
         </div>
         {safeItems.length ? (
@@ -33,7 +33,7 @@ export default function ShowcaseList({ title, description, items, onCreate, onEd
                       <span
                         className={`badge ${item.active ? "badge-success" : "badge-ghost"} uppercase`}
                       >
-                        {item.active ? "Visiðvel" : "Oculto"}
+                        {item.active ? "Visível" : "Oculto"}
                       </span>
                       <div className="flex items-center gap-2 text-xs text-base-content/60">
                         <button
@@ -76,7 +76,7 @@ export default function ShowcaseList({ title, description, items, onCreate, onEd
         ) : (
           <div className="rounded-2xl border border-dashed border-base-300 p-10 text-center">
             <p className="text-base-content/60">
-              Ainda nÆo existem {isIndustry ? "indÇ§strias" : "parceiros"} configurados.
+              Ainda não existem {isIndustry ? "indústrias" : "parceiros"} configurados.
             </p>
           </div>
         )}

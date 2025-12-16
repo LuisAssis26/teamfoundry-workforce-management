@@ -43,10 +43,15 @@ export function HomeAuthenticatedProvider({ children }) {
         if (!active) return;
         setHomeContent(data);
         setContentError(null);
+        const news = data?.sections?.find((section) => section.type === APP_HOME_SECTION_TYPES.news);
+        // eslint-disable-next-line no-console
+        console.info("[HomeAuthenticated] Conteudo carregado. Secoes:", data?.sections?.length ?? 0, "| Noticias recebidas:", Array.isArray(news?.newsArticles) ? news.newsArticles.length : 0);
       })
       .catch((err) => {
         if (!active) return;
         setContentError(err.message || "Nao foi possivel carregar a home autenticada.");
+        // eslint-disable-next-line no-console
+        console.error("[HomeAuthenticated] Erro ao carregar conteudo:", err);
       })
       .finally(() => {
         if (active) setContentLoading(false);
@@ -109,6 +114,12 @@ export function HomeAuthenticatedProvider({ children }) {
     () => (Array.isArray(newsSection?.newsArticles) ? newsSection.newsArticles : []),
     [newsSection]
   );
+
+  useEffect(() => {
+    if (contentLoading) return;
+    // eslint-disable-next-line no-console
+    console.info("[HomeAuthenticated] Noticias prontas para render:", newsArticles.length, "| Section ativa:", !!newsSection);
+  }, [contentLoading, newsArticles.length, newsSection]);
 
   const displayName = useMemo(() => {
     if (profile?.firstName) {

@@ -11,7 +11,7 @@ export default function AppWeeklyTipSection({ form, saving, onFieldChange, onSub
         </div>
         <form className="space-y-4" onSubmit={onSubmit}>
           <FieldGroup
-            label="Titulo"
+            label="Título"
             value={form.title}
             onChange={(value) => onFieldChange("title", value)}
             placeholder="Dica da semana"
@@ -19,14 +19,14 @@ export default function AppWeeklyTipSection({ form, saving, onFieldChange, onSub
 
           <div className="flex flex-col gap-4 md:flex-row">
             <FieldGroup
-              label="Texto do botao"
+              label="Texto do botão"
               value={form.primaryCtaLabel}
               onChange={(value) => onFieldChange("primaryCtaLabel", value)}
               placeholder="Ver mais"
               className="flex-1"
             />
             <FieldGroup
-              label="URL do botao"
+              label="URL do botão"
               value={form.primaryCtaUrl}
               onChange={(value) => onFieldChange("primaryCtaUrl", value)}
               placeholder="/dicas"
@@ -34,14 +34,14 @@ export default function AppWeeklyTipSection({ form, saving, onFieldChange, onSub
             />
           </div>
 
-          <label className="label cursor-pointer gap-3">
+          <label className="flex flex-col gap-2 items-start w-fit">
+            <span className="label-text font-semibold">Mostrar seção:</span>
             <input
               type="checkbox"
               className="toggle toggle-primary"
               checked={form.active}
               onChange={(e) => onFieldChange("active", e.target.checked)}
             />
-            <span className="label-text">Mostrar secao</span>
           </label>
 
           <div className="flex justify-end">
@@ -52,7 +52,7 @@ export default function AppWeeklyTipSection({ form, saving, onFieldChange, onSub
                   A guardar...
                 </>
               ) : (
-                "Guardar alteracoes"
+                "Guardar alterações"
               )}
             </button>
           </div>

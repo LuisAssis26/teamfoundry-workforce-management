@@ -62,8 +62,8 @@ export default function VariableManagementLayout() {
     if (activeView === "otherPages") {
       return (
         <TabPlaceholder
-          title="Outras paginas"
-          description="Gestao futura de paginas adicionais. Em breve."
+          title="Outras páginas"
+          description="Gestão futura de páginas adicionais. Em breve."
         />
       );
     }

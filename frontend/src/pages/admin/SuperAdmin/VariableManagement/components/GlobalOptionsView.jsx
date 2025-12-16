@@ -4,11 +4,11 @@ import { useVariableManagement } from "../VariableManagementContext.jsx";
 const manageTitle = (type) => {
   switch (type) {
     case "functions":
-      return "Funcoes";
+      return "Funções";
     case "competences":
-      return "Competencias";
+      return "Competências";
     case "geoAreas":
-      return "Areas geograficas";
+      return "Áreas geográficas";
     case "activitySectors":
       return "Setores de atividade";
     default:
@@ -29,7 +29,7 @@ function OptionCard({ type, title, onManage }) {
       <div className="flex items-center justify-between gap-3">
         <div>
           <h3 className="text-xl font-semibold">{title}</h3>
-          <p className="text-base text-base-content/70">Gerir {title.toLowerCase()} disponiveis.</p>
+          <p className="text-base text-base-content/70">Gerir {title.toLowerCase()} disponíveis.</p>
         </div>
         <button type="button" className="btn btn-sm btn-primary" onClick={() => onManage(type)}>
           Gerir
@@ -82,13 +82,13 @@ export default function GlobalOptionsView() {
           <div className="space-y-6">
             <section className="space-y-3 card bg-base-100 shadow-lg p-4">
               <div className="flex items-center gap-2">
-                <h3 className="text-2xl font-semibold">Funcionario</h3>
-                <span className="badge badge-ghost text-xs">Funcoes, Competencias, Areas Geograficas</span>
+                <h3 className="text-2xl font-semibold">Funcionário</h3>
+                <span className="badge badge-ghost text-xs">Funções, Competências, Áreas geográficas</span>
               </div>
               <div className="space-y-3">
-                <OptionCard type="functions" title="Funcoes" onManage={openManage} />
-                <OptionCard type="competences" title="Competencias" onManage={openManage} />
-                <OptionCard type="geoAreas" title="Areas geograficas" onManage={openManage} />
+                <OptionCard type="functions" title="Funções" onManage={openManage} />
+                <OptionCard type="competences" title="Competências" onManage={openManage} />
+                <OptionCard type="geoAreas" title="Áreas geográficas" onManage={openManage} />
               </div>
             </section>
             <section className="space-y-3 card bg-base-100 shadow-lg p-4">
@@ -118,7 +118,7 @@ export default function GlobalOptionsView() {
           }
         >
           <div className="space-y-5 min-h-[360px]">
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="form-control w-full max-w-md gap-2">
               <span className="label-text font-semibold">Pesquisar</span>
               <input
                 type="text"
@@ -168,7 +168,7 @@ export default function GlobalOptionsView() {
                 {optionModal.saving ? (
                   <>
                     <span className="loading loading-spinner loading-sm" />
-                    A guardar!
+                    A guardar...
                   </>
                 ) : (
                   "Adicionar"
@@ -178,10 +178,8 @@ export default function GlobalOptionsView() {
           }
         >
           <form id="function-form" className="space-y-4" onSubmit={handleOptionSubmit}>
-            <div className="form-control w-full">
-              <label htmlFor="option-name" className="label-text font-semibold mb-1">
-                Nome da {optionLabels[optionModal.type] || "opcao"}
-              </label>
+            <label className="form-control w-full gap-2">
+              <span className="label-text font-semibold">Nome da {optionLabels[optionModal.type] || "opção"}</span>
               <input
                 id="option-name"
                 type="text"
@@ -190,9 +188,9 @@ export default function GlobalOptionsView() {
                 onChange={(e) => setOptionModal((prev) => ({ ...prev, name: e.target.value }))}
                 required
               />
-            </div>
+            </label>
             <p className="text-sm text-base-content/60">
-              Insira o nome exatamente como deseja que apareca para os utilizadores.
+              Insira o nome exatamente como deseja que apareça para os utilizadores.
             </p>
           </form>
         </Modal>
@@ -225,8 +223,8 @@ export default function GlobalOptionsView() {
             <p className="text-base-content/80">
               Para apagar <strong>{deleteModal.record?.name}</strong>, digite a password do super admin.
             </p>
-            <label className="form-control">
-              <span className="label-text font-semibold">Password do super admin</span>
+            <label className="flex flex-col gap-2 items-start">
+              <span className="label-text font-semibold">Password do super admin:</span>
               <input
                 type="password"
                 className="input input-bordered"

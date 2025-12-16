@@ -75,10 +75,8 @@ export default function SectionOrderCard({ sections = [], onMove, onToggle }) {
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body space-y-4">
         <div className="flex flex-col gap-1">
-          <h2 className="card-title text-2xl">Ordem das sec‡äes</h2>
-          <p className="text-base-content/70">
-            Defina a sequˆncia com que cada bloco aparece para os visitantes.
-          </p>
+          <h2 className="card-title text-2xl">Ordem das seções</h2>
+          <p className="text-base-content/70">Defina a sequência com que cada bloco aparece para os visitantes.</p>
         </div>
         <ol className="space-y-3">
           {sections.map((section, index) => (
@@ -104,9 +102,9 @@ export default function SectionOrderCard({ sections = [], onMove, onToggle }) {
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 {typeof onToggle === "function" && (
-                  <label className="label cursor-pointer gap-3">
-                    <span className="text-sm text-base-content/70">
-                      {section.active ? "Vis¡vel" : "Oculta"}
+                  <label className="flex flex-col gap-2 items-start w-fit">
+                    <span className="label-text text-sm text-base-content/70">
+                      {section.active ? "Visível" : "Oculta"}
                     </span>
                     <input
                       type="checkbox"

@@ -150,7 +150,7 @@ export function VariableManagementProvider({ children }) {
         handleUnauthorized();
         return;
       }
-      setOptionsError(err.message || "Nao foi possivel carregar as opcoes globais.");
+      setOptionsError(err.message || "Não foi possível carregar as opções globais.");
     } finally {
       if (mountedRef.current) setOptionsLoading(false);
     }
@@ -271,7 +271,7 @@ export function VariableManagementProvider({ children }) {
         }));
         setBanner({
           type: "success",
-          message: `SecÇõÇœo ${updated.active ? "ativada" : "ocultada"} com sucesso.`,
+          message: `Seção ${updated.active ? "ativada" : "ocultada"} com sucesso.`,
         });
       } catch (err) {
         setBanner({
@@ -440,7 +440,7 @@ export function VariableManagementProvider({ children }) {
           handleUnauthorized();
           return;
         }
-        setOptionsError(err.message || "Nao foi possivel criar o registo.");
+        setOptionsError(err.message || "Não foi possível criar o registo.");
         setOptionModal((prev) => ({ ...prev, saving: false }));
       }
     },
@@ -504,7 +504,7 @@ export function VariableManagementProvider({ children }) {
         setDeleteModal((prev) => ({
           ...prev,
           saving: false,
-          error: err.message || "Nao foi possivel eliminar o registo.",
+          error: err.message || "Não foi possível eliminar o registo.",
         }));
       }
     },

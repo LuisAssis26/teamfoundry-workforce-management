@@ -23,6 +23,10 @@ export default function HeroPanel({
   const openOffers = profileSummary?.openOffers ?? 0;
 
   const isLoading = summaryLoading || loadingContent;
+  const completionMessage =
+    safeCompletion >= 100
+      ? "Seu perfil está completo. Agora é só aguardar as próximas oportunidades que combinam consigo."
+      : "Complete mais informações no seu perfil para aumentar as chances de receber novas ofertas.";
 
   return (
     <section
@@ -63,6 +67,7 @@ export default function HeroPanel({
                   aria-label={`Perfil completo em ${safeCompletion}%`}
                 />
               </div>
+              <p className="text-xs md:text-sm text-primary-content/80">{completionMessage}</p>
             </div>
           )}
 

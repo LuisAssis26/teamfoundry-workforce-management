@@ -35,14 +35,15 @@ export default function PublicHomeView() {
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body space-y-6">
           <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-primary/70" />
-            <h2 className="card-title text-3xl">Hero e Redirecionamento</h2>
-            <p className="text-base-content/70" />
+            <h2 className="card-title text-3xl">Hero</h2>
+            <p className="text-base-content/70">
+              Edite título, subtítulo e os botões principais que aparecem na homepage pública.
+            </p>
           </div>
           {heroForm && (
             <form className="grid gap-4 md:grid-cols-2" onSubmit={handleHeroSubmit}>
-              <label className="form-control md:col-span-2">
-                <span className="label-text font-semibold">Titulo</span>
+              <label className="flex flex-col gap-2 items-start md:col-span-2">
+                <span className="label-text font-semibold">Título:</span>
                 <input
                   type="text"
                   className="input input-bordered"
@@ -52,8 +53,8 @@ export default function PublicHomeView() {
                 />
               </label>
 
-              <label className="form-control md:col-span-2">
-                <span className="label-text font-semibold">Subtitulo</span>
+              <label className="flex flex-col gap-2 items-start md:col-span-2">
+                <span className="label-text font-semibold">Subtítulo:</span>
                 <textarea
                   className="textarea textarea-bordered min-h-[120px]"
                   value={heroForm.subtitle}
@@ -62,49 +63,51 @@ export default function PublicHomeView() {
               </label>
 
               <FieldGroup
-                label="Texto do botao"
+                label="Texto do botão principal"
                 value={heroForm.primaryCtaLabel}
                 onChange={(value) => handleHeroFieldChange("primaryCtaLabel", value)}
                 placeholder="Ex.: Quero trabalhar"
               />
               <FieldGroup
-                label="URL do botao principal"
+                label="URL do botão principal"
                 value={heroForm.primaryCtaUrl}
                 onChange={(value) => handleHeroFieldChange("primaryCtaUrl", value)}
                 placeholder="/login"
               />
               <FieldGroup
-                label="Texto do botao"
+                label="Texto do botão secundário"
                 value={heroForm.secondaryCtaLabel}
                 onChange={(value) => handleHeroFieldChange("secondaryCtaLabel", value)}
                 placeholder="Sou empresa"
               />
               <FieldGroup
-                label="URL do botao secundario"
+                label="URL do botão secundário"
                 value={heroForm.secondaryCtaUrl}
                 onChange={(value) => handleHeroFieldChange("secondaryCtaUrl", value)}
                 placeholder="/company-register"
               />
 
-              <label className="label cursor-pointer md:col-span-2 justify-start gap-3">
-                <input
-                  type="checkbox"
-                  className="toggle toggle-primary"
-                  checked={heroForm.active}
-                  onChange={(e) => handleHeroFieldChange("active", e.target.checked)}
-                />
-                <span className="label-text">Mostrar esta secao no site publico </span>
-              </label>
+              <div className="md:col-span-2">
+                <label className="flex flex-col gap-2 items-start w-fit">
+                  <span className="label-text font-semibold">Mostrar esta seção no site público:</span>
+                  <input
+                    type="checkbox"
+                    className="toggle toggle-primary"
+                    checked={heroForm.active}
+                    onChange={(e) => handleHeroFieldChange("active", e.target.checked)}
+                  />
+                </label>
+              </div>
 
               <div className="md:col-span-2 flex gap-3 justify-end">
                 <button type="submit" className="btn btn-primary" disabled={savingHero}>
                   {savingHero ? (
                     <>
                       <span className="loading loading-spinner loading-sm" />
-                      A guardar!
+                      A guardar...
                     </>
                   ) : (
-                    "Guardar altera‡äes"
+                    "Guardar alterações"
                   )}
                 </button>
               </div>
@@ -116,8 +119,8 @@ export default function PublicHomeView() {
       <SectionOrderCard sections={config.sections} onMove={handleSectionMove} onToggle={handleSectionToggle} />
 
       <ShowcaseList
-        title="Industrias em destaque"
-        description="Controle quais setores aparecem e a ordem apresentada na home page."
+        title="Indústrias em destaque"
+        description="Controle quais setores aparecem e a ordem apresentada na homepage."
         type="industry"
         items={config.industries}
         onCreate={() => openModal("industry")}

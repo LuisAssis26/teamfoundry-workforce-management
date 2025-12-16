@@ -10,10 +10,10 @@ export default function AppNewsSection({ form, section, saving, onFieldChange, o
   };
 
   const formatPreviewDate = (value) => {
-    if (!value) return "Data indisponivel";
+    if (!value) return "Data indisponível";
     const parsed = new Date(value);
     if (Number.isNaN(parsed.getTime())) {
-      return "Data indisponivel";
+      return "Data indisponível";
     }
     return parsed.toLocaleDateString("pt-PT", { day: "2-digit", month: "short" });
   };
@@ -22,17 +22,17 @@ export default function AppNewsSection({ form, section, saving, onFieldChange, o
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body space-y-6">
         <div>
-          <h2 className="card-title text-3xl">Noticias da NewsAPI</h2>
+          <h2 className="card-title text-3xl">Notícias da NewsAPI</h2>
           <p className="text-base-content/70">
-            As manchetes sao sincronizadas automaticamente. Ajuste apenas quantos cards deseja mostrar (maximo de 6)
+            As manchetes são sincronizadas automaticamente. Ajuste quantos cards deseja mostrar (máximo de 6).
           </p>
         </div>
         <form className="space-y-6" onSubmit={onSubmit}>
           <div className="rounded-2xl border border-base-200 bg-base-100 p-4 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-base-content">Quantidade de noticias</span>
+              <span className="font-semibold text-base-content">Quantidade de notícias</span>
               <span className="text-sm text-base-content/70">
-                {selectedItems} {selectedItems === 1 ? "noticia" : "noticias"}
+                {selectedItems} {selectedItems === 1 ? "notícia" : "notícias"}
               </span>
             </div>
             <input
@@ -50,7 +50,7 @@ export default function AppNewsSection({ form, section, saving, onFieldChange, o
           </div>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-base-content">Pre-visualizacao</span>
+              <span className="font-semibold text-base-content">Pré-visualização</span>
               <span className="badge badge-ghost">
                 {previewArticles.length ? `${previewArticles.length} artigos` : "Sem dados"}
               </span>
@@ -69,7 +69,7 @@ export default function AppNewsSection({ form, section, saving, onFieldChange, o
               </div>
             ) : (
               <div className="rounded-2xl border border-dashed border-base-300 bg-base-100 p-4 text-sm text-base-content/70">
-                Ainda nao recebemos artigos da API. Guarde a configuracao e verifique se a chave NEWSAPI foi definida no
+                Ainda não recebemos artigos da API. Guarde a configuração e verifique se a chave NEWSAPI foi definida no
                 backend.
               </div>
             )}
@@ -82,7 +82,7 @@ export default function AppNewsSection({ form, section, saving, onFieldChange, o
                   A guardar...
                 </>
               ) : (
-                "Guardar alteracoes"
+                "Guardar alterações"
               )}
             </button>
           </div>

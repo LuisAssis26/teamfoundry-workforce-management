@@ -46,17 +46,16 @@ app:
     media:
       storage-dir: ${APP_SITE_MEDIA_DIR:uploads/site}
       public-path: /media/site
-  news:
-    enabled: ${NEWSAPI_ENABLED:false}
-    api-key: ${NEWSAPI_KEY:56ac4b5c930f41979fdf586909a7a7b8}
-    base-url: ${NEWSAPI_BASE_URL:https://newsapi.org/v2}
-    top-headlines-path: ${NEWSAPI_TOP_HEADLINES_PATH:/top-headlines}
-    everything-path: ${NEWSAPI_EVERYTHING_PATH:/everything}
-    country: ${NEWSAPI_COUNTRY:pt}
-    category: ${NEWSAPI_CATEGORY:business}
-    portuguese-sources: ${NEWSAPI_PORTUGUESE_SOURCES:publico,observador,jn}
-    language: ${NEWSAPI_LANGUAGE:pt}
-    query: ${NEWSAPI_QUERY:Portugal}
+  gdelt:
+    enabled: ${GDELT_ENABLED:true}
+    base-url: ${GDELT_BASE_URL:https://api.gdeltproject.org/api/v2/doc/doc}
+    mode: ${GDELT_MODE:ArtList}
+    format: ${GDELT_FORMAT:json}
+    max-records: ${GDELT_MAX_RECORDS:50}
+    country: ${GDELT_COUNTRY:}
+    language: ${GDELT_LANGUAGE:POR}
+    fallback-enabled: ${GDELT_FALLBACK_ENABLED:true}
+    timeout-ms: ${GDELT_TIMEOUT_MS:0}
   employee:
     certificates-upload-dir: ${APP_CERTIFICATES_UPLOAD_DIR:uploads/certificates}
 

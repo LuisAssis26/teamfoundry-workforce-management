@@ -20,7 +20,9 @@ import com.teamfoundry.backend.superadmin.repository.home.IndustryShowcaseReposi
 import com.teamfoundry.backend.superadmin.repository.home.PartnerShowcaseRepository;
 import com.teamfoundry.backend.superadmin.repository.other.WeeklyTipRepository;
 import com.teamfoundry.backend.common.service.CloudinaryService;
+import com.teamfoundry.backend.superadmin.service.home.GdeltNewsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class HomeContentService {
 
     private final HomeNoLoginSectionRepository sections;
@@ -42,7 +45,7 @@ public class HomeContentService {
     private final PartnerShowcaseRepository partners;
     private final HomeLoginSectionRepository appHomeSections;
     private final WeeklyTipRepository weeklyTips;
-    private final NewsApiService newsApiService;
+    private final GdeltNewsService gdeltNewsService;
     private final CloudinaryService cloudinaryService;
 
     /*
@@ -486,7 +489,12 @@ public class HomeContentService {
         List<HomeNewsArticleResponse> articles = Collections.emptyList();
         if (section.getType() == HomeLoginSectionType.NEWS) {
             int limit = Optional.ofNullable(section.getApiMaxItems()).orElse(6);
-            articles = newsApiService.getEmpregabilidadeNews(limit);
+            // Prioritize employment-related themes using GDELT
+            log.info("[HomeContentService] Fetching GDELT news for HomeLogin section id={} limit={}", section.getId(), limit);
+            articles = gdeltNewsService.getNewsByTopic("emprego").stream()
+                    .limit(Math.max(1, Math.min(limit, 6)))
+                    .toList();
+            log.info("[HomeContentService] GDELT returned {} articles for section id={}", articles.size(), section.getId());
         }
         return new HomeLoginSectionResponse(
                 section.getId(),

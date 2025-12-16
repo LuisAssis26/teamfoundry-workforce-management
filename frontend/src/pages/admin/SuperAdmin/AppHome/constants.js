@@ -7,5 +7,5 @@ export const APP_SECTION_TYPES = {
 export const APP_SECTION_LABELS = {
   HERO: "Hero autenticado",
   WEEKLY_TIP: "Dica da semana",
-  NEWS: "Noticias recentes",
+  NEWS: "Notícias recentes",
 };

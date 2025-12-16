@@ -10,6 +10,11 @@ export default function NewsSection({ section, articles, loading, fallbackNews }
   const ctaLabel = section?.primaryCtaLabel ?? "Ver mais";
   const ctaUrl = section?.primaryCtaUrl ?? "#";
   const hasArticles = Array.isArray(articles) && articles.length > 0;
+  if (!hasArticles && !loading) {
+    // Log to help diagnose empty feeds from the backend.
+    // eslint-disable-next-line no-console
+    console.warn("[NewsSection] Nenhuma noticia recebida do backend. Titulo:", title, "URL CTA:", ctaUrl);
+  }
   const visibleArticles = hasArticles ? articles.slice(0, safeCount) : [];
 
   const formatPublishedDate = (value) => {
@@ -80,7 +85,7 @@ export default function NewsSection({ section, articles, loading, fallbackNews }
         </div>
         {!hasArticles && !loading && (
           <p className="text-center text-sm text-base-content/70">
-            Ainda nao recebemos noticias externas. Confirme a chave da NewsAPI ou tente mais tarde.
+            Ainda nao recebemos noticias externas. Verifique a integracao com o GDELT ou tente mais tarde.
           </p>
         )}
       </div>
