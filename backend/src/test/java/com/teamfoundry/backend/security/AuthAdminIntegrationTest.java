@@ -46,8 +46,8 @@ class AuthAdminIntegrationTest {
     @BeforeEach
     void setupAdmins() {
         adminAccountRepository.deleteAll();
-        adminAccountRepository.save(new AdminAccount(0, "admin", passwordEncoder.encode(rawPassword), UserType.ADMIN));
-        adminAccountRepository.save(new AdminAccount(0, "superadmin", passwordEncoder.encode(rawPassword), UserType.SUPERADMIN));
+        adminAccountRepository.save(new AdminAccount(0, "admin", passwordEncoder.encode(rawPassword), UserType.ADMIN, false));
+        adminAccountRepository.save(new AdminAccount(0, "superadmin", passwordEncoder.encode(rawPassword), UserType.SUPERADMIN, false));
     }
 
     @Test
