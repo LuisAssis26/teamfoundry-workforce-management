@@ -4,6 +4,11 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import HomeLayout from "./pages/home/HomeLayout.jsx";
 import WeeklyTipsPage from "./pages/home/WeeklyTipsPage.jsx";
 import FAQs from "./pages/other/FAQs.jsx";
+import FaqMatchingProcess from "./pages/other/FAQs/FaqMatchingProcess.jsx";
+import FaqCompanyRequestsStatus from "./pages/other/FAQs/FaqCompanyRequestsStatus.jsx";
+import FaqCandidateDocuments from "./pages/other/FAQs/FaqCandidateDocuments.jsx";
+import FaqDeactivateAccount from "./pages/other/FAQs/FaqDeactivateAccount.jsx";
+import FaqDataProtection from "./pages/other/FAQs/FaqDataProtection.jsx";
 import About from "./pages/other/About.jsx";
 
 // Auth
@@ -60,6 +65,11 @@ function App() {
       <Route path="/" element={<HomeLayout />} />
       <Route path="/dicas" element={<WeeklyTipsPage />} />
       <Route path="/faq" element={<FAQs />} />
+      <Route path="/faq/processo-matching" element={<FaqMatchingProcess />} />
+      <Route path="/faq/estado-requisicoes" element={<FaqCompanyRequestsStatus />} />
+      <Route path="/faq/documentos-candidato" element={<FaqCandidateDocuments />} />
+      <Route path="/faq/desativar-conta" element={<FaqDeactivateAccount />} />
+      <Route path="/faq/protecao-dados" element={<FaqDataProtection />} />
       <Route path="/sobre-nos" element={<About />} />
       <Route path="/login" element={<CandidateLogin />} />
       <Route
