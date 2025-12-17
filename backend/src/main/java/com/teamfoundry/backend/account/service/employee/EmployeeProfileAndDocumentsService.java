@@ -222,8 +222,11 @@ public class EmployeeProfileAndDocumentsService {
 
     private EmployeeProfileResponse toResponse(EmployeeAccount account) {
         String cvUrl = getDocumentUrl(account, DocumentType.CURRICULUM);
+        String cvName = getDocumentName(account, DocumentType.CURRICULUM);
         String idFrontUrl = getDocumentUrl(account, DocumentType.IDENTIFICATION_FRONT);
+        String idFrontName = getDocumentName(account, DocumentType.IDENTIFICATION_FRONT);
         String idBackUrl = getDocumentUrl(account, DocumentType.IDENTIFICATION_BACK);
+        String idBackName = getDocumentName(account, DocumentType.IDENTIFICATION_BACK);
         String profilePictureUrl = buildCloudinaryUrl(account.getProfilePicturePublicId());
 
         return EmployeeProfileResponse.builder()
@@ -237,8 +240,11 @@ public class EmployeeProfileAndDocumentsService {
                 .email(account.getEmail())
                 .deactivated(account.isDeactivated())
                 .curriculumUrl(cvUrl)
+                .curriculumFileName(cvName)
                 .identificationFrontUrl(idFrontUrl)
+                .identificationFrontFileName(idFrontName)
                 .identificationBackUrl(idBackUrl)
+                .identificationBackFileName(idBackName)
                 .profilePictureUrl(profilePictureUrl)
                 .build();
     }
@@ -258,6 +264,12 @@ public class EmployeeProfileAndDocumentsService {
         return employeeDocumentRepository.findByEmployeeAndType(account, type)
                 .map(EmployeeDocument::getPublicId)
                 .map(this::buildCloudinaryUrl)
+                .orElse(null);
+    }
+
+    private String getDocumentName(EmployeeAccount account, DocumentType type) {
+        return employeeDocumentRepository.findByEmployeeAndType(account, type)
+                .map(EmployeeDocument::getFileName)
                 .orElse(null);
     }
 

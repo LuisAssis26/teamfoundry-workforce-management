@@ -4,21 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Add filters and UI components for employee management and search functionality">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_09_12_2025_18_02_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_09_12_2025_18_02__Changes_.xml" beforeDir="false" />
+    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Filtros e Pesquisa de Funcionarios Remaginada&#10;Falta Modal de Apresentação do funcionario Refinado">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/controller/AdminWorkOfferController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/controller/AdminWorkOfferController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/repository/EmployeeRequestOfferRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/repository/EmployeeRequestOfferRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/AdminWorkOfferService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/AdminWorkOfferService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/dto/employee/documents/EmployeeCertificationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/dto/employee/documents/EmployeeCertificationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/dto/employee/profile/EmployeeProfileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/dto/employee/profile/EmployeeProfileResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/employee/documents/EmployeeCertification.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/model/employee/documents/EmployeeCertification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/service/employee/EmployeeCertificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/service/employee/EmployeeCertificationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/service/employee/EmployeeProfileAndDocumentsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/service/employee/EmployeeProfileAndDocumentsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/common/service/CloudinaryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/common/service/CloudinaryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/search/AdminEmployeeProfileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/dto/search/AdminEmployeeProfileResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/AdminEmployeeProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/teamRequests/service/AdminEmployeeProfileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/admin/invitations.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/admin/invitations.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSeach/BuildTeamSearch.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch/BuildTeamSearch.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSeach/components/CandidatesPanel.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch/components/CandidatesPanel.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSeach/components/EmployeeCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch/components/EmployeeCard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSeach/components/FiltersPanel.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch/components/FiltersPanel.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSeach/components/HeroHeader.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch/components/HeroHeader.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamManagement.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamManagement.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/sections/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/sections/Navbar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/sections/Sidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/sections/Sidebar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ui/Upload/DropZone.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ui/Upload/DropZone.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch/components/EmployeeCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch/components/EmployeeCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamEmployeeRequests.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamRequests/TeamEmployeeRequests.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamManagement.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamRequests/TeamManagement.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/components/EmployeeProfileModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch/components/EmployeeProfileModal.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/components/TeamManagementCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamRequests/components/TeamManagementCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/components/TeamRequestCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamRequests/components/TeamRequestCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/components/TeamRequestGrid.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamRequests/components/TeamRequestGrid.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Documents/Documentos.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Documents/Documentos.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/EmployeeLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/EmployeeLayout.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/Certificates.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/Certificates.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/components/CertificateCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/profile/Employee/Info/components/CertificateCard.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,11 +124,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\TeamRequests\components" />
       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\BuildTeamSearch\components" />
+      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\TeamRequests" />
       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\BuildTeamSearch" />
       <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\BuildTeamSeach\components" />
-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\BuildTeamSeach" />
-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement" />
     </key>
   </component>
   <component name="RunManager" selected="Docker.docker-compose.yml: Compose Deployment">
@@ -254,7 +265,8 @@
       <workItem from="1765460264915" duration="3973000" />
       <workItem from="1765552855485" duration="29000" />
       <workItem from="1765900904090" duration="10037000" />
-      <workItem from="1765913034927" duration="1990000" />
+      <workItem from="1765913034927" duration="2187000" />
+      <workItem from="1765977292159" duration="5972000" />
     </task>
     <task id="LOCAL-00001" summary="paleta certa">
       <option name="closed" value="true" />
@@ -456,7 +468,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765912955983</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Filtros e Pesquisa de Funcionarios Remaginada&#10;Falta Modal de Apresentação do funcionario Refinado">
+      <option name="closed" value="true" />
+      <created>1765916210921</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1765916210921</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -493,7 +513,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implement password reset functionality and update email service" />
     <MESSAGE value="Backend inicia, server email com problemas" />
     <MESSAGE value="correçao Navbar.jsx" />
     <MESSAGE value="Login e Register feitos&#10;Faltam logins por email e linkedin&#10;Aguarda testes estruturais" />
@@ -518,7 +537,8 @@
     <MESSAGE value="Métricas e Logging&#10;Falta implementar visualização dos Logs&#10;Correçoes ao front das credenciais ainda necessario" />
     <MESSAGE value="Página de Logs" />
     <MESSAGE value="Add filters and UI components for employee management and search functionality" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add filters and UI components for employee management and search functionality" />
+    <MESSAGE value="Filtros e Pesquisa de Funcionarios Remaginada&#10;Falta Modal de Apresentação do funcionario Refinado" />
+    <option name="LAST_COMMIT_MESSAGE" value="Filtros e Pesquisa de Funcionarios Remaginada&#10;Falta Modal de Apresentação do funcionario Refinado" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

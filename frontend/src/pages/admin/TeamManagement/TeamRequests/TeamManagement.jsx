@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import TeamManagementCard from "./components/TeamManagementCard.jsx";
-import { useAdminData } from "./AdminDataContext.jsx";
-import FilterDropdown from "../../../components/ui/Dropdown/FilterDropdown.jsx";
-import SearchBar from "../../../components/ui/Input/SearchBar.jsx";
+import { useAdminData } from "../AdminDataContext.jsx";
+import FilterDropdown from "../../../../components/ui/Dropdown/FilterDropdown.jsx";
+import SearchBar from "../../../../components/ui/Input/SearchBar.jsx";
 
 const STATUS_OPTIONS = [
   { value: "ALL", label: "Todos" },

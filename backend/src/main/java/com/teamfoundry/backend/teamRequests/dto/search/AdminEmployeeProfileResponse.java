@@ -19,5 +19,13 @@ public record AdminEmployeeProfileResponse(
         String preferredRole,
         List<String> skills,
         List<String> areas,
-        List<String> experiences // Ex.: "Equipe X - Soldador (2024-01-10)"
+        List<String> experiences, // Ex.: "Equipe X - Soldador (2024-01-10)"
+        String profilePictureUrl,
+        String curriculumUrl,
+        String curriculumFileName,
+        String identificationFrontUrl,
+        String identificationFrontFileName,
+        String identificationBackUrl,
+        String identificationBackFileName,
+        List<com.teamfoundry.backend.account.dto.employee.documents.EmployeeCertificationResponse> certifications
 ) {}

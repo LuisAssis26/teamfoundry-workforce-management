@@ -1,5 +1,5 @@
 import { useState } from "react";
-import EmployeeProfileModal from "../../components/EmployeeProfileModal.jsx";
+import EmployeeProfileModal from "./EmployeeProfileModal.jsx";
 
 export default function EmployeeCard({
   id,

@@ -91,8 +91,12 @@ public class EmployeeCertificationService {
                     request.getCertificateFileName());
             cloudinaryService.delete(certification.getCertificatePublicId());
             certification.setCertificatePublicId(storedPublicId);
+            certification.setCertificateFileName(request.getCertificateFileName());
         } else if (isCreate && !StringUtils.hasText(certification.getCertificatePublicId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O certificado é obrigatório.");
+        } else if (StringUtils.hasText(request.getCertificateFileName())) {
+            // atualiza apenas o nome, mantendo o ficheiro anterior
+            certification.setCertificateFileName(request.getCertificateFileName());
         }
     }
 
@@ -105,6 +109,7 @@ public class EmployeeCertificationService {
                 .completionDate(certification.getCompletionDate())
                 .description(certification.getDescription())
                 .certificateUrl(buildCertificateUrl(certification.getCertificatePublicId()))
+                .certificateFileName(certification.getCertificateFileName())
                 .build();
     }
 

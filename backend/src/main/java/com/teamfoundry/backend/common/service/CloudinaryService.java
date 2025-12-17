@@ -193,12 +193,14 @@ public class CloudinaryService {
             return cloudinary.url()
                     .secure(true)
                     .resourceType("raw")
+                    .type("upload")
                     .generate(parsed.publicId());
         }
         String resourceType = StringUtils.hasText(parsed.resourceType()) ? parsed.resourceType() : "image";
         return cloudinary.url()
                 .secure(true)
                 .resourceType(resourceType)
+                .type("upload")
                 .generate(parsed.publicId());
     }
 
