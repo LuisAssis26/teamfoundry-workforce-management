@@ -9,6 +9,7 @@ import {
   fetchFunctions,
   fetchGeoAreas,
   fetchHomepageConfig,
+  fetchUnifiedHome,
   fetchWeeklyTipsAdmin,
 } from "../../../api/site/siteManagement.js";
 import {
@@ -61,6 +62,12 @@ export function SuperAdminDataProvider({ children }) {
   const [appHomeConfigLoaded, setAppHomeConfigLoaded] = useState(false);
   const [appHomeConfigLoading, setAppHomeConfigLoading] = useState(false);
   const [appHomeConfigError, setAppHomeConfigError] = useState(null);
+
+  // Unified home (public + authenticated) for admin
+  const [homeConfig, setHomeConfig] = useState(null);
+  const [homeConfigLoaded, setHomeConfigLoaded] = useState(false);
+  const [homeConfigLoading, setHomeConfigLoading] = useState(false);
+  const [homeConfigError, setHomeConfigError] = useState(null);
 
   // Weekly tips management data
   const [weeklyTips, setWeeklyTips] = useState([]);
@@ -145,7 +152,7 @@ export function SuperAdminDataProvider({ children }) {
         setWorkRequestsLoaded(true);
         return list;
       } catch (error) {
-        setWorkRequestsError(error.message || "Erro ao carregar requisições.");
+        setWorkRequestsError(error.message || "Erro ao carregar requisicoes.");
         throw error;
       } finally {
         setWorkRequestsLoading(false);
@@ -195,7 +202,7 @@ export function SuperAdminDataProvider({ children }) {
         setHomepageConfigLoaded(true);
         return normalized;
       } catch (error) {
-        setHomepageConfigError(error.message || "Não foi possível carregar as configurações.");
+        setHomepageConfigError(error.message || "Nao foi possivel carregar as configuracoes.");
         throw error;
       } finally {
         setHomepageConfigLoading(false);
@@ -217,13 +224,34 @@ export function SuperAdminDataProvider({ children }) {
         setAppHomeConfigLoaded(true);
         return normalized;
       } catch (error) {
-        setAppHomeConfigError(error.message || "Não foi possível carregar a home autenticada.");
+        setAppHomeConfigError(error.message || "Nao foi possivel carregar a home autenticada.");
         throw error;
       } finally {
         setAppHomeConfigLoading(false);
       }
     },
     [appHomeConfig, appHomeConfigLoaded, appHomeConfigLoading]
+  );
+
+  const loadHomeConfig = useCallback(
+    async ({ force = false } = {}) => {
+      if (homeConfigLoading) return homeConfig;
+      if (homeConfigLoaded && !force) return homeConfig;
+      setHomeConfigLoading(true);
+      setHomeConfigError(null);
+      try {
+        const payload = await fetchUnifiedHome();
+        setHomeConfig(payload);
+        setHomeConfigLoaded(true);
+        return payload;
+      } catch (error) {
+        setHomeConfigError(error.message || "Nao foi possivel carregar a home unificada.");
+        throw error;
+      } finally {
+        setHomeConfigLoading(false);
+      }
+    },
+    [homeConfig, homeConfigLoaded, homeConfigLoading]
   );
 
   const loadWeeklyTips = useCallback(
@@ -239,7 +267,7 @@ export function SuperAdminDataProvider({ children }) {
         setWeeklyTipsLoaded(true);
         return sorted;
       } catch (error) {
-        setWeeklyTipsError(error.message || "Não foi possível carregar as dicas da semana.");
+        setWeeklyTipsError(error.message || "Nao foi possivel carregar as dicas da semana.");
         throw error;
       } finally {
         setWeeklyTipsLoading(false);
@@ -271,7 +299,7 @@ export function SuperAdminDataProvider({ children }) {
         setGlobalOptionsLoaded(true);
         return payload;
       } catch (error) {
-        setGlobalOptionsError(error.message || "Não foi possível carregar as opções globais.");
+        setGlobalOptionsError(error.message || "Nao foi possivel carregar as opcoes globais.");
         throw error;
       } finally {
         setGlobalOptionsLoading(false);
@@ -335,6 +363,14 @@ export function SuperAdminDataProvider({ children }) {
           refresh: loadAppHomeConfig,
           setData: setAppHomeConfig,
         },
+        home: {
+          data: homeConfig,
+          loading: homeConfigLoading,
+          loaded: homeConfigLoaded,
+          error: homeConfigError,
+          refresh: loadHomeConfig,
+          setData: setHomeConfig,
+        },
         weeklyTips: {
           data: weeklyTips,
           loading: weeklyTipsLoading,
@@ -378,12 +414,17 @@ export function SuperAdminDataProvider({ children }) {
       homepageConfigError,
       homepageConfigLoaded,
       homepageConfigLoading,
+      homeConfig,
+      homeConfigError,
+      homeConfigLoaded,
+      homeConfigLoading,
       loadGlobalOptions,
       loadAppHomeConfig,
       loadAdminCredentials,
       loadAdminOptions,
       loadCompanyCredentials,
       loadHomepageConfig,
+      loadHomeConfig,
       loadWeeklyTips,
       loadWorkRequests,
       weeklyTips,

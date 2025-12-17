@@ -1,29 +1,24 @@
 export const SECTION_LABELS = {
   HERO: "Hero (topo)",
-  INDUSTRIES: "Indústrias",
+  INDUSTRIES: "Areas em que atuamos",
   PARTNERS: "Parceiros",
 };
 
 export const VIEW_TABS = [
   {
-    id: "publicHome",
-    label: "Home pública",
-    description: "Configura a landing page visível antes do login.",
-  },
-  {
-    id: "appHome",
-    label: "Home autenticada",
-    description: "Conteúdo mostrado quando o utilizador já fez login.",
+    id: "home",
+    label: "Home",
+    description: "Hero autenticado + hero publico, areas e parceiros.",
   },
   {
     id: "weeklyTips",
     label: "Dicas da semana",
-    description: "Sugestões rápidas para destacar na plataforma.",
+    description: "Sugestoes rapidas para destacar na plataforma.",
   },
   {
     id: "globalVars",
-    label: "Variáveis globais",
-    description: "Texto e links reutilizados em várias páginas.",
+    label: "Variaveis globais",
+    description: "Texto e links reutilizados em varias paginas.",
   },
 ];
 
@@ -35,9 +30,9 @@ export const DEFAULT_GLOBAL_OPTIONS = {
 };
 
 export const OPTION_LABELS = {
-  functions: "função",
-  competences: "competência",
-  geoAreas: "área geográfica",
+  functions: "funcao",
+  competences: "competencia",
+  geoAreas: "area geografica",
   activitySectors: "setor de atividade",
 };
 

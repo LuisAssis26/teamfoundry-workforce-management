@@ -94,12 +94,10 @@ export function AppHomeProvider({ children, onUnauthorized }) {
   const [forms, setForms] = useState({
     hero: defaultAppSectionForm(),
     weeklyTip: defaultAppSectionForm(),
-    news: defaultAppSectionForm(),
   });
   const [savingSections, setSavingSections] = useState({
     hero: false,
     weeklyTip: false,
-    news: false,
   });
   const initialLoad = useRef(false);
 
@@ -127,7 +125,6 @@ export function AppHomeProvider({ children, onUnauthorized }) {
     setForms({
       hero: mapAppSectionForm(sections.find((section) => section.type === APP_SECTION_TYPES.hero)),
       weeklyTip: mapAppSectionForm(sections.find((section) => section.type === APP_SECTION_TYPES.weeklyTip)),
-      news: mapAppSectionForm(sections.find((section) => section.type === APP_SECTION_TYPES.news)),
     });
   }, [config, sections]);
 

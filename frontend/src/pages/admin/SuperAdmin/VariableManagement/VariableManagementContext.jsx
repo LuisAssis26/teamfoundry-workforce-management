@@ -150,7 +150,7 @@ export function VariableManagementProvider({ children }) {
         handleUnauthorized();
         return;
       }
-      setOptionsError(err.message || "Não foi possível carregar as opções globais.");
+      setOptionsError(err.message || "Nao foi possivel carregar as opcoes globais.");
     } finally {
       if (mountedRef.current) setOptionsLoading(false);
     }
@@ -219,7 +219,7 @@ export function VariableManagementProvider({ children }) {
       } catch (err) {
         setBanner({
           type: "error",
-          message: err.message || "NÆo foi poss¡vel guardar o hero.",
+          message: err.message || "Nao foi possivel guardar o hero.",
         });
       } finally {
         setSavingHero(false);
@@ -240,12 +240,12 @@ export function VariableManagementProvider({ children }) {
 
       try {
         await reorderSections(next.map((section) => section.id));
-        setBanner({ type: "success", message: "Ordem das sec‡äes atualizada." });
+        setBanner({ type: "success", message: "Ordem das secoes atualizada." });
       } catch (err) {
         setConfig((prev) => ({ ...prev, sections: previous }));
         setBanner({
           type: "error",
-          message: err.message || "NÆo foi poss¡vel reordenar as sec‡äes.",
+          message: err.message || "Nao foi possivel reordenar as secoes.",
         });
       }
     },
@@ -271,12 +271,12 @@ export function VariableManagementProvider({ children }) {
         }));
         setBanner({
           type: "success",
-          message: `Seção ${updated.active ? "ativada" : "ocultada"} com sucesso.`,
+          message: `Secao ${updated.active ? "ativada" : "ocultada"} com sucesso.`,
         });
       } catch (err) {
         setBanner({
           type: "error",
-          message: err.message || "NÆo foi poss¡vel atualizar a sec‡Æo.",
+          message: err.message || "Nao foi possivel atualizar a secao.",
         });
       }
     },
@@ -296,12 +296,12 @@ export function VariableManagementProvider({ children }) {
       setBanner(null);
       try {
         await apiFn(next.map((item) => item.id));
-        setBanner({ type: "success", message: "Ordena‡Æo atualizada." });
+        setBanner({ type: "success", message: "Ordenacao atualizada." });
       } catch (err) {
         setConfig((prev) => ({ ...prev, [key]: previous }));
         setBanner({
           type: "error",
-          message: err.message || "NÆo foi poss¡vel reordenar a lista.",
+          message: err.message || "Nao foi possivel reordenar a lista.",
         });
       }
     },
@@ -321,7 +321,7 @@ export function VariableManagementProvider({ children }) {
   const handleDeleteIndustry = useCallback(
     async (record, { confirmDeletion = true } = {}) => {
       if (!record) return false;
-      if (confirmDeletion && !window.confirm(`Eliminar a ind£stria "${record.name}"?`)) {
+      if (confirmDeletion && !window.confirm(`Eliminar a industria "${record.name}"?`)) {
         return false;
       }
       setBanner(null);
@@ -331,7 +331,7 @@ export function VariableManagementProvider({ children }) {
           ...prev,
           industries: prev.industries.filter((item) => item.id !== record.id),
         }));
-        setBanner({ type: "success", message: "Ind£stria removida com sucesso." });
+        setBanner({ type: "success", message: "Industria removida com sucesso." });
         return true;
       } catch (err) {
         if (err?.status === 401) {
@@ -340,7 +340,7 @@ export function VariableManagementProvider({ children }) {
         }
         setBanner({
           type: "error",
-          message: err.message || "NÆo foi poss¡vel eliminar a ind£stria.",
+          message: err.message || "Nao foi possivel eliminar a industria.",
         });
         return false;
       }
@@ -370,7 +370,7 @@ export function VariableManagementProvider({ children }) {
         }
         setBanner({
           type: "error",
-          message: err.message || "NÆo foi poss¡vel eliminar o parceiro.",
+          message: err.message || "Nao foi possivel eliminar o parceiro.",
         });
         return false;
       }
@@ -440,11 +440,19 @@ export function VariableManagementProvider({ children }) {
           handleUnauthorized();
           return;
         }
-        setOptionsError(err.message || "Não foi possível criar o registo.");
+        setOptionsError(err.message || "Nao foi possivel criar o registo.");
         setOptionModal((prev) => ({ ...prev, saving: false }));
       }
     },
-    [optionModal, closeOptionModal, createOption, handleUnauthorized, setGlobalOptions, setOptionModal, setOptionsError]
+    [
+      optionModal,
+      closeOptionModal,
+      createOption,
+      handleUnauthorized,
+      setGlobalOptions,
+      setOptionModal,
+      setOptionsError,
+    ]
   );
 
   const handleDeleteOption = useCallback(
@@ -504,7 +512,7 @@ export function VariableManagementProvider({ children }) {
         setDeleteModal((prev) => ({
           ...prev,
           saving: false,
-          error: err.message || "Não foi possível eliminar o registo.",
+          error: err.message || "Nao foi possivel eliminar o registo.",
         }));
       }
     },
@@ -604,11 +612,11 @@ export function VariableManagementProvider({ children }) {
           }));
         }
         closeModal();
-        setBanner({ type: "success", message: "Conte£do guardado com sucesso." });
+        setBanner({ type: "success", message: "Conteudo guardado com sucesso." });
       } catch (err) {
         setBanner({
           type: "error",
-          message: err.message || "NÆo foi poss¡vel guardar os dados.",
+          message: err.message || "Nao foi possivel guardar os dados.",
         });
         setModalSaving(false);
       }

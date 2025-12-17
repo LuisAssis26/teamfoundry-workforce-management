@@ -11,6 +11,8 @@ import com.teamfoundry.backend.superadmin.dto.home.showcase.PartnerShowcaseRespo
 import com.teamfoundry.backend.superadmin.dto.other.WeeklyTipRequest;
 import com.teamfoundry.backend.superadmin.dto.other.WeeklyTipResponse;
 import com.teamfoundry.backend.superadmin.dto.other.WeeklyTipsPageResponse;
+import com.teamfoundry.backend.superadmin.dto.home.HomeUnifiedResponse;
+import com.teamfoundry.backend.superadmin.dto.home.HomeUnifiedUpdateRequest;
 import com.teamfoundry.backend.superadmin.enums.HomeLoginSectionType;
 import com.teamfoundry.backend.superadmin.model.home.*;
 import com.teamfoundry.backend.superadmin.model.other.WeeklyTip;
@@ -92,6 +94,31 @@ public class HomeContentService {
     @Transactional(readOnly = true)
     public HomeLoginConfigResponse getAdminHomeLogin() {
         return buildHomeLoginConfig(true, true);
+    }
+
+    @Transactional(readOnly = true)
+    public HomeUnifiedResponse getUnifiedHome() {
+        HomeNoLoginConfigResponse publicCfg = getAdminHomepage();
+        HomeLoginConfigResponse appCfg = getAdminHomeLogin();
+        WeeklyTipsPageResponse tips = getPublicWeeklyTips();
+        return new HomeUnifiedResponse(
+                publicCfg.sections(),
+                appCfg.sections(),
+                publicCfg.industries(),
+                publicCfg.partners(),
+                tips
+        );
+    }
+
+    @Transactional
+    public HomeUnifiedResponse updateUnifiedHome(HomeUnifiedUpdateRequest request) {
+        if (request.publicSectionIds() != null && !request.publicSectionIds().isEmpty()) {
+            reorderSections(request.publicSectionIds());
+        }
+        if (request.authenticatedSectionIds() != null && !request.authenticatedSectionIds().isEmpty()) {
+            reorderHomeLoginSections(request.authenticatedSectionIds());
+        }
+        return getUnifiedHome();
     }
 
     @Transactional(readOnly = true)
