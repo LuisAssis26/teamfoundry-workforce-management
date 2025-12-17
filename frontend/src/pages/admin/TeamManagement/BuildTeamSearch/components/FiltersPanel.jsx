@@ -1,4 +1,5 @@
 import MultiSelectDropdown from "../../../../../components/ui/Dropdown/MultiSelectDropdown.jsx";
+import SelectDropdown from "../../../../../components/ui/Dropdown/SelectDropdown.jsx";
 
 export default function FiltersPanel({
   companyName,
@@ -10,11 +11,12 @@ export default function FiltersPanel({
   functionOptions = [],
   preferredRolesSelected = [],
   statusOptions = [],
-  statusSelected = [],
+  statusSelected = "",
   onGeoChange = () => {},
   onSkillsChange = () => {},
   onPreferredRolesChange = () => {},
   onStatusChange = () => {},
+  onSearch = () => {},
 }) {
   return (
     <aside className="w-full rounded-2xl bg-base-100 p-6 shadow-md lg:w-80">
@@ -24,8 +26,14 @@ export default function FiltersPanel({
       </div>
 
       <div className="mt-6 space-y-6">
+        <div className="flex justify-end ">
+          <button type="button" className="btn btn-primary btn-md w-full" onClick={onSearch}>
+            Pesquisar
+          </button>
+        </div>
+
         <MultiSelectDropdown
-          label="Funçao preferencial"
+          label="Funcao preferencial"
           options={functionOptions}
           selectedOptions={preferredRolesSelected}
           onChange={onPreferredRolesChange}
@@ -33,25 +41,25 @@ export default function FiltersPanel({
         />
 
         <MultiSelectDropdown
-          label="Área Geografica"
+          label="Area Geografica"
           options={geoOptions}
           selectedOptions={geoSelected}
           onChange={onGeoChange}
           placeholder="Selecione area(s)"
         />
         <MultiSelectDropdown
-          label="Competências"
+          label="Competencias"
           options={skillOptions}
           selectedOptions={skillsSelected}
           onChange={onSkillsChange}
           placeholder="Selecione competencias"
         />
-        <MultiSelectDropdown
+        <SelectDropdown
           label="Estado da proposta"
           options={statusOptions}
-          selectedOptions={statusSelected}
+          value={statusSelected}
           onChange={onStatusChange}
-          placeholder="Escolha status"
+          placeholder="Todos"
         />
       </div>
     </aside>

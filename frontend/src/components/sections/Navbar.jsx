@@ -221,7 +221,6 @@ const EMPLOYEE_MENU = [
   { to: "/candidato/dados-pessoais", label: "Perfil", icon: "bi-person" },
   { to: "/candidato/ofertas", label: "Ofertas", icon: "bi-bell" },
   { to: "/candidato/documentos", label: "Documentos", icon: "bi-file-earmark-text" },
-  { to: "/candidato/proximos-passos", label: "Próximos passos", icon: "bi-flag" },
   { to: "/candidato/definicoes", label: "Definições", icon: "bi-gear" },
 ];
 

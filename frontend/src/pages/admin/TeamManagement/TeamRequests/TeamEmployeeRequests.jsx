@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import TeamRequestGrid from "./components/TeamRequestGrid.jsx";
-import AdminNavbar from "../../../components/sections/AdminNavbar.jsx";
-import { useAdminData } from "./AdminDataContext.jsx";
-import BackButton from "../../../components/ui/Button/BackButton.jsx";
+import AdminNavbar from "../../../../components/sections/AdminNavbar.jsx";
+import { useAdminData } from "../AdminDataContext.jsx";
+import BackButton from "../../../../components/ui/Button/BackButton.jsx";
 
 export default function TeamEmployeeRequests() {
   const navigate = useNavigate();

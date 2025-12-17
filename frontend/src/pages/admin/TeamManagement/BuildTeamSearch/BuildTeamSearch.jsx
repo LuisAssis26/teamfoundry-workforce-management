@@ -7,6 +7,7 @@ import BackButton from "../../../../components/ui/Button/BackButton.jsx";
 import HeroHeader from "./components/HeroHeader.jsx";
 import FiltersPanel from "./components/FiltersPanel.jsx";
 import CandidatesPanel from "./components/CandidatesPanel.jsx";
+import Modal from "../../../../components/ui/Modal/Modal.jsx";
 
 export default function BuildTeamSearch() {
     const [searchParams] = useSearchParams();
@@ -36,7 +37,7 @@ export default function BuildTeamSearch() {
     const [geoSelected, setGeoSelected] = useState([]);
     const [skillsSelected, setSkillsSelected] = useState([]);
     const [preferredRolesSelected, setPreferredRolesSelected] = useState([]);
-    const [statusSelected, setStatusSelected] = useState([]);
+    const [statusSelected, setStatusSelected] = useState("");
 
     const [teamInfo, setTeamInfo] = useState(null);
     const [isLoadingTeam, setIsLoadingTeam] = useState(true);
@@ -53,8 +54,16 @@ export default function BuildTeamSearch() {
     const [inviteError, setInviteError] = useState("");
     const [isInviting, setIsInviting] = useState(false);
     const [page, setPage] = useState(1);
+    const [searchKey, setSearchKey] = useState(0); // aciona busca apenas no clique em Pesquisar
+    const [showConfirmAll, setShowConfirmAll] = useState(false);
     const PAGE_SIZE = 6;
     const isComplete = teamInfo?.state === "COMPLETE";
+    // consideramos "filtro" apenas o que o utilizador escolhe, nÃ£o o role vindo da URL
+    const hasFilters =
+        geoSelected.length > 0 ||
+        skillsSelected.length > 0 ||
+        preferredRolesSelected.length > 0 ||
+        (statusSelected && statusSelected.trim());
 
     useEffect(() => {
         let canceled = false;
@@ -90,18 +99,19 @@ export default function BuildTeamSearch() {
 
     useEffect(() => {
         let canceled = false;
+        if (!teamId) return undefined;
+        if (searchKey === 0) return undefined; // ainda n??o clicou em Pesquisar
 
         async function runSearch() {
-            if (!teamId) return;
             setIsSearching(true);
             setSearchError("");
             try {
                 const data = await searchCandidates({
-                    role,
+                    role: "", // nÃ£o forÃ§ar filtro pela funÃ§Ã£o da vaga
                     areas: geoSelected,
                     skills: skillsSelected,
                     preferredRoles: preferredRolesSelected,
-                    statuses: statusSelected,
+                    statuses: statusSelected ? [statusSelected] : [],
                 });
                 if (!canceled) setCandidates(data);
             } catch (err) {
@@ -115,23 +125,23 @@ export default function BuildTeamSearch() {
         return () => {
             canceled = true;
         };
-    }, [teamId, role, geoSelected, skillsSelected, preferredRolesSelected, statusSelected]);
+        // eslint-disable-next-line react-hooks-exhaustive-deps
+    }, [teamId, role, searchKey]);
 
     useEffect(() => {
         let canceled = false;
 
         async function loadInvitedAccepted() {
-            if (!teamId || !role) return;
+            if (!teamId) return;
             try {
-                const [invited, accepted] = await Promise.all([
-                    listInvitedIds(teamId, role),
-                    listAcceptedIds(teamId),
-                ]);
+                const acceptedPromise = listAcceptedIds(teamId);
+                const invitedPromise = listInvitedIds(teamId, "");
+                const [invited, accepted] = await Promise.all([invitedPromise, acceptedPromise]);
                 if (!canceled) {
                     const acceptedSafe = accepted ?? [];
                     const invitedSafe = (invited ?? []).filter((id) => !acceptedSafe.includes(id));
                     setInvitedIds(invitedSafe);
-                    setSelectedIds([]); // não marcar como selecionado automaticamente
+                    setSelectedIds([]); // n??o marcar como selecionado automaticamente
                     setAcceptedIds(acceptedSafe);
                 }
             } catch {
@@ -176,15 +186,14 @@ export default function BuildTeamSearch() {
     }, [candidates, selectedIds, invitedIds, acceptedIds]);
 
     const filteredByStatus = useMemo(() => {
-        if (!statusSelected || statusSelected.length === 0) return mappedCandidates;
-        const selectedSet = new Set(statusSelected);
+        if (!statusSelected) return mappedCandidates;
         return mappedCandidates.filter((candidate) => {
             const status = candidate.accepted
                 ? "ACCEPTED"
                 : candidate.invited
                     ? "INVITED"
                     : "NO_PROPOSAL";
-            return selectedSet.has(status);
+            return status === statusSelected;
         });
     }, [mappedCandidates, statusSelected]);
 
@@ -192,7 +201,7 @@ export default function BuildTeamSearch() {
 
     useEffect(() => {
         setPage(1);
-    }, [geoSelected, skillsSelected, preferredRolesSelected, statusSelected, role, filteredByStatus.length]);
+    }, [searchKey, role]);
 
     useEffect(() => {
         if (page > totalPages) setPage(totalPages);
@@ -229,6 +238,21 @@ export default function BuildTeamSearch() {
         } finally {
             setIsInviting(false);
         }
+    };
+
+    const handleSearchClick = () => {
+        if (!hasFilters) {
+            setShowConfirmAll(true);
+            return;
+        }
+        setPage(1);
+        setSearchKey((k) => k + 1);
+    };
+
+    const proceedSearchWithoutFilters = () => {
+        setShowConfirmAll(false);
+        setPage(1);
+        setSearchKey((k) => k + 1);
     };
 
     return (
@@ -280,8 +304,9 @@ export default function BuildTeamSearch() {
                                 onGeoChange={setGeoSelected}
                                 onSkillsChange={setSkillsSelected}
                                 onPreferredRolesChange={setPreferredRolesSelected}
-                                onStatusChange={setStatusSelected}
-                            />
+                                    onStatusChange={setStatusSelected}
+                                    onSearch={handleSearchClick}
+                                />
                                 <CandidatesPanel
                                     employees={paginatedCandidates}
                                     isLoading={isSearching}
@@ -299,6 +324,26 @@ export default function BuildTeamSearch() {
                     )}
                 </div>
             </main>
+
+            <Modal
+                open={showConfirmAll}
+                onClose={() => setShowConfirmAll(false)}
+                title="Pesquisa sem filtros"
+                actions={
+                    <>
+                        <button type="button" className="btn btn-primary" onClick={() => setShowConfirmAll(false)}>
+                            Não continuar
+                        </button>
+                        <button type="button" className="btn btn-error" onClick={proceedSearchWithoutFilters}>
+                            Continuar
+                        </button>
+                    </>
+                }
+            >
+                <p className="text-sm text-base-content/80">
+                    Esta pesquisa pode retornar muitos resultados e demorar algum tempo. Deseja continuar mesmo assim?
+                </p>
+            </Modal>
         </div>
     );
 }

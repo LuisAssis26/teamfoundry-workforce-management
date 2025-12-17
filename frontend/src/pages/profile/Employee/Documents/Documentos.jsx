@@ -65,22 +65,18 @@ export default function Documentos() {
   };
 
   const applyProfileData = (data, overrides = {}) => {
-    setDocs((prev) => ({
+    setDocs(() => ({
       idFront: {
         url: data?.identificationFrontUrl ?? null,
-        fileName:
-          overrides.idFront ??
-          (data?.identificationFrontUrl ? prev.idFront.fileName : DEFAULT_NAMES.idFront),
+        fileName: overrides.idFront ?? data?.identificationFrontFileName ?? DEFAULT_NAMES.idFront,
       },
       idBack: {
         url: data?.identificationBackUrl ?? null,
-        fileName:
-          overrides.idBack ??
-          (data?.identificationBackUrl ? prev.idBack.fileName : DEFAULT_NAMES.idBack),
+        fileName: overrides.idBack ?? data?.identificationBackFileName ?? DEFAULT_NAMES.idBack,
       },
       cv: {
         url: data?.curriculumUrl ?? null,
-        fileName: overrides.cv ?? (data?.curriculumUrl ? prev.cv.fileName : DEFAULT_NAMES.cv),
+        fileName: overrides.cv ?? data?.curriculumFileName ?? DEFAULT_NAMES.cv,
       },
     }));
   };
@@ -200,6 +196,7 @@ export default function Documentos() {
                 }
                 hasFile={hasFile}
                 fileName={doc?.fileName}
+                onPreview={hasFile ? () => window.open(doc.url, "_blank", "noopener,noreferrer") : undefined}
                 onRemove={
                   hasFile
                     ? isCv

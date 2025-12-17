@@ -1,7 +1,7 @@
 # CONFIGURAÇÃO GLOBAL PADRÃO
 jwt:
   secret: ${JWT_SECRET:change-me-256-bit-secret-string-change-me}
-  expiration-seconds: 3600
+  expiration-seconds: 28800
 
 spring:
   config:
@@ -160,7 +160,7 @@ app:
 # JWT configuration
 jwt:
   secret: ${JWT_SECRET:change-me-32-bytes-minimum-change-me-change-me}
-  expiration-seconds: 3600
+  expiration-seconds: 28800
 
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME:}

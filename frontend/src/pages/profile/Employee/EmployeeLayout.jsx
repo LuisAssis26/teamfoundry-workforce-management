@@ -20,7 +20,6 @@ const SIDEBAR_LINKS = [
   },
   { to: "/candidato/ofertas", label: "Ofertas", icon: "bi-bell" },
   { to: "/candidato/documentos", label: "Documentos", icon: "bi-file-earmark-text" },
-  { to: "/candidato/proximos-passos", label: "Próximos passos", icon: "bi-flag" },
   { to: "/candidato/definicoes", label: "Definições", icon: "bi-gear" },
 ];
 
@@ -88,7 +87,7 @@ export default function EmployeeLayout() {
                 onNavigate={closeMobileMenu}
                 isMobile
                 animateOut={animatingOut}
-                logo={undefined}
+                logo={""}
                 title="TeamFoundry"
               />
             </div>

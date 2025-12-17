@@ -15,4 +15,5 @@ public class EmployeeCertificationResponse {
     LocalDate completionDate;
     String description;
     String certificateUrl;
+    String certificateFileName;
 }

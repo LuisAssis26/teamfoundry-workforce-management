@@ -38,4 +38,7 @@ public class EmployeeCertification {
 
     @Column(name = "certificate_public_id")
     private String certificatePublicId;
+
+    @Column(name = "certificate_file_name")
+    private String certificateFileName;
 }

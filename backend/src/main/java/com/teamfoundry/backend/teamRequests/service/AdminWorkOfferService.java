@@ -100,17 +100,16 @@ public class AdminWorkOfferService {
     public List<Integer> listActiveInviteIds(Integer teamId, String role) {
         AdminAccount admin = resolveAuthenticatedAdmin();
         TeamRequest request = teamRequestRepository.findById(teamId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requisição não encontrada."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requisi????o n??o encontrada."));
         if (!Objects.equals(request.getResponsibleAdminId(), admin.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Requisição não atribuída a este administrador.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Requisi????o n??o atribu??da a este administrador.");
         }
         String normRole = normalize(role);
         if (!StringUtils.hasText(normRole)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Função é obrigatória.");
+            return inviteRepository.findActiveInviteEmployeeIdsByTeam(teamId);
         }
         return inviteRepository.findActiveInviteEmployeeIdsByTeamAndRole(teamId, normRole);
     }
-
     @Transactional(readOnly = true)
     public List<Integer> listAcceptedIds(Integer teamId) {
         AdminAccount admin = resolveAuthenticatedAdmin();
@@ -141,3 +140,4 @@ public class AdminWorkOfferService {
         return StringUtils.hasText(value) ? value.trim().toLowerCase(Locale.ROOT) : null;
     }
 }
+

@@ -45,9 +45,14 @@ export default function Sidebar({
       <div className={`${navClasses} ${panelClassName}`}>
         {isMobile && (
           <div className="flex items-center justify-between px-4 py-3 border-b border-primary-content/20">
-            <div className="flex items-center gap-2">
+            <NavLink className="flex items-center gap-2"
+                      to="/">
               {logo && <img src={logo} alt={title || "logo"} className="h-8 w-8 object-contain" />}
               {title && <span className="font-semibold tracking-wide">{title}</span>}
+                          
+            </NavLink>
+            <div className="flex items-center gap-2">
+              
             </div>
             <button
               type="button"
