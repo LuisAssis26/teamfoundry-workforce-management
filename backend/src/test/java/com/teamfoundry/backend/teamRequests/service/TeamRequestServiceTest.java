@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -148,6 +149,89 @@ class TeamRequestServiceTest {
         assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
+    @Test
+    void listAssignedRequestsForAuthenticatedAdmin_returnsOnlyAssignedWithWorkforce() {
+        AdminAccount admin = new AdminAccount(5, "alpha", "pwd", UserType.ADMIN, false);
+        authenticate(admin);
+        when(adminAccountRepository.findByUsernameIgnoreCase("alpha")).thenReturn(Optional.of(admin));
+
+        TeamRequest r1 = buildRequest(1, "Team A", LocalDateTime.now().minusDays(2));
+        r1.setResponsibleAdminId(5);
+        TeamRequest r2 = buildRequest(2, "Team B", LocalDateTime.now().minusDays(1));
+        r2.setResponsibleAdminId(5);
+
+        when(teamRequestRepository.findByResponsibleAdminId(5)).thenReturn(List.of(r1, r2));
+        when(employeeRequestRepository.countByTeamRequestIds(anyCollection())).thenReturn(List.of(
+                countForRequest(1, 2),
+                countForRequest(2, 4)
+        ));
+
+        var responses = service.listAssignedRequestsForAuthenticatedAdmin();
+
+        assertThat(responses).hasSize(2);
+        Map<Integer, Long> byId = responses.stream().collect(java.util.stream.Collectors.toMap(
+                com.teamfoundry.backend.teamRequests.dto.teamRequest.AssignedTeamRequestResponse::id,
+                com.teamfoundry.backend.teamRequests.dto.teamRequest.AssignedTeamRequestResponse::workforceNeeded
+        ));
+        assertThat(byId).containsEntry(1, 2L).containsEntry(2, 4L);
+    }
+
+    @Test
+    void getAssignedRequest_whenNotAssigned_throwsForbidden() {
+        AdminAccount admin = new AdminAccount(5, "alpha", "pwd", UserType.ADMIN, false);
+        authenticate(admin);
+        when(adminAccountRepository.findByUsernameIgnoreCase("alpha")).thenReturn(Optional.of(admin));
+
+        TeamRequest request = buildRequest(10, "Not mine", LocalDateTime.now());
+        request.setResponsibleAdminId(999);
+        when(teamRequestRepository.findById(10)).thenReturn(Optional.of(request));
+
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+                () -> service.getAssignedRequest(10));
+
+        assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    void listRoleSummariesForTeam_mergesRoleCountsAndInvites() {
+        AdminAccount admin = new AdminAccount(5, "alpha", "pwd", UserType.ADMIN, false);
+        authenticate(admin);
+        when(adminAccountRepository.findByUsernameIgnoreCase("alpha")).thenReturn(Optional.of(admin));
+
+        TeamRequest request = buildRequest(10, "Mine", LocalDateTime.now());
+        request.setResponsibleAdminId(5);
+        when(teamRequestRepository.findById(10)).thenReturn(Optional.of(request));
+
+        when(employeeRequestRepository.countByRoleForTeam(10)).thenReturn(List.of(
+                roleCount("dev", 3, 1),
+                roleCount("qa", 2, 2)
+        ));
+        when(employeeRequestOfferRepository.countInvitesByTeamRequest(10)).thenReturn(List.of(
+                inviteCount("dev", 5),
+                inviteCount("ux", 1)
+        ));
+
+        var summaries = service.listRoleSummariesForTeam(10);
+
+        assertThat(summaries).extracting(com.teamfoundry.backend.teamRequests.dto.teamRequest.TeamRequestRoleSummary::role)
+                .containsExactly("dev", "qa", "ux");
+
+        var dev = summaries.get(0);
+        assertThat(dev.totalPositions()).isEqualTo(3);
+        assertThat(dev.filledPositions()).isEqualTo(1);
+        assertThat(dev.openPositions()).isEqualTo(2);
+        assertThat(dev.proposalsSent()).isEqualTo(5);
+
+        var qa = summaries.get(1);
+        assertThat(qa.openPositions()).isEqualTo(0);
+        assertThat(qa.proposalsSent()).isEqualTo(0);
+
+        var ux = summaries.get(2);
+        assertThat(ux.totalPositions()).isEqualTo(0);
+        assertThat(ux.openPositions()).isEqualTo(0);
+        assertThat(ux.proposalsSent()).isEqualTo(1);
+    }
+
     private void authenticate(AdminAccount admin) {
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 "admin:" + admin.getUsername(),
@@ -185,6 +269,39 @@ class TeamRequestServiceTest {
             @Override
             public Integer getRequestId() {
                 return requestId;
+            }
+
+            @Override
+            public long getTotal() {
+                return total;
+            }
+        };
+    }
+
+    private EmployeeRequestRepository.RoleCount roleCount(String role, long total, long filled) {
+        return new EmployeeRequestRepository.RoleCount() {
+            @Override
+            public String getRole() {
+                return role;
+            }
+
+            @Override
+            public long getTotal() {
+                return total;
+            }
+
+            @Override
+            public long getFilled() {
+                return filled;
+            }
+        };
+    }
+
+    private EmployeeRequestOfferRepository.RoleInviteCount inviteCount(String role, long total) {
+        return new EmployeeRequestOfferRepository.RoleInviteCount() {
+            @Override
+            public String getRole() {
+                return role;
             }
 
             @Override
