@@ -37,6 +37,8 @@ public class EmployeeJobHistoryService {
     private final EmployeeRequestRepository employeeRequestRepository;
     private final EmployeeAccountRepository employeeAccountRepository;
     private final EmployeeRequestOfferRepository employeeRequestOfferRepository;
+    private final com.teamfoundry.backend.teamRequests.repository.TeamRequestRepository teamRequestRepository;
+    private final com.teamfoundry.backend.notification.service.NotificationService notificationService;
     private final ActionLogService actionLogService;
 
     @Transactional(readOnly = true)
@@ -135,6 +137,25 @@ public class EmployeeJobHistoryService {
 
         employeeRequestOfferRepository.deactivateInvitesForRequest(requestId, employee.getId());
         actionLogService.logUser(employee, "Aceitou oferta " + requestId);
+
+        // Check if TeamRequest is complete
+        if (teamId != null) {
+            long openSpots = employeeRequestRepository.countByTeamRequest_IdAndEmployeeIsNull(teamId);
+            if (openSpots == 0) {
+                teamRequest.setState(State.COMPLETE);
+                teamRequestRepository.save(teamRequest);
+                
+                if (teamRequest.getCompany() != null) {
+                    notificationService.createNotification(
+                        teamRequest.getCompany(),
+                        "Sua requisição de equipa '" + teamRequest.getTeamName() + "' está completa!",
+                        com.teamfoundry.backend.notification.enums.NotificationType.REQUEST_COMPLETED,
+                        teamRequest.getId()
+                    );
+                }
+            }
+        }
+
         return toSummary(saved, "ACCEPTED");
     }
 

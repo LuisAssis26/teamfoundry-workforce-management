@@ -40,6 +40,7 @@ public class AdminWorkOfferService {
     private final EmployeeRequestOfferRepository inviteRepository;
     private final EmployeeAccountRepository employeeAccountRepository;
     private final AdminAccountRepository adminAccountRepository;
+    private final com.teamfoundry.backend.notification.service.NotificationService notificationService;
 
     @Transactional
     public int sendInvites(Integer teamRequestId, String role, List<Integer> candidateIds) {
@@ -93,6 +94,17 @@ public class AdminWorkOfferService {
         }
 
         inviteRepository.saveAll(toSave);
+
+        // Notify candidates
+        for (EmployeeRequestOffer offer : toSave) {
+            notificationService.createNotification(
+                offer.getEmployee(),
+                "Recebeu uma nova oferta de emprego para a função " + role,
+                com.teamfoundry.backend.notification.enums.NotificationType.JOB_OFFER,
+                offer.getId()
+            );
+        }
+
         return toSave.size();
     }
 

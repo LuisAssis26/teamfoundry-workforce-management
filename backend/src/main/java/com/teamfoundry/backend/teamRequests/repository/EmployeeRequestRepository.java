@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Vagas (EmployeeRequest): consultas para convites, contagens e hist┴ico.
+ * Vagas (EmployeeRequest): consultas para convites, contagens e historico.
  */
 public interface EmployeeRequestRepository extends JpaRepository<EmployeeRequest, Integer> {
 
@@ -73,6 +73,8 @@ public interface EmployeeRequestRepository extends JpaRepository<EmployeeRequest
 
     @EntityGraph(attributePaths = {"teamRequest", "teamRequest.company"})
     List<EmployeeRequest> findByEmployee_IdOrderByAcceptedDateDesc(Integer employeeId);
+
+    long countByTeamRequest_IdAndEmployeeIsNull(Integer teamId);
 
     interface TeamRequestCount {
         Integer getRequestId();

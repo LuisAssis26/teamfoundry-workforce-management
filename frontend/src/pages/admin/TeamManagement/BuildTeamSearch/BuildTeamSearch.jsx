@@ -94,7 +94,7 @@ export default function BuildTeamSearch() {
     }, [teamId, refreshDetails]);
 
     useEffect(() => {
-        refreshOptions().catch(() => {});
+        refreshOptions().catch(() => { });
     }, [refreshOptions]);
 
     useEffect(() => {
@@ -107,11 +107,12 @@ export default function BuildTeamSearch() {
             setSearchError("");
             try {
                 const data = await searchCandidates({
-                    role: "", // nÃ£o forÃ§ar filtro pela funÃ§Ã£o da vaga
+                    role: role, // Filtra pela função da vaga para escopar os convites
                     areas: geoSelected,
                     skills: skillsSelected,
                     preferredRoles: preferredRolesSelected,
                     statuses: statusSelected ? [statusSelected] : [],
+                    teamId: teamId,
                 });
                 if (!canceled) setCandidates(data);
             } catch (err) {
@@ -135,7 +136,7 @@ export default function BuildTeamSearch() {
             if (!teamId) return;
             try {
                 const acceptedPromise = listAcceptedIds(teamId);
-                const invitedPromise = listInvitedIds(teamId, "");
+                const invitedPromise = listInvitedIds(teamId, role);
                 const [invited, accepted] = await Promise.all([invitedPromise, acceptedPromise]);
                 if (!canceled) {
                     const acceptedSafe = accepted ?? [];
@@ -294,16 +295,16 @@ export default function BuildTeamSearch() {
                                     companyName={teamInfo?.companyName || "Empresa"}
                                     role={role || "Funcao"}
                                     geoOptions={geoOptions}
-                                geoSelected={geoSelected}
-                                skillOptions={skillOptions}
-                                skillsSelected={skillsSelected}
-                                functionOptions={functionOptions}
-                                preferredRolesSelected={preferredRolesSelected}
-                                statusOptions={statusOptions}
-                                statusSelected={statusSelected}
-                                onGeoChange={setGeoSelected}
-                                onSkillsChange={setSkillsSelected}
-                                onPreferredRolesChange={setPreferredRolesSelected}
+                                    geoSelected={geoSelected}
+                                    skillOptions={skillOptions}
+                                    skillsSelected={skillsSelected}
+                                    functionOptions={functionOptions}
+                                    preferredRolesSelected={preferredRolesSelected}
+                                    statusOptions={statusOptions}
+                                    statusSelected={statusSelected}
+                                    onGeoChange={setGeoSelected}
+                                    onSkillsChange={setSkillsSelected}
+                                    onPreferredRolesChange={setPreferredRolesSelected}
                                     onStatusChange={setStatusSelected}
                                     onSearch={handleSearchClick}
                                 />
