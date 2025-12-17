@@ -17,9 +17,10 @@ async function handleResponse(resp, fallbackMessage) {
     throw new Error(payload?.error || fallbackMessage);
 }
 
-export async function searchCandidates({ role, areas = [], skills = [], preferredRoles = [], statuses = [] }) {
+export async function searchCandidates({ role, areas = [], skills = [], preferredRoles = [], statuses = [], teamId }) {
     const params = new URLSearchParams();
     if (role) params.append("role", role);
+    if (teamId) params.append("team", teamId);
     areas.forEach((area) => params.append("areas", area));
     skills.forEach((skill) => params.append("skills", skill));
     preferredRoles.forEach((pr) => params.append("preferredRoles", pr));
