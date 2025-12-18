@@ -10,6 +10,7 @@ import com.teamfoundry.backend.account.repository.company.CompanyAccountReposito
 import com.teamfoundry.backend.account.repository.company.CompanyActivitySectorsRepository;
 import com.teamfoundry.backend.superadmin.model.credentials.AdminAccount;
 import com.teamfoundry.backend.superadmin.repository.credentials.AdminAccountRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -49,6 +50,7 @@ class CompanyCredentialControllerIntegrationTest {
     @Autowired CompanyAccountRepository companyAccountRepository;
     @Autowired CompanyAccountOwnerRepository ownerRepository;
     @Autowired CompanyActivitySectorsRepository companyActivitySectorsRepository;
+    @Autowired AuthTokenRepository authTokenRepository;
 
     private final String superPassword = "superSecret!";
     private final String adminPassword = "adminPass!";
@@ -58,10 +60,12 @@ class CompanyCredentialControllerIntegrationTest {
 
     @BeforeEach
     void setup() {
+        authTokenRepository.deleteAll();
+        adminAccountRepository.deleteAll();
+        adminAccountRepository.flush();
         companyActivitySectorsRepository.deleteAll();
         ownerRepository.deleteAll();
         companyAccountRepository.deleteAll();
-        adminAccountRepository.deleteAll();
 
         adminAccountRepository.save(new AdminAccount(0, "superadmin",
                 passwordEncoder.encode(superPassword), UserType.SUPERADMIN, false));

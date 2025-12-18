@@ -10,6 +10,7 @@ import com.teamfoundry.backend.superadmin.repository.credentials.AdminAccountRep
 import com.teamfoundry.backend.teamRequests.enums.State;
 import com.teamfoundry.backend.teamRequests.model.TeamRequest;
 import com.teamfoundry.backend.teamRequests.repository.TeamRequestRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -51,6 +52,7 @@ class AdminCredentialControllerIntegrationTest {
     @Autowired AdminAccountRepository adminAccountRepository;
     @Autowired CompanyAccountRepository companyAccountRepository;
     @Autowired TeamRequestRepository teamRequestRepository;
+    @Autowired AuthTokenRepository authTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
 
     private final String superUsername = "superadmin";
@@ -59,9 +61,11 @@ class AdminCredentialControllerIntegrationTest {
 
     @BeforeEach
     void setup() {
+        authTokenRepository.deleteAll();
         teamRequestRepository.deleteAll();
         companyAccountRepository.deleteAll();
         adminAccountRepository.deleteAll();
+        adminAccountRepository.flush();
 
         adminAccountRepository.save(new AdminAccount(0, superUsername,
                 passwordEncoder.encode(superPassword), UserType.SUPERADMIN, false));

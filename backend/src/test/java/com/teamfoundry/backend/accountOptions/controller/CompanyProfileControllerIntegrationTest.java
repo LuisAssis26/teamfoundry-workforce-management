@@ -9,6 +9,7 @@ import com.teamfoundry.backend.account.model.company.CompanyAccountManager;
 import com.teamfoundry.backend.account.repository.AccountRepository;
 import com.teamfoundry.backend.account.repository.company.CompanyAccountOwnerRepository;
 import com.teamfoundry.backend.account.repository.company.CompanyAccountRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -47,6 +48,7 @@ class CompanyProfileControllerIntegrationTest {
     @Autowired CompanyAccountRepository companyAccountRepository;
     @Autowired CompanyAccountOwnerRepository ownerRepository;
     @Autowired AccountRepository accountRepository;
+    @Autowired AuthTokenRepository authTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
 
     private final String email = "company@test.com";
@@ -54,6 +56,7 @@ class CompanyProfileControllerIntegrationTest {
 
     @BeforeEach
     void setup() {
+        authTokenRepository.deleteAll();
         ownerRepository.deleteAll();
         companyAccountRepository.deleteAll();
         accountRepository.deleteAll();

@@ -8,12 +8,15 @@ import com.teamfoundry.backend.account.repository.AccountRepository;
 import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
 import com.teamfoundry.backend.auth.model.tokens.PasswordResetToken;
 import com.teamfoundry.backend.auth.repository.PasswordResetTokenRepository;
+import com.teamfoundry.backend.auth.service.VerificationEmailService;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -36,13 +39,16 @@ class AuthPasswordResetIntegrationTest {
     @Autowired EmployeeAccountRepository employeeAccountRepository;
     @Autowired AccountRepository accountRepository;
     @Autowired PasswordResetTokenRepository passwordResetTokenRepository;
+    @Autowired AuthTokenRepository authTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
+    @MockBean VerificationEmailService verificationEmailService;
 
     private final String email = "reset@test.com";
     private final String rawPassword = "oldSecret";
 
     @BeforeEach
     void setup() {
+        authTokenRepository.deleteAll();
         passwordResetTokenRepository.deleteAll();
         employeeAccountRepository.deleteAll();
         accountRepository.deleteAll();

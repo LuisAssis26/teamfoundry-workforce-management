@@ -43,7 +43,7 @@ class AdminAuthenticationServiceTest {
     @DisplayName("authenticate devolve AdminLoginResponse quando credenciais são válidas")
     void authenticateReturnsResponseWhenPasswordMatches() {
         AdminAccount account = new AdminAccount(1, "admin", "hash", UserType.ADMIN, false);
-        when(adminAccountRepository.findByUsernameIgnoreCase("ADMIN")).thenReturn(Optional.of(account));
+        when(adminAccountRepository.findByUsernameIgnoreCaseAndDeactivatedFalse("ADMIN")).thenReturn(Optional.of(account));
         when(passwordEncoder.matches("secret", "hash")).thenReturn(true);
         when(jwtService.generateToken("admin:admin", "ADMIN", 1)).thenReturn("access-token");
         when(jwtService.getExpirationSeconds()).thenReturn(3600L);
@@ -62,8 +62,8 @@ class AdminAuthenticationServiceTest {
     @DisplayName("authenticate devolve vazio quando o hash não corresponde")
     void authenticateReturnsEmptyWhenPasswordDoesNotMatch() {
         AdminAccount account = new AdminAccount(1, "admin", "hash", UserType.ADMIN, false);
-        when(adminAccountRepository.findByUsername("admin")).thenReturn(Optional.of(account));
-        when(adminAccountRepository.findByUsernameIgnoreCase("admin")).thenReturn(Optional.of(account));
+        when(adminAccountRepository.findByUsernameIgnoreCaseAndDeactivatedFalse("admin")).thenReturn(Optional.of(account));
+        when(passwordEncoder.matches("wrong", "hash")).thenReturn(false);
         Optional<AdminLoginResponse> result = adminAuthenticationService.authenticate("admin", "wrong");
         assertThat(result).isEmpty();
 

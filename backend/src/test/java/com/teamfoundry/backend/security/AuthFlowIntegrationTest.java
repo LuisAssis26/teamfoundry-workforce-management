@@ -6,6 +6,7 @@ import com.teamfoundry.backend.account.enums.UserType;
 import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.AccountRepository;
 import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -42,6 +43,9 @@ class AuthFlowIntegrationTest {
     EmployeeAccountRepository employeeAccountRepository;
 
     @Autowired
+    AuthTokenRepository authTokenRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -52,6 +56,7 @@ class AuthFlowIntegrationTest {
 
     @BeforeEach
     void setupUser() {
+        authTokenRepository.deleteAll();
         employeeAccountRepository.deleteAll();
         accountRepository.deleteAll();
         employeeAccountRepository.save(buildEmployee(email, true));
