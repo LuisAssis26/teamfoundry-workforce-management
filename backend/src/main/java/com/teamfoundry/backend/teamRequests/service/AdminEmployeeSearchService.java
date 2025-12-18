@@ -64,16 +64,7 @@ public class AdminEmployeeSearchService {
                                                     List<String> preferredRoles,
                                                     List<String> statuses,
                                                     Integer teamId) {
-        // Actually, my previous edit REMOVED the `vacancyRole` parameter from the signature in the REPLACEMENT block but kept it in the call?
-        // Wait, checking Step 386 replacement content.
-        // It added `normVacancyRole` variable and passed it to repo.
-        // It DID NOT change the `search` method signature to accept `vacancyRole`.
-        // The controller calls `search(..., statuses, teamId)`.
-        
-        // I need to be careful with the signature matching.
-        // The Controller calls: `adminEmployeeSearchService.search(role, safeAreas, safeSkills, safePreferred, safeStatuses, teamId);` (Step 374)
-        // The Service signature in Step 372 was: `search(..., Integer teamId)`. 
-        // Then in Step 386 I edited the BODY of `search` but not the signature to add `vacancyRole` *param*, I derived it from `role`.
+
         
         
         
@@ -89,8 +80,7 @@ public class AdminEmployeeSearchService {
             normVacancyRole = normRole; 
         }
 
-        // Statuses are constants (enums), so we should NOT lowercase them
-        // The SQL query checks 'INVITED' IN :statuses
+
         List<String> validStatuses = statuses != null ? statuses.stream().filter(StringUtils::hasText).toList() : List.of();
 
         List<EmployeeAccount> results = employeeAccountRepository.searchCandidates(
