@@ -39,11 +39,20 @@ public class AdminAccountInitializer {
 
             List<AdminAccount> admins = List.of(
                     admin("superadmin", "password123", UserType.SUPERADMIN),
+                    admin("superadmin2", "password123", UserType.SUPERADMIN),
+                    admin("superadmin3", "password123", UserType.SUPERADMIN),
+                    admin("superadmin4", "password123", UserType.SUPERADMIN),
+                    admin("superadmin5", "password123", UserType.SUPERADMIN),
                     admin("admin1", "password123", UserType.ADMIN),
                     admin("admin2", "password123", UserType.ADMIN),
                     admin("admin3", "password123", UserType.ADMIN),
                     admin("admin4", "password123", UserType.ADMIN),
-                    admin("admin5", "password123", UserType.ADMIN)
+                    admin("admin5", "password123", UserType.ADMIN),
+                    admin("admin6", "password123", UserType.ADMIN),
+                    admin("admin7", "password123", UserType.ADMIN),
+                    admin("admin8", "password123", UserType.ADMIN),
+                    admin("admin9", "password123", UserType.ADMIN),
+                    admin("admin10", "password123", UserType.ADMIN)
             );
 
             adminAccountRepository.saveAll(admins);
