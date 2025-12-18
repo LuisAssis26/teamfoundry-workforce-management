@@ -8,6 +8,7 @@ import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.AccountRepository;
 import com.teamfoundry.backend.account.repository.company.CompanyAccountRepository;
 import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -48,12 +49,16 @@ class AuthLoginRolesIntegrationTest {
     AccountRepository accountRepository;
 
     @Autowired
+    AuthTokenRepository authTokenRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     private final String rawPassword = "secret";
 
     @BeforeEach
     void cleanTables() {
+        authTokenRepository.deleteAll();
         companyAccountRepository.deleteAll();
         employeeAccountRepository.deleteAll();
         accountRepository.deleteAll();

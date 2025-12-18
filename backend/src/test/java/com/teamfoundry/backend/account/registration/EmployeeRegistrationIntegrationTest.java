@@ -74,6 +74,9 @@ class EmployeeRegistrationIntegrationTest {
     @Autowired
     EmployeeSkillRepository employeeSkillRepository;
 
+    @MockBean
+    VerificationEmailService verificationEmailService;
+
 
     private final String email = "Candidate@Test.com";
     private final String password = "StrongPass123";
