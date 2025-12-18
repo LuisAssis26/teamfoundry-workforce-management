@@ -30,7 +30,7 @@ class AdminAuthServiceTest {
     @InjectMocks AdminAuthService service;
 
     @Test
-    void authenticate_whenValid_returnsLoginResponse() {
+    void authenticateWhenValidReturnsLoginResponse() {
         AdminAccount admin = new AdminAccount(10, "alpha", "hash", UserType.ADMIN, false);
         when(adminAccountRepository.findByUsernameIgnoreCaseAndDeactivatedFalse("alpha"))
                 .thenReturn(Optional.of(admin));
@@ -49,7 +49,7 @@ class AdminAuthServiceTest {
     }
 
     @Test
-    void authenticate_whenPasswordDoesNotMatch_returnsEmpty() {
+    void authenticateWhenPasswordDoesNotMatchReturnsEmpty() {
         AdminAccount admin = new AdminAccount(10, "alpha", "hash", UserType.ADMIN, false);
         when(adminAccountRepository.findByUsernameIgnoreCaseAndDeactivatedFalse("alpha"))
                 .thenReturn(Optional.of(admin));
@@ -62,7 +62,7 @@ class AdminAuthServiceTest {
     }
 
     @Test
-    void authenticate_whenAdminNotFound_returnsEmpty() {
+    void authenticateWhenAdminNotFoundReturnsEmpty() {
         when(adminAccountRepository.findByUsernameIgnoreCaseAndDeactivatedFalse("missing"))
                 .thenReturn(Optional.empty());
 
@@ -72,4 +72,5 @@ class AdminAuthServiceTest {
         verifyNoInteractions(passwordEncoder, jwtService);
     }
 }
+
 

@@ -3,19 +3,19 @@ package com.teamfoundry.backend.account.service.employee;
 import com.teamfoundry.backend.account.dto.employee.preferences.EmployeePreferencesResponse;
 import com.teamfoundry.backend.account.dto.employee.preferences.EmployeePreferencesUpdateRequest;
 import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
-import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
-import com.teamfoundry.backend.account.model.preferences.PrefSkill;
-import com.teamfoundry.backend.account.model.employee.profile.EmployeeSkill;
-import com.teamfoundry.backend.account.model.employee.profile.EmployeeRole;
 import com.teamfoundry.backend.account.model.employee.profile.EmployeeGeoArea;
-import com.teamfoundry.backend.account.model.preferences.PrefRole;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeRole;
+import com.teamfoundry.backend.account.model.employee.profile.EmployeeSkill;
 import com.teamfoundry.backend.account.model.preferences.PrefGeoArea;
-import com.teamfoundry.backend.account.repository.preferences.PrefSkillRepository;
-import com.teamfoundry.backend.account.repository.employee.profile.EmployeeSkillRepository;
-import com.teamfoundry.backend.account.repository.employee.profile.EmployeeRoleRepository;
+import com.teamfoundry.backend.account.model.preferences.PrefRole;
+import com.teamfoundry.backend.account.model.preferences.PrefSkill;
+import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
 import com.teamfoundry.backend.account.repository.employee.profile.EmployeeGeoAreaRepository;
-import com.teamfoundry.backend.account.repository.preferences.PrefRoleRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeRoleRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeSkillRepository;
 import com.teamfoundry.backend.account.repository.preferences.PrefGeoAreaRepository;
+import com.teamfoundry.backend.account.repository.preferences.PrefRoleRepository;
+import com.teamfoundry.backend.account.repository.preferences.PrefSkillRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -47,17 +47,17 @@ public class EmployeePreferencesService {
     @Transactional
     public EmployeePreferencesResponse updatePreferences(String email, EmployeePreferencesUpdateRequest request) {
         EmployeeAccount account = findByEmailOrThrow(email);
-        applyFunctionPreference(account, request.getRole());
+        applyFunctionPreferences(account, request.getRoles(), request.getRole());
         applyCompetencePreferences(account, request.getSkills());
         applyGeoAreaPreferences(account, request.getAreas());
         return toResponse(account);
     }
 
     private EmployeePreferencesResponse toResponse(EmployeeAccount account) {
-        // Constrói DTO a partir das relações atuais nas tabelas de junção.
-        String role = employeeRoleRepository.findFirstByEmployee(account)
+        List<String> roles = employeeRoleRepository.findByEmployee(account).stream()
                 .map(rel -> rel.getFunction().getName())
-                .orElse(null);
+                .toList();
+        String role = roles.isEmpty() ? null : roles.getFirst();
 
         List<String> skills = employeeSkillRepository.findByEmployee(account).stream()
                 .map(rel -> rel.getPrefSkill().getName())
@@ -69,6 +69,7 @@ public class EmployeePreferencesService {
 
         return EmployeePreferencesResponse.builder()
                 .role(role)
+                .roles(roles)
                 .skills(skills)
                 .areas(areas)
                 .build();
@@ -82,33 +83,45 @@ public class EmployeePreferencesService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Conta não encontrada."));
     }
 
-    private void applyFunctionPreference(EmployeeAccount account, String functionName) {
-        // Apenas uma função preferencial é mantida; limpamos e regravamos.
+    private void applyFunctionPreferences(EmployeeAccount account, List<String> functionNames, String legacySingle) {
+        // Limpa e regrava as relações de funções preferenciais.
         employeeRoleRepository.deleteByEmployee(account);
 
-        if (!StringUtils.hasText(functionName)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Função preferencial é obrigatória.");
+        List<String> normalized = normalizeList(
+                (functionNames == null || functionNames.isEmpty()) && StringUtils.hasText(legacySingle)
+                        ? List.of(legacySingle)
+                        : functionNames
+        );
+
+        if (normalized.isEmpty()) {
+            // Permite salvar sem funções (ex.: conta criada pelo Google sem dados).
+            return;
         }
 
-        PrefRole function = prefRoleRepository.findByName(functionName.trim())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Função não encontrada: " + functionName
-                ));
+        List<EmployeeRole> relations = normalized.stream()
+                .map(name -> {
+                    PrefRole function = prefRoleRepository.findByName(name)
+                            .orElseThrow(() -> new ResponseStatusException(
+                                    HttpStatus.BAD_REQUEST,
+                                    "Função não encontrada: " + name
+                            ));
+                    EmployeeRole relation = new EmployeeRole();
+                    relation.setEmployee(account);
+                    relation.setFunction(function);
+                    return relation;
+                })
+                .toList();
 
-        EmployeeRole relation = new EmployeeRole();
-        relation.setEmployee(account);
-        relation.setFunction(function);
-        employeeRoleRepository.save(relation);
+        employeeRoleRepository.saveAll(relations);
     }
 
     private void applyCompetencePreferences(EmployeeAccount account, List<String> skills) {
-        // Zera competências atuais e recria as relações com base no request.
         employeeSkillRepository.deleteByEmployee(account);
 
         List<String> normalized = normalizeList(skills);
         if (normalized.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Selecione pelo menos uma competência.");
+            // Permite salvar sem competências para contas Google incompletas.
+            return;
         }
 
         List<EmployeeSkill> relations = normalized.stream()
@@ -129,7 +142,6 @@ public class EmployeePreferencesService {
     }
 
     private void applyGeoAreaPreferences(EmployeeAccount account, List<String> areas) {
-        // Zera áreas atuais e recria relações com base no request.
         employeeGeoAreaRepository.deleteByEmployee(account);
 
         List<String> normalized = normalizeList(areas);

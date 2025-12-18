@@ -33,6 +33,24 @@ spring:
             enable: true
   flyway:
     enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:}
+            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
 
 app:
   mail:
@@ -66,6 +84,8 @@ app:
       expiration-minutes: 30
     pending-retention-minutes: 60
     pending-cleanup-interval-ms: 300000
+  oauth2:
+    front-success-url: ${OAUTH2_FRONT_SUCCESS_URL:http://localhost:5173/oauth/google/callback}
 
 server:
   port: 8443

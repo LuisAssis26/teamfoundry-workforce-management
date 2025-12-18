@@ -68,7 +68,7 @@ class MetricsControllerIntegrationTest {
 
     @Test
     @DisplayName("GET /metrics/overview agrega kpis, estados e workload")
-    void overview_returnsAggregatedMetrics() throws Exception {
+    void overviewReturnsAggregatedMetrics() throws Exception {
         AdminAccount adminOne = adminAccountRepository.save(new AdminAccount(0, "admin-one",
                 passwordEncoder.encode("Admin#1"), UserType.ADMIN, false));
         AdminAccount adminTwo = adminAccountRepository.save(new AdminAccount(0, "admin-two",
@@ -157,3 +157,4 @@ class MetricsControllerIntegrationTest {
         return objectMapper.readTree(response).get("accessToken").asText();
     }
 }
+

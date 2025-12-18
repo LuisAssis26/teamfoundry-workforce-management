@@ -10,4 +10,6 @@ public interface EmployeeRoleRepository extends JpaRepository<EmployeeRole, Inte
     void deleteByEmployee(EmployeeAccount employee);
 
     Optional<EmployeeRole> findFirstByEmployee(EmployeeAccount employee);
+
+    java.util.List<EmployeeRole> findByEmployee(EmployeeAccount employee);
 }

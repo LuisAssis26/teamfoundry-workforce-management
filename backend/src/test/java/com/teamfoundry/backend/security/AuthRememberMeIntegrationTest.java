@@ -61,7 +61,7 @@ class AuthRememberMeIntegrationTest {
 
     @Test
     @DisplayName("Login com remember-me emite refresh_token cookie e permite refresh")
-    void login_with_remember_sets_cookie_and_allows_refresh() throws Exception {
+    void loginWithRememberSetsCookieAndAllowsRefresh() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "email", email,
                 "password", rawPassword,
@@ -104,7 +104,7 @@ class AuthRememberMeIntegrationTest {
 
     @Test
     @DisplayName("Login sem remember limpa o refresh_token cookie")
-    void login_without_remember_clears_cookie() throws Exception {
+    void loginWithoutRememberClearsCookie() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "email", email,
                 "password", rawPassword,
@@ -125,4 +125,5 @@ class AuthRememberMeIntegrationTest {
         }
     }
 }
+
 

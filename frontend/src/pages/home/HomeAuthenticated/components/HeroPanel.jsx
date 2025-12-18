@@ -53,7 +53,7 @@ export default function HeroPanel({
           {showBar && (
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm text-primary-content/80">
-                <span>Barra de progresso</span>
+                <span className="text-lg">Progresso do perfil</span>
                 <span className="font-semibold text-primary-content">{safeCompletion}%</span>
               </div>
               <div className="h-3 rounded-full bg-primary-content/20 overflow-hidden">

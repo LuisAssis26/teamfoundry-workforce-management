@@ -71,7 +71,7 @@ class SuperAdminTeamRequestControllerIntegrationTest {
 
     @Test
     @DisplayName("GET /work-requests devolve lista ordenada e workforceNeeded")
-    void listAll_returnsSortedWithWorkforce() throws Exception {
+    void listAllReturnsSortedWithWorkforce() throws Exception {
         CompanyAccount company = createCompany("sorted@test.com", 123456789);
 
         TeamRequest older = createTeamRequest(company, "Alpha Team", State.INCOMPLETE,
@@ -97,7 +97,7 @@ class SuperAdminTeamRequestControllerIntegrationTest {
 
     @Test
     @DisplayName("GET /work-requests/admin-options devolve apenas admins com contagem de atribuicoes")
-    void listAdminOptions_returnsAdminsWithCounts() throws Exception {
+    void listAdminOptionsReturnsAdminsWithCounts() throws Exception {
         CompanyAccount company = createCompany("count@test.com", 987654321);
 
         AdminAccount alpha = adminAccountRepository.save(new AdminAccount(0, "alpha-admin",
@@ -125,7 +125,7 @@ class SuperAdminTeamRequestControllerIntegrationTest {
 
     @Test
     @DisplayName("PATCH /work-requests/{id}/responsible-admin atribui admin comum")
-    void assignResponsibleAdmin_updatesRequest() throws Exception {
+    void assignResponsibleAdminUpdatesRequest() throws Exception {
         CompanyAccount company = createCompany("assign@test.com", 112233445);
         TeamRequest request = createTeamRequest(company, "Needs Owner", State.INCOMPLETE,
                 LocalDateTime.now().minusHours(2), null);
@@ -151,7 +151,7 @@ class SuperAdminTeamRequestControllerIntegrationTest {
 
     @Test
     @DisplayName("PATCH /work-requests/{id}/responsible-admin falha se adminId for superadmin")
-    void assignResponsibleAdmin_withSuperAdminId_returnsBadRequest() throws Exception {
+    void assignResponsibleAdminWithSuperAdminIdReturnsBadRequest() throws Exception {
         CompanyAccount company = createCompany("bad@test.com", 667788990);
         TeamRequest request = createTeamRequest(company, "Invalid", State.INCOMPLETE,
                 LocalDateTime.now().minusHours(3), null);
@@ -215,3 +215,4 @@ class SuperAdminTeamRequestControllerIntegrationTest {
         return employeeRequestRepository.save(employeeRequest);
     }
 }
+

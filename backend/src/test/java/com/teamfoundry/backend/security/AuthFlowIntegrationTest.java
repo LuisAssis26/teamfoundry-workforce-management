@@ -59,7 +59,7 @@ class AuthFlowIntegrationTest {
 
     @Test
     @DisplayName("Login success → devolve role e mensagem")
-    void login_success_returnsRoleAndMessage() throws Exception {
+    void loginSuccessReturnsRoleAndMessage() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "email", email,
                 "password", rawPassword
@@ -75,7 +75,7 @@ class AuthFlowIntegrationTest {
 
     @Test
     @DisplayName("Login inválido → 401 Unauthorized")
-    void login_invalidCredentials_unauthorized() throws Exception {
+    void loginInvalidCredentialsUnauthorized() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "email", email,
                 "password", "wrong"
@@ -89,7 +89,7 @@ class AuthFlowIntegrationTest {
 
     @Test
     @DisplayName("Conta inativa → devolve 401 com mensagem de conta não verificada")
-    void login_inactiveAccount_returnsUnauthorized() throws Exception {
+    void loginInactiveAccountReturnsUnauthorized() throws Exception {
         employeeAccountRepository.save(buildEmployee("inactive@test.com", false));
 
         var body = objectMapper.writeValueAsString(Map.of(
@@ -119,3 +119,4 @@ class AuthFlowIntegrationTest {
         return account;
     }
 }
+

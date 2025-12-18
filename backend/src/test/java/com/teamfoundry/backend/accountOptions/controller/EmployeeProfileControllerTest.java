@@ -34,7 +34,7 @@ class EmployeeProfileControllerTest {
 
     @Test
     @DisplayName("GET profile delega para o service com o email do utilizador autenticado")
-    void getProfile_delegatesToServiceWithAuthenticatedEmail() {
+    void getProfileDelegatesToServiceWithAuthenticatedEmail() {
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("user@test.com");
 
@@ -59,7 +59,7 @@ class EmployeeProfileControllerTest {
 
     @Test
     @DisplayName("PUT profile envia request e email para o service")
-    void updateProfile_delegatesToServiceWithRequestAndEmail() {
+    void updateProfileDelegatesToServiceWithRequestAndEmail() {
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("user@test.com");
 
@@ -84,7 +84,7 @@ class EmployeeProfileControllerTest {
 
     @Test
     @DisplayName("GET profile sem autenticacao propaga excecao de Unauthorized do service")
-    void getProfile_withoutAuthentication_throwsUnauthorized() {
+    void getProfileWithoutAuthenticationThrowsUnauthorized() {
         when(employeeProfileAndDocumentsService.getProfile(null))
                 .thenThrow(new ResponseStatusException(org.springframework.http.HttpStatus.UNAUTHORIZED));
 
@@ -92,3 +92,4 @@ class EmployeeProfileControllerTest {
                 .isInstanceOf(ResponseStatusException.class);
     }
 }
+
