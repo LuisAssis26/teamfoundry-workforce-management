@@ -64,16 +64,7 @@ public class AdminEmployeeSearchService {
                                                     List<String> preferredRoles,
                                                     List<String> statuses,
                                                     Integer teamId) {
-        // Actually, my previous edit REMOVED the `vacancyRole` parameter from the signature in the REPLACEMENT block but kept it in the call?
-        // Wait, checking Step 386 replacement content.
-        // It added `normVacancyRole` variable and passed it to repo.
-        // It DID NOT change the `search` method signature to accept `vacancyRole`.
-        // The controller calls `search(..., statuses, teamId)`.
-        
-        // I need to be careful with the signature matching.
-        // The Controller calls: `adminEmployeeSearchService.search(role, safeAreas, safeSkills, safePreferred, safeStatuses, teamId);` (Step 374)
-        // The Service signature in Step 372 was: `search(..., Integer teamId)`. 
-        // Then in Step 386 I edited the BODY of `search` but not the signature to add `vacancyRole` *param*, I derived it from `role`.
+
         
         
         
@@ -84,14 +75,13 @@ public class AdminEmployeeSearchService {
         List<String> normStatuses = normalizeList(statuses);
         
         String normVacancyRole = null;
-        // inclui a funÇõÇœ requisitada no filtro de funÇõÇæes para a vaga
         if (StringUtils.hasText(role)) {
             String normRole = role.trim().toLowerCase(Locale.ROOT);
-            normVacancyRole = normRole; // Store for valid vacancy filtering
-            // Do NOT enforce profile function match. Allow invited candidates with different functions.
+            normVacancyRole = normRole; 
         }
 
-        
+
+        List<String> validStatuses = statuses != null ? statuses.stream().filter(StringUtils::hasText).toList() : List.of();
 
         List<EmployeeAccount> results = employeeAccountRepository.searchCandidates(
                 normAreas,
@@ -100,8 +90,8 @@ public class AdminEmployeeSearchService {
                 normSkills.isEmpty(),
                 normRoles,
                 normRoles.isEmpty(),
-                normStatuses, // Statuses are now USED!
-                normStatuses.isEmpty(),
+                validStatuses,
+                validStatuses.isEmpty(),
                 teamId,
                 normVacancyRole
         );

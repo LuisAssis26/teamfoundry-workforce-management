@@ -34,6 +34,8 @@ public interface EmployeeRequestRepository extends JpaRepository<EmployeeRequest
             """)
     List<RoleCount> countByRoleForTeam(@Param("teamRequestId") Integer teamRequestId);
 
+    List<EmployeeRequest> findByTeamRequest_IdAndRequestedRole(Integer teamId, String requestedRole);
+
     @EntityGraph(attributePaths = {"teamRequest"})
     List<EmployeeRequest> findByTeamRequest_IdAndRequestedRoleIgnoreCaseAndEmployeeIsNull(Integer teamRequestId, String role);
 

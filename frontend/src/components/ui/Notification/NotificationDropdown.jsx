@@ -82,32 +82,7 @@ export default function NotificationDropdown() {
                         )}
                     </div>
 
-                    {hasNotifications && (
-                        <div className="border-t border-base-200 bg-base-50 p-2 text-center">
-                            <Link
-                                to={
-                                    // Determine generic link, or dynamic based on user role?
-                                    // User roles are: /candidato/... or /empresa/...
-                                    // Since we are inside EmployeeLayout or CompanyLayout, we can use a generic logic 
-                                    // or just rely on the Navbar knowing the context? 
-                                    // Wait, Navbar is shared.
-                                    // I can look at URL to guess prefix (/candidato or /empresa) or use context.
-                                    // But simpliest: The requirement said "Create section for NOTIFICATIONS in Account/Profile".
-                                    // So I should link to a dedicated page.
-                                    // Let's assume "/notifications" route or "/conta/notificacoes"?
-                                    // No, user said "Account/Profile ... create a secção".
-                                    // EmployeeLayout has /candidato/definicoes etc.
-                                    // I will create /candidato/notificacoes and /empresa/notificacoes.
-                                    // I will detect path to choose link.
-                                    window.location.pathname.startsWith("/empresa") ? "/empresa/notificacoes" : "/candidato/notificacoes"
-                                }
-                                className="text-xs font-semibold text-primary hover:underline"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                Ver todas as notificações
-                            </Link>
-                        </div>
-                    )}
+                    {/* Footer removed as per user request to delete Notifications Page */}
                 </div>
             )}
         </div>
