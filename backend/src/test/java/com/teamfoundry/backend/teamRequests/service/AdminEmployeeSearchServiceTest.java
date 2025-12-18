@@ -61,14 +61,14 @@ class AdminEmployeeSearchServiceTest {
     }
 
     @Test
-    void search_requiresAuthenticatedAdmin() {
+    void searchRequiresAuthenticatedAdmin() {
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> service.search("dev", List.of(), List.of()));
         assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
-    void search_normalizesFilters_andBuildsResponseWithLimitedExperiences() {
+    void searchNormalizesFiltersAndBuildsResponseWithLimitedExperiences() {
         AdminAccount admin = new AdminAccount(1, "admin", "pwd", UserType.ADMIN, false);
         authenticate(admin);
         when(adminAccountRepository.findByUsernameIgnoreCase("admin")).thenReturn(Optional.of(admin));
@@ -181,4 +181,5 @@ class AdminEmployeeSearchServiceTest {
         return tr;
     }
 }
+
 

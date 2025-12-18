@@ -49,7 +49,7 @@ class EmployeeProfileAndDocumentsServiceTest {
     }
 
     @Test
-    void getProfile_returnsMappedResponse() {
+    void getProfileReturnsMappedResponse() {
         when(employeeAccountRepository.findByEmail("employee@example.com"))
                 .thenReturn(Optional.of(sampleAccount));
 
@@ -70,7 +70,7 @@ class EmployeeProfileAndDocumentsServiceTest {
     }
 
     @Test
-    void updateProfile_updatesAndPersistsEntity() {
+    void updateProfileUpdatesAndPersistsEntity() {
         when(employeeAccountRepository.findByEmail("employee@example.com"))
                 .thenReturn(Optional.of(sampleAccount));
         when(employeeAccountRepository.save(any(EmployeeAccount.class)))
@@ -105,9 +105,10 @@ class EmployeeProfileAndDocumentsServiceTest {
     }
 
     @Test
-    void getProfile_withoutEmailThrowsUnauthorized() {
+    void getProfileWithoutEmailThrowsUnauthorized() {
         assertThatThrownBy(() -> employeeProfileAndDocumentsService.getProfile("   "))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasFieldOrPropertyWithValue("statusCode", HttpStatus.UNAUTHORIZED);
     }
 }
+

@@ -87,7 +87,7 @@ class CompanyVerificationControllerIntegrationTest {
 
     @Test
     @DisplayName("Envio de codigo cria token e confirma token valido atualiza responsavel")
-    void sendAndConfirm_verificationCode() throws Exception {
+    void sendAndConfirmVerificationCode() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         // Envia codigo para novo email
@@ -128,7 +128,7 @@ class CompanyVerificationControllerIntegrationTest {
 
     @Test
     @DisplayName("Confirm com codigo expirado devolve 400")
-    void confirm_withExpiredCode_returnsBadRequest() throws Exception {
+    void confirmWithExpiredCodeReturnsBadRequest() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         // cria token expirado manualmente
@@ -157,7 +157,7 @@ class CompanyVerificationControllerIntegrationTest {
 
     @Test
     @DisplayName("Confirm com email ja usado por outro responsavel deve falhar")
-    void confirm_withExistingManagerEmail_returnsError() throws Exception {
+    void confirmWithExistingManagerEmailReturnsError() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         // outro manager com email duplicado
@@ -224,3 +224,4 @@ class CompanyVerificationControllerIntegrationTest {
         return json.get("accessToken").asText();
     }
 }
+

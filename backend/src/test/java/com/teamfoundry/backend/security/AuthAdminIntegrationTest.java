@@ -52,7 +52,7 @@ class AuthAdminIntegrationTest {
 
     @Test
     @DisplayName("Login de admin retorna token e role ADMIN")
-    void admin_login_returnsTokenAndRole() throws Exception {
+    void adminLoginReturnsTokenAndRole() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "username", "admin",
                 "password", rawPassword
@@ -69,7 +69,7 @@ class AuthAdminIntegrationTest {
 
     @Test
     @DisplayName("Login de superadmin retorna token e role SUPERADMIN")
-    void superadmin_login_returnsTokenAndRole() throws Exception {
+    void superadminLoginReturnsTokenAndRole() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "username", "superadmin",
                 "password", rawPassword
@@ -86,7 +86,7 @@ class AuthAdminIntegrationTest {
 
     @Test
     @DisplayName("Credenciais erradas devolvem 401 com erro padrao")
-    void login_wrongPassword_returnsUnauthorized() throws Exception {
+    void loginWrongPasswordReturnsUnauthorized() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "username", "admin",
                 "password", "wrong"
@@ -99,3 +99,4 @@ class AuthAdminIntegrationTest {
                 .andExpect(jsonPath("$.error").value("Invalid credentials"));
     }
 }
+
