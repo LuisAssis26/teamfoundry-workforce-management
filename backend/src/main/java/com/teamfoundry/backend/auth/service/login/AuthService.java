@@ -257,4 +257,19 @@ public class AuthService {
         if (refreshToken == null || refreshToken.isBlank()) return;
         authTokenRepository.findByToken(refreshToken).ifPresent(authTokenRepository::delete);
     }
+    /**
+     * Autentica um utilizador existente sem validar password (usado em login social/OAuth).
+     */
+    public LoginResult loginWithAccount(Account account, boolean remember) {
+        ensureAccountIsActive(account);
+        String access = jwtService.generateToken(account.getEmail(), account.getRole().name(), account.getId());
+        LoginResponse resp = new LoginResponse(account.getRole().name(), "Login efetuado com sucesso", access, jwtService.getExpirationSeconds());
+        if (remember) {
+            String refresh = issueRefreshToken(account, REMEMBER_ME_DAYS);
+            return new LoginResult(resp, refresh, REMEMBER_ME_DAYS * 24 * 60 * 60);
+        }
+        String refresh = issueRefreshToken(account, SESSION_REFRESH_DAYS);
+        return new LoginResult(resp, refresh, -1);
+    }
 }
+

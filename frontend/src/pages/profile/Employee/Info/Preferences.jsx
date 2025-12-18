@@ -240,14 +240,8 @@ export default function Preferences() {
 
 function validateForm(form) {
   const errors = {};
-  if (!Array.isArray(form.roles) || form.roles.length === 0) {
-    errors.role = "Selecione pelo menos uma funcao.";
-  }
   if (!Array.isArray(form.areas) || form.areas.length === 0) {
     errors.areas = "Selecione pelo menos uma area geografica.";
-  }
-  if (!Array.isArray(form.skills) || form.skills.length === 0) {
-    errors.skills = "Selecione pelo menos uma competencia.";
   }
   return errors;
 }

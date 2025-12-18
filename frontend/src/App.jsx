@@ -59,6 +59,7 @@ import BuildTeamSearch from "./pages/admin/TeamManagement/BuildTeamSearch/BuildT
 import TeamEmployeeRequests from "./pages/admin/TeamManagement/TeamRequests/TeamEmployeeRequests.jsx";
 import ProtectedRoute from "./auth/ProtectedRoute.jsx";
 import NotificationsPage from "./pages/profile/Notifications/NotificationsPage.jsx";
+import GoogleCallback from "./pages/login/UserLogin/GoogleCallback.jsx";
 
 function App() {
   return (
@@ -77,6 +78,7 @@ function App() {
         path="/forgot-password"
         element={<Navigate to="/login" state={{ openForgotModal: true }} replace />}
       />
+      <Route path="/oauth/google/callback" element={<GoogleCallback />} />
 
       <Route path="/employee-register" element={<EmployeeRegisterLayout />}>
         <Route index element={<Navigate to="step1" replace />} />
