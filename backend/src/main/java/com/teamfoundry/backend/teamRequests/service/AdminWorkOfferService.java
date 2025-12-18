@@ -96,13 +96,19 @@ public class AdminWorkOfferService {
         inviteRepository.saveAll(toSave);
 
         // Notify candidates
+        // Notify candidates (only once per candidate for this batch)
+        Set<Integer> notifiedCandidates = new HashSet<>();
         for (EmployeeRequestOffer offer : toSave) {
+            if (notifiedCandidates.contains(offer.getEmployee().getId())) {
+                continue;
+            }
             notificationService.createNotification(
                 offer.getEmployee(),
                 "Recebeu uma nova oferta de emprego para a função " + role,
                 com.teamfoundry.backend.notification.enums.NotificationType.JOB_OFFER,
                 offer.getId()
             );
+            notifiedCandidates.add(offer.getEmployee().getId());
         }
 
         return toSave.size();

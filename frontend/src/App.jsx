@@ -53,7 +53,7 @@ import TeamManagement from "./pages/admin/TeamManagement/TeamRequests/TeamManage
 import BuildTeamSearch from "./pages/admin/TeamManagement/BuildTeamSearch/BuildTeamSearch.jsx";
 import TeamEmployeeRequests from "./pages/admin/TeamManagement/TeamRequests/TeamEmployeeRequests.jsx";
 import ProtectedRoute from "./auth/ProtectedRoute.jsx";
-import NotificationsPage from "./pages/profile/Notifications/NotificationsPage.jsx";
+// import NotificationsPage from "./pages/profile/Notifications/NotificationsPage.jsx";
 
 function App() {
   return (
@@ -130,7 +130,7 @@ function App() {
         <Route path="ofertas" element={<JobOffers />} />
         <Route path="documentos" element={<Documentos />} />
         <Route path="proximos-passos" element={<NextSteps />} />
-        <Route path="notificacoes" element={<NotificationsPage />} />
+        {/* <Route path="notificacoes" element={<NotificationsPage />} /> */}
         <Route path="definicoes" element={<Settings />} />
       </Route>
 
@@ -144,7 +144,7 @@ function App() {
       >
         <Route index element={<CompanyIndexRedirect />} />
         <Route path="informacoes" element={<CompanyInfo />} />
-        <Route path="notificacoes" element={<NotificationsPage />} />
+        {/* <Route path="notificacoes" element={<NotificationsPage />} /> */}
         <Route path="requisicoes" element={<CompanyRequests />} />
         <Route path="definicoes" element={<CompanySettings />} />
       </Route>

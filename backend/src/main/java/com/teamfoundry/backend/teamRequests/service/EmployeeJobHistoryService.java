@@ -64,29 +64,63 @@ public class EmployeeJobHistoryService {
         List<EmployeeRequestOffer> invites = employeeRequestOfferRepository.findAllInvitesByEmployeeEmail(normalized);
         List<EmployeeRequest> acceptedByUser = employeeRequestRepository.findByEmployee_EmailOrderByAcceptedDateDesc(normalized);
 
-        Map<Integer, EmployeeJobSummary> summaries = new LinkedHashMap<>();
+        Map<String, EmployeeJobSummary> groupedSummaries = new LinkedHashMap<>();
 
-        // Convites (inclui fechados/aceites)
+        // Group invites by (TeamID + Role)
+        // If ANY invite in the group points to an OPEN slot, the whole group is "OPEN".
+        // Otherwise "CLOSED" (Sold Out).
         for (EmployeeRequestOffer invite : invites) {
             EmployeeRequest req = invite.getEmployeeRequest();
             if (req == null || req.getTeamRequest() == null) continue;
 
-            String status = "OPEN";
-            if (req.getEmployee() != null) {
-                status = Objects.equals(req.getEmployee().getId(), employee.getId()) ? "ACCEPTED" : "CLOSED";
-            } else if (isConcluded(req.getTeamRequest())) {
-                status = "CLOSED";
+            TeamRequest teamRequest = req.getTeamRequest();
+            Integer teamId = teamRequest.getId();
+            String role = req.getRequestedRole();
+            String key = teamId + "::" + role;
+
+            boolean isPersonalAccept = req.getEmployee() != null && Objects.equals(req.getEmployee().getId(), employee.getId());
+            
+            // If the user already accepted THIS SPECIFIC request, add it directly (priority display)
+            if (isPersonalAccept) {
+                groupedSummaries.put("ACCEPTED_" + req.getId(), toSummary(req, "ACCEPTED"));
+                continue;
             }
-            summaries.put(req.getId(), toSummary(req, status));
+
+            // Check status of this specific slot
+            boolean slotIsOpen = (req.getEmployee() == null) && !isConcluded(teamRequest);
+            
+            // Logica de agrupamento
+            // Logica de agrupamento
+            groupedSummaries.compute(key, (k, existing) -> {
+                if (existing == null) {
+                    // Create new group summary
+                    String status = slotIsOpen ? "OPEN" : "CLOSED";
+                    return toSummary(req, status);
+                } else {
+                    // Update existing group summary if we found an open slot and previous was closed
+                    if ("CLOSED".equals(existing.getStatus()) && slotIsOpen) {
+                        return toSummary(req, "OPEN"); // Upgrade to OPEN, pointing to this open RequestID
+                    }
+                    return existing;
+                }
+            });
         }
 
-        // Garantir que aceites do proprio sempre aparecem
+        // Add already accepted requests that might not have invites (legacy or direct assignment)
         for (EmployeeRequest req : acceptedByUser) {
             if (req.getTeamRequest() == null) continue;
-            summaries.put(req.getId(), toSummary(req, "ACCEPTED"));
+            // distinct key to avoid overwriting grouped offers if logic overlaps, though accepted usually handled above if invited
+            groupedSummaries.put("ACCEPTED_" + req.getId(), toSummary(req, "ACCEPTED"));
+            
+            // Critical: If I accepted a role in this team, I should NOT see the "OPEN" invite for the same role/team anymore.
+            // Remove the grouped invite for this Team/Role
+            Integer teamId = req.getTeamRequest().getId();
+            String role = req.getRequestedRole();
+            String key = teamId + "::" + role;
+            groupedSummaries.remove(key);
         }
 
-        return summaries.values().stream().toList();
+        return groupedSummaries.values().stream().toList();
     }
 
     public EmployeeJobSummary acceptOffer(Integer requestId, String email) {
@@ -96,25 +130,63 @@ public class EmployeeJobHistoryService {
         String normalizedEmail = email.trim().toLowerCase();
         EmployeeAccount employee = findEmployee(normalizedEmail);
 
-        EmployeeRequest request = employeeRequestRepository.findById(requestId)
+        // Fetch the specific request the user clicked on
+        EmployeeRequest initialRequest = employeeRequestRepository.findById(requestId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Oferta nao encontrada."));
 
-        if (request.getEmployee() != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Vaga ja ocupada.");
+        final int targetTeamId = initialRequest.getTeamRequest().getId();
+        final String targetRole = initialRequest.getRequestedRole();
+
+        // Verify Invite
+        boolean invited = employeeRequestOfferRepository
+                .findActiveInvitesByEmployeeEmail(normalizedEmail)
+                .stream()
+                .anyMatch(inv -> inv.getEmployeeRequest() != null &&
+                        inv.getEmployeeRequest().getTeamRequest().getId() == targetTeamId &&
+                        inv.getEmployeeRequest().getRequestedRole().equals(targetRole));
+
+        if (!invited) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem convite para esta oferta.");
         }
 
-        TeamRequest teamRequest = request.getTeamRequest();
+        EmployeeRequest targetRequest = initialRequest;
+
+        // --- POOL LOGIC START ---
+        // If targetRequest is taken, look for siblings
+        if (targetRequest.getEmployee() != null) {
+            // Find another open slot in the same Team Request for the same Role
+            List<EmployeeRequest> siblings = employeeRequestRepository.findByTeamRequest_IdAndRequestedRole(
+                    targetRequest.getTeamRequest().getId(),
+                    targetRequest.getRequestedRole()
+            );
+
+            targetRequest = siblings.stream()
+                    .filter(r -> r.getEmployee() == null)
+                    .findFirst()
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "Vagas esgotadas."));
+        }
+        // --- POOL LOGIC END ---
+
+        // Double check conflict (redundant but safe)
+        if (targetRequest.getEmployee() != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Todas as vagas para esta função foram preenchidas.");
+        }
+
+        TeamRequest teamRequest = targetRequest.getTeamRequest();
         Integer teamId = teamRequest != null ? teamRequest.getId() : null;
+        
+        // Prevent double booking in same team
         if (teamId != null && employeeRequestRepository.countAcceptedForTeam(teamId, employee.getId()) > 0) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Voce ja ocupa uma vaga nesta equipa.");
         }
 
+        // Time overlap check
         LocalDateTime startDate = teamRequest != null ? teamRequest.getStartDate() : null;
         LocalDateTime endDate = teamRequest != null ? teamRequest.getEndDate() : null;
         if (startDate != null && endDate != null) {
             long overlapping = employeeRequestRepository.countOverlappingAccepted(
                     employee.getId(),
-                    request.getId(),
+                    targetRequest.getId(),
                     startDate,
                     endDate
             );
@@ -123,22 +195,38 @@ public class EmployeeJobHistoryService {
             }
         }
 
-        boolean invited = employeeRequestOfferRepository
-                .findActiveInvitesByEmployeeEmail(normalizedEmail)
-                .stream()
-                .anyMatch(inv -> inv.getEmployeeRequest() != null && inv.getEmployeeRequest().getId() == requestId);
-        if (!invited) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem convite para esta oferta.");
+        // Assign
+        targetRequest.setEmployee(employee);
+        targetRequest.setAcceptedDate(LocalDateTime.now());
+        EmployeeRequest saved = employeeRequestRepository.save(targetRequest);
+
+        // Deactivate all invites for this user for THIS Team Request + Role (group deactivation)
+        // Use a custom repository method or loop. 
+        // Existing method `deactivateInvitesForRequest` deactivates for a single ID.
+        // We need to deactivate for the GROUP.
+        // Let's verify existing repo capabilities. 
+        // `deactivateInvitesForRequest` is by RequestID.
+        // We probably want to deactivate for the whole TeamRequest?? 
+        // No, maybe user is invited to Role A and Role B in same team? 
+        // Requirement: "só apareça uma request para ele daquela exata função para aquela equipa"
+        // So we should deactivate invites for (Team, Role).
+        // For simplicity, we can fetch all invites for this user for this team/role and set active=false.
+        
+        // We'll trust that the user only cares about this specific role acceptance closing the notification.
+        // But since we group them, we should likely close all "sibling" invites.
+        // I will implement a quick loop here since complex repo method might be overkill or risky to add blindly.
+        List<EmployeeRequestOffer> userInvites = employeeRequestOfferRepository.findActiveInvitesByEmployeeEmail(normalizedEmail);
+        for (EmployeeRequestOffer offer : userInvites) {
+            if (offer.getEmployeeRequest().getTeamRequest().getId() == teamId && 
+                offer.getEmployeeRequest().getRequestedRole().equals(targetRequest.getRequestedRole())) {
+                offer.setActive(false);
+                employeeRequestOfferRepository.save(offer);
+            }
         }
 
-        request.setEmployee(employee);
-        request.setAcceptedDate(LocalDateTime.now());
-        EmployeeRequest saved = employeeRequestRepository.save(request);
+        actionLogService.logUser(employee, "Aceitou oferta " + saved.getId() + " (Pool)");
 
-        employeeRequestOfferRepository.deactivateInvitesForRequest(requestId, employee.getId());
-        actionLogService.logUser(employee, "Aceitou oferta " + requestId);
-
-        // Check if TeamRequest is complete
+        // Check completion
         if (teamId != null) {
             long openSpots = employeeRequestRepository.countByTeamRequest_IdAndEmployeeIsNull(teamId);
             if (openSpots == 0) {

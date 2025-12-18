@@ -84,14 +84,14 @@ public class AdminEmployeeSearchService {
         List<String> normStatuses = normalizeList(statuses);
         
         String normVacancyRole = null;
-        // inclui a funÇõÇœ requisitada no filtro de funÇõÇæes para a vaga
         if (StringUtils.hasText(role)) {
             String normRole = role.trim().toLowerCase(Locale.ROOT);
-            normVacancyRole = normRole; // Store for valid vacancy filtering
-            // Do NOT enforce profile function match. Allow invited candidates with different functions.
+            normVacancyRole = normRole; 
         }
 
-        
+        // Statuses are constants (enums), so we should NOT lowercase them
+        // The SQL query checks 'INVITED' IN :statuses
+        List<String> validStatuses = statuses != null ? statuses.stream().filter(StringUtils::hasText).toList() : List.of();
 
         List<EmployeeAccount> results = employeeAccountRepository.searchCandidates(
                 normAreas,
@@ -100,8 +100,8 @@ public class AdminEmployeeSearchService {
                 normSkills.isEmpty(),
                 normRoles,
                 normRoles.isEmpty(),
-                normStatuses, // Statuses are now USED!
-                normStatuses.isEmpty(),
+                validStatuses,
+                validStatuses.isEmpty(),
                 teamId,
                 normVacancyRole
         );
