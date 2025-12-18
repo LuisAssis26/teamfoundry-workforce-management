@@ -71,7 +71,7 @@ class AdminCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("GET /api/super-admin/credentials/admins devolve admins ativos ordenados")
-    void listAdmins_returnsActiveAdminsSorted() throws Exception {
+    void listAdminsReturnsActiveAdminsSorted() throws Exception {
         adminAccountRepository.save(new AdminAccount(0, "beta-admin",
                 passwordEncoder.encode(adminPassword), UserType.ADMIN, false));
         adminAccountRepository.save(new AdminAccount(0, "alpha-admin",
@@ -90,7 +90,7 @@ class AdminCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("POST /admins cria novo admin quando super admin autentica e envia password correta")
-    void createAdmin_withValidPassword_createsAdmin() throws Exception {
+    void createAdminWithValidPasswordCreatesAdmin() throws Exception {
         String token = login(superUsername, superPassword);
         Map<String, Object> payload = Map.of(
                 "username", "newadmin",
@@ -114,7 +114,7 @@ class AdminCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("PUT /admins atualiza username, role e password quando autenticado")
-    void updateAdmin_updatesFields() throws Exception {
+    void updateAdminUpdatesFields() throws Exception {
         String token = login(superUsername, superPassword);
         AdminAccount existing = adminAccountRepository.findByUsername("admin").orElseThrow();
 
@@ -140,7 +140,7 @@ class AdminCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("Admin comum nao consegue criar administradores")
-    void createAdmin_withAdminToken_returnsForbidden() throws Exception {
+    void createAdminWithAdminTokenReturnsForbidden() throws Exception {
         String adminToken = login("admin", adminPassword);
         Map<String, Object> payload = Map.of(
                 "username", "forbidden",
@@ -158,7 +158,7 @@ class AdminCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("DELETE /admins/{id} falha se admin tem requisicoes atribuidas")
-    void disableAdmin_withAssignments_returnsBadRequest() throws Exception {
+    void disableAdminWithAssignmentsReturnsBadRequest() throws Exception {
         String token = login(superUsername, superPassword);
         AdminAccount assigned = adminAccountRepository.save(new AdminAccount(0, "assigned",
                 passwordEncoder.encode(adminPassword), UserType.ADMIN, false));
@@ -183,7 +183,7 @@ class AdminCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("DELETE /admins/{id} desativa admin sem atribuicoes")
-    void disableAdmin_withoutAssignments_deactivatesAdmin() throws Exception {
+    void disableAdminWithoutAssignmentsDeactivatesAdmin() throws Exception {
         String token = login(superUsername, superPassword);
         AdminAccount target = adminAccountRepository.save(new AdminAccount(0, "to-disable",
                 passwordEncoder.encode(adminPassword), UserType.ADMIN, false));
@@ -231,3 +231,4 @@ class AdminCredentialControllerIntegrationTest {
         return companyAccountRepository.save(company);
     }
 }
+

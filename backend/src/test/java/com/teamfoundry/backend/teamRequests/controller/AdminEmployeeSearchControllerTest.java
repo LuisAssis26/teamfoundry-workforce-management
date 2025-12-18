@@ -27,7 +27,7 @@ class AdminEmployeeSearchControllerTest {
     @InjectMocks AdminEmployeeSearchController controller;
 
     @Test
-    void search_whenAreasAndSkillsNull_passesEmptyLists() {
+    void searchWhenAreasAndSkillsNullPassesEmptyLists() {
         List<AdminEmployeeSearchResponse> expected = List.of(
                 new AdminEmployeeSearchResponse(1, "Ana", "Silva", "ana@test.com", "999",
                         "dev", List.of(), List.of(), List.of())
@@ -41,4 +41,5 @@ class AdminEmployeeSearchControllerTest {
         verify(adminEmployeeSearchService).search("dev", Collections.emptyList(), Collections.emptyList());
     }
 }
+
 

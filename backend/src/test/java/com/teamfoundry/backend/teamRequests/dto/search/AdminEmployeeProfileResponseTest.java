@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AdminEmployeeProfileResponseTest {
 
     @Test
-    void record_structure_matches_contract() {
+    void recordStructureMatchesContract() {
         assertThat(AdminEmployeeProfileResponse.class.isRecord()).isTrue();
 
         RecordComponent[] components = AdminEmployeeProfileResponse.class.getRecordComponents();
@@ -52,7 +52,7 @@ class AdminEmployeeProfileResponseTest {
     }
 
     @Test
-    void accessors_return_constructor_values() {
+    void accessorsReturnConstructorValues() {
         LocalDate birthDate = LocalDate.of(1999, 5, 12);
         List<String> skills = List.of("Java", "Spring");
         List<String> areas = List.of("Lisboa");
@@ -88,7 +88,7 @@ class AdminEmployeeProfileResponseTest {
     }
 
     @Test
-    void equals_and_hashcode_are_value_based() {
+    void equalsAndHashcodeAreValueBased() {
         LocalDate birthDate = LocalDate.of(2000, 1, 1);
         List<String> skills = List.of("Java");
         List<String> areas = List.of("Porto");

@@ -34,7 +34,7 @@ class LogsServiceTest {
     @InjectMocks LogsService service;
 
     @Test
-    void search_withYearAndMonth_filtersBothRepositories_andSorts() {
+    void searchWithYearAndMonthFiltersBothRepositoriesAndSorts() {
         LocalDateTime adminTime = LocalDateTime.of(2024, 5, 20, 10, 0);
         LocalDateTime userTime = LocalDateTime.of(2024, 5, 1, 12, 0);
 
@@ -68,7 +68,7 @@ class LogsServiceTest {
     }
 
     @Test
-    void search_withUserType_onlyQueriesUsers_andAppliesLimit() {
+    void searchWithUserTypeOnlyQueriesUsersAndAppliesLimit() {
         LocalDateTime newer = LocalDateTime.now();
         LocalDateTime older = newer.minusDays(1);
         when(commonLogsRepository.searchByPeriodAndQuery(null, null, "test"))
@@ -87,7 +87,7 @@ class LogsServiceTest {
     }
 
     @Test
-    void search_withAdminType_capsLimitAndSkipsUserRepository() {
+    void searchWithAdminTypeCapsLimitAndSkipsUserRepository() {
         LocalDateTime base = LocalDateTime.of(2024, 1, 1, 0, 0);
         List<AdminLogs> logs = IntStream.range(0, 600)
                 .mapToObj(i -> adminLog("admin" + i, "action" + i, base.plusMinutes(i)))
@@ -124,3 +124,4 @@ class LogsServiceTest {
         return log;
     }
 }
+

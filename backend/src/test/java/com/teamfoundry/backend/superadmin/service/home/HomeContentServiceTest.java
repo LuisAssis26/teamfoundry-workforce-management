@@ -55,7 +55,7 @@ class HomeContentServiceTest {
     }
 
     @Test
-    void updateIndustry_whenImageChanges_deletesOldImage() {
+    void updateIndustryWhenImageChangesDeletesOldImage() {
         IndustryShowcase entity = new IndustryShowcase();
         entity.setId(5L);
         entity.setImageUrl("https://res.cloudinary.com/demo/image/upload/v1/old.png");
@@ -78,7 +78,7 @@ class HomeContentServiceTest {
     }
 
     @Test
-    void createWeeklyTip_whenLimitReached_throwsBadRequest() {
+    void createWeeklyTipWhenLimitReachedThrowsBadRequest() {
         when(weeklyTips.count()).thenReturn(11L);
 
         WeeklyTipRequest request = new WeeklyTipRequest(
@@ -93,7 +93,7 @@ class HomeContentServiceTest {
     }
 
     @Test
-    void reorderSections_withMissingIds_throwsBadRequest() {
+    void reorderSectionsWithMissingIdsThrowsBadRequest() {
         HomeNoLoginSection hero = section(1L, SiteSectionType.HERO, 0);
         HomeNoLoginSection partnersSection = section(2L, SiteSectionType.PARTNERS, 1);
         when(sections.findAllByOrderByDisplayOrderAsc()).thenReturn(List.of(hero, partnersSection));
@@ -106,7 +106,7 @@ class HomeContentServiceTest {
     }
 
     @Test
-    void markWeeklyTipFeatured_clearsOtherFeatured() {
+    void markWeeklyTipFeaturedClearsOtherFeatured() {
         WeeklyTip alreadyFeatured = new WeeklyTip();
         alreadyFeatured.setId(1L);
         alreadyFeatured.setFeatured(true);
@@ -127,7 +127,7 @@ class HomeContentServiceTest {
     }
 
     @Test
-    void updateHomeLoginSection_updatesFields() {
+    void updateHomeLoginSectionUpdatesFields() {
         HomeLoginSection section = new HomeLoginSection();
         section.setId(10L);
         section.setType(HomeLoginSectionType.NEWS);
@@ -163,3 +163,4 @@ class HomeContentServiceTest {
         return s;
     }
 }
+

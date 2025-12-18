@@ -77,7 +77,7 @@ class AdminTeamRequestControllerIntegrationTest {
     }
 
     @Test
-    void listAssignedRequests_returnsWorkforceCounts() throws Exception {
+    void listAssignedRequestsReturnsWorkforceCounts() throws Exception {
         String token = login(adminUsername, adminPassword);
         CompanyAccount company = createCompany("company@test.com", 123456789);
         TeamRequest assigned = createTeamRequest(company, "Team", State.INCOMPLETE, LocalDateTime.now(), adminId);
@@ -93,7 +93,7 @@ class AdminTeamRequestControllerIntegrationTest {
     }
 
     @Test
-    void getAssignedRequest_returnsDetails() throws Exception {
+    void getAssignedRequestReturnsDetails() throws Exception {
         String token = login(adminUsername, adminPassword);
         CompanyAccount company = createCompany("company2@test.com", 987654321);
         TeamRequest assigned = createTeamRequest(company, "Alpha", State.INCOMPLETE, LocalDateTime.now(), adminId);
@@ -108,7 +108,7 @@ class AdminTeamRequestControllerIntegrationTest {
     }
 
     @Test
-    void getAssignedRequest_whenNotAssigned_returnsForbidden() throws Exception {
+    void getAssignedRequestWhenNotAssignedReturnsForbidden() throws Exception {
         String token = login(adminUsername, adminPassword);
         CompanyAccount company = createCompany("other@test.com", 111222333);
         TeamRequest other = createTeamRequest(company, "Other", State.INCOMPLETE, LocalDateTime.now(), adminId + 999);
@@ -119,7 +119,7 @@ class AdminTeamRequestControllerIntegrationTest {
     }
 
     @Test
-    void listRoles_returnsAggregatedCountsAndInvites() throws Exception {
+    void listRolesReturnsAggregatedCountsAndInvites() throws Exception {
         String token = login(adminUsername, adminPassword);
         CompanyAccount company = createCompany("roles@test.com", 444555666);
         TeamRequest assigned = createTeamRequest(company, "Roles", State.INCOMPLETE, LocalDateTime.now(), adminId);
@@ -223,3 +223,4 @@ class AdminTeamRequestControllerIntegrationTest {
         return offer;
     }
 }
+

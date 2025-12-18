@@ -60,7 +60,7 @@ class AuthLoginRolesIntegrationTest {
     }
 
     @Test
-    void login_candidate_returns_access_token_and_role_employee() throws Exception {
+    void loginCandidateReturnsAccessTokenAndRoleEmployee() throws Exception {
         employeeAccountRepository.save(buildEmployee("candidate@test.com", true));
 
         var body = objectMapper.writeValueAsString(Map.of(
@@ -78,7 +78,7 @@ class AuthLoginRolesIntegrationTest {
     }
 
     @Test
-    void login_company_returns_access_token_and_role_company() throws Exception {
+    void loginCompanyReturnsAccessTokenAndRoleCompany() throws Exception {
         companyAccountRepository.save(buildCompany("company@test.com", true));
 
         var body = objectMapper.writeValueAsString(Map.of(
@@ -121,3 +121,4 @@ class AuthLoginRolesIntegrationTest {
         return account;
     }
 }
+
