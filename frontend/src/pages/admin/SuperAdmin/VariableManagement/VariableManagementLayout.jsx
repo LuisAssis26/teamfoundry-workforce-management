@@ -7,6 +7,7 @@ import ShowcaseModal from "./components/ShowcaseModal.jsx";
 import { AppHomeProvider } from "../AppHome/AppHomeContext.jsx";
 import AppHomeLayout from "../AppHome/AppHomeLayout.jsx";
 import CombinedOrderCard from "./components/CombinedOrderCard.jsx";
+import Tabs from "../../../../components/sections/Tabs.jsx";
 
 export default function VariableManagementLayout() {
   const {
@@ -47,6 +48,11 @@ export default function VariableManagementLayout() {
 
   if (!config) return null;
 
+  const viewTabs = VIEW_TABS.map((tab) => ({
+    key: tab.id,
+    label: tab.label,
+  }));
+
   const renderContent = () => {
     if (activeView === "home") {
       return (
@@ -72,22 +78,15 @@ export default function VariableManagementLayout() {
   return (
     <section className="space-y-12 pt-8">
       <header>
-        <p className="text-sm uppercase tracking-[0.35em] text-primary/80">Gestao do site</p>
-        <h1 className="text-4xl font-extrabold text-primary">Configuracoes do site</h1>
+        <h1 className="text-4xl font-extrabold text-primary">Configurações do Site</h1>
       </header>
 
-      <nav className="tabs tabs-boxed bg-base-100 shadow-sm w-full md:w-fit">
-        {VIEW_TABS.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            className={`tab ${activeView === tab.id ? "tab-active" : ""}`}
-            onClick={() => setActiveView(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </nav>
+      <Tabs
+        tabs={viewTabs}
+        activeKey={activeView}
+        onTabChange={setActiveView}
+        className="mt-0"
+      />
 
       {renderContent()}
 

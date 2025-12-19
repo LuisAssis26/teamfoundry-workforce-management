@@ -6,8 +6,17 @@ export default function AppWeeklyTipSection({ form, saving, onFieldChange, onSub
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body space-y-6">
-        <div>
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <h2 className="card-title text-3xl">Dica da semana</h2>
+          <label className="flex items-center gap-3">
+            <span className="label-text font-semibold">Visibilidade:</span>
+            <input
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={form.active}
+              onChange={(e) => onFieldChange("active", e.target.checked)}
+            />
+          </label>
         </div>
         <form className="space-y-4" onSubmit={onSubmit}>
           <FieldGroup
@@ -32,17 +41,7 @@ export default function AppWeeklyTipSection({ form, saving, onFieldChange, onSub
               placeholder="/dicas"
               className="flex-1"
             />
-          </div>
-
-          <label className="flex flex-col gap-2 items-start w-fit">
-            <span className="label-text font-semibold">Mostrar seção:</span>
-            <input
-              type="checkbox"
-              className="toggle toggle-primary"
-              checked={form.active}
-              onChange={(e) => onFieldChange("active", e.target.checked)}
-            />
-          </label>
+          </div>
 
           <div className="flex justify-end">
             <button type="submit" className="btn btn-primary" disabled={saving}>

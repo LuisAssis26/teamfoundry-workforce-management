@@ -12,7 +12,7 @@ export default function WeeklyTipSection({ section, tipOfWeek, error, fallbackTi
   const ctaUrl = section?.primaryCtaUrl ?? "/dicas";
 
   return (
-    <section className="max-w-6xl mx-auto px-6 pb-14">
+    <section className="max-w-6xl mx-auto px-6">
       <div className="rounded-3xl border border-base-200 bg-base-100 shadow p-8">
         <p className="text-sm uppercase tracking-[0.4em] text-primary/80 mb-2">{sectionTitle}</p>
         <div className="flex flex-col gap-2">

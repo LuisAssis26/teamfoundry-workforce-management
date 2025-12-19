@@ -113,7 +113,7 @@ export default function Tabs({ tabs, className = "", activeKey, onTabChange }) {
 Tabs.propTypes = {
   tabs: PropTypes.arrayOf(
     PropTypes.shape({
-      to: PropTypes.string.isRequired,
+      to: PropTypes.string,
       label: PropTypes.string.isRequired,
       key: PropTypes.string,
     })

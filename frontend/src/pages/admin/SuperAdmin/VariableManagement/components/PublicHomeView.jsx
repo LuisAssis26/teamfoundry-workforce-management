@@ -42,7 +42,20 @@ export default function PublicHomeView({
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body space-y-6">
             <div>
-              <h2 className="card-title text-3xl">Hero público</h2>
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <h2 className="card-title text-3xl">Hero público</h2>
+                {heroForm && (
+                  <label className="flex items-center gap-3">
+                    <span className="label-text font-semibold">Visibilidade:</span>
+                    <input
+                      type="checkbox"
+                      className="toggle toggle-primary"
+                      checked={heroForm.active}
+                      onChange={() => handleHeroFieldChange("active", !heroForm.active)}
+                    />
+                  </label>
+                )}
+              </div>
               <p className="text-base-content/70">
                 Edite título, subtítulo e os botões principais que aparecem na homepage pública.
               </p>
@@ -63,7 +76,7 @@ export default function PublicHomeView({
                 <label className="flex flex-col gap-2 items-start md:col-span-2">
                   <span className="label-text font-semibold">Subtítulo:</span>
                   <textarea
-                    className="textarea textarea-bordered min-h-[120px]"
+                    className="textarea textarea-bordered min-h-[96px] resize-none"
                     value={heroForm.subtitle}
                     onChange={(e) => handleHeroFieldChange("subtitle", e.target.value)}
                   />
@@ -93,16 +106,6 @@ export default function PublicHomeView({
                   onChange={(value) => handleHeroFieldChange("secondaryCtaUrl", value)}
                   placeholder="/company-register"
                 />
-
-                <label className="flex flex-col gap-2 items-start">
-                  <span className="label-text font-semibold">Visibilidade:</span>
-                  <input
-                    type="checkbox"
-                    className="toggle toggle-primary"
-                    checked={heroForm.active}
-                    onChange={() => handleHeroFieldChange("active", !heroForm.active)}
-                  />
-                </label>
 
                 <div className="md:col-span-2 flex justify-end">
                   <button type="submit" className={`btn btn-primary ${savingHero ? "loading" : ""}`} disabled={savingHero}>

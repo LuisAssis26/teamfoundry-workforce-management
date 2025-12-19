@@ -52,15 +52,24 @@ function PublicHero({ section }) {
   return (
     <section
       id="hero"
-      className="relative text-primary-content overflow-hidden min-h-[24rem] md:min-h-[28rem] flex items-center"
+      className="relative text-primary-content overflow-hidden min-h-[26rem] md:min-h-[30rem] flex items-center"
       style={{
         backgroundImage: "url('/hero-home.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="absolute inset-0 bg-primary/50" aria-hidden="true" />
-      <div className="relative max-w-6xl mx-auto px-6 py-16 md:py-20 text-center space-y-5 w-full">
+      <div className="absolute inset-0 bg-primary/80" aria-hidden="true" />
+      <div
+        className="absolute inset-0 mix-blend-screen opacity-60"
+        aria-hidden="true"
+        style={{
+          background:
+            "radial-gradient(90% 70% at 20% 30%, rgba(255,255,255,0.16), transparent 35%), radial-gradient(110% 90% at 80% 15%, rgba(255,255,255,0.12), transparent 45%)",
+        }}
+      />
+      <div className="relative max-w-6xl mx-auto px-6 py-14 md:py-20 text-center space-y-5 w-full">
         <h1 className="text-4xl md:text-5xl font-extrabold">
           {section?.title ?? "Team Foundry"}
         </h1>
@@ -114,7 +123,7 @@ function AreasSection({ section, industries }) {
 
 function PartnersSection({ section, partners }) {
   return (
-    <section id="parceiros" className="bg-base-100 py-16 mb-16">
+    <section id="parceiros" className="bg-base-100 pt-0 pb-16 mb-20">
       <div className="max-w-6xl mx-auto px-6 space-y-10">
         <SectionHeader
           section={section}
