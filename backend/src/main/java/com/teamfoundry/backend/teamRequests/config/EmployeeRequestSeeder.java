@@ -78,37 +78,45 @@ public class EmployeeRequestSeeder {
 
     private List<EmployeeRequestSeed> defaultSeeds() {
         LocalDateTime now = LocalDateTime.now();
+        List<EmployeeRequestSeed> seeds = new ArrayList<>();
 
-        return List.of(
-                // Equipe Retrofit Norte (INCOMPLETE, admin1) -> vagas abertas
-                new EmployeeRequestSeed("Equipe Retrofit Norte", "Eletricista", null, null, now.minusDays(1), new BigDecimal("1800")),
-                new EmployeeRequestSeed("Equipe Retrofit Norte", "Eletricista", null, null, now.minusDays(1), new BigDecimal("1800")),
-                new EmployeeRequestSeed("Equipe Retrofit Norte", "Soldador", null, null, now.minusDays(1), new BigDecimal("1700")),
-                new EmployeeRequestSeed("Equipe Retrofit Norte", "Canalizador", null, null, now.minusDays(1), new BigDecimal("1600")),
+        addOpenRequests(seeds, "Squad Retrofit Alfa", 7, now.minusDays(2), new BigDecimal("1750"));
+        addOpenRequests(seeds, "Equipe Manutencao Norte", 8, now.minusDays(2), new BigDecimal("1650"));
+        addOpenRequests(seeds, "Time Soldagem Linha 2", 9, now.minusDays(3), new BigDecimal("1700"));
+        addOpenRequests(seeds, "Equipe Montagem Sul", 10, now.minusDays(1), new BigDecimal("1600"));
+        addOpenRequests(seeds, "Squad Eletrica Delta", 11, now.minusDays(4), new BigDecimal("1900"));
+        addOpenRequests(seeds, "Time Canalizacao Oeste", 12, now.minusDays(3), new BigDecimal("1680"));
+        addOpenRequests(seeds, "Equipe Automacao Leste", 13, now.minusDays(5), new BigDecimal("2000"));
+        addOpenRequests(seeds, "Time Inspecao 3D", 14, now.minusDays(2), new BigDecimal("1750"));
+        addOpenRequests(seeds, "Squad Logistica Turno B", 15, now.minusDays(6), new BigDecimal("1550"));
+        addOpenRequests(seeds, "Equipe Montagem Beta", 7, now.minusDays(1), new BigDecimal("1620"));
 
-                // Task force Soldagem (INCOMPLETE, admin2) -> abertas
-                new EmployeeRequestSeed("Task force Soldagem", "Soldador", null, null, now.minusDays(2), new BigDecimal("1750")),
-                new EmployeeRequestSeed("Task force Soldagem", "Soldador", null, null, now.minusDays(2), new BigDecimal("1750")),
-                new EmployeeRequestSeed("Task force Soldagem", "Carpinteiro", null, null, now.minusDays(2), new BigDecimal("1500")),
+        return seeds;
+    }
 
-                // Montagem Industrial Sul (INCOMPLETE, admin3) -> abertas
-                new EmployeeRequestSeed("Montagem Industrial Sul", "Canalizador", null, null, now.minusDays(3), new BigDecimal("1650")),
-                new EmployeeRequestSeed("Montagem Industrial Sul", "Canalizador", null, null, now.minusDays(3), new BigDecimal("1650")),
-                new EmployeeRequestSeed("Montagem Industrial Sul", "Eletricista", null, null, now.minusDays(3), new BigDecimal("1800")),
+    private void addOpenRequests(List<EmployeeRequestSeed> seeds,
+                                 String teamName,
+                                 int count,
+                                 LocalDateTime createdAt,
+                                 BigDecimal baseSalary) {
+        String[] roles = {
+                "Eletricista",
+                "Soldador",
+                "Canalizador",
+                "Carpinteiro",
+                "Mecanico",
+                "Montador",
+                "Supervisor",
+                "Tecnico",
+                "Operador",
+                "Inspetor"
+        };
 
-                // Linha Robotizada A (COMPLETE) -> preenchidas
-                new EmployeeRequestSeed("Linha Robotizada A", "Eletricista", "joao.silva@teamfoundry.com", now.minusDays(50), now.minusDays(55), new BigDecimal("1900")),
-                new EmployeeRequestSeed("Linha Robotizada A", "Soldador", "tiago.rocha@teamfoundry.com", now.minusDays(48), now.minusDays(52), new BigDecimal("1850")),
-                new EmployeeRequestSeed("Linha Robotizada A", "Carpinteiro", "joana.pereira@teamfoundry.com", now.minusDays(46), now.minusDays(50), new BigDecimal("1600")),
-
-                // Squad SCADA Norte (COMPLETE) -> preenchidas
-                new EmployeeRequestSeed("Squad SCADA Norte", "Eletricista", "daniel.matos@teamfoundry.com", now.minusDays(35), now.minusDays(38), new BigDecimal("1950")),
-                new EmployeeRequestSeed("Squad SCADA Norte", "Soldador", "patricia.medeiros@teamfoundry.com", now.minusDays(34), now.minusDays(37), new BigDecimal("1800")),
-
-                // Equipa Solar Oeste (COMPLETE) -> preenchidas
-                new EmployeeRequestSeed("Equipa Solar Oeste", "Canalizador", "carla.ferreira@teamfoundry.com", now.minusDays(25), now.minusDays(28), new BigDecimal("1700")),
-                new EmployeeRequestSeed("Equipa Solar Oeste", "Eletricista", "sofia.lima@teamfoundry.com", now.minusDays(24), now.minusDays(27), new BigDecimal("1850"))
-        );
+        for (int i = 0; i < count; i++) {
+            String role = roles[i % roles.length];
+            BigDecimal salary = baseSalary.add(BigDecimal.valueOf(50L * (i % 4)));
+            seeds.add(new EmployeeRequestSeed(teamName, role, null, null, createdAt, salary));
+        }
     }
 
     private record EmployeeRequestSeed(

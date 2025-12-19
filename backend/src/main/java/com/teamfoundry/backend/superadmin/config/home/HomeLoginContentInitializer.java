@@ -73,8 +73,8 @@ public class HomeLoginContentInitializer implements CommandLineRunner {
                 createSection(
                         HomeLoginSectionType.NEWS,
                         2,
-                        "Noticias da NewsAPI",
-                        "As manchetes sao sincronizadas automaticamente. Ajuste apenas quantos cards deseja mostrar (maximo de 6).",
+                        "Noticias (GDELT)",
+                        "As manchetes sao sincronizadas automaticamente a partir do GDELT. Ajuste quantos cards deseja mostrar (maximo de 6).",
                         null,
                         "Ver mais",
                         "#",

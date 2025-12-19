@@ -6,12 +6,21 @@ export default function AppWeeklyTipSection({ form, saving, onFieldChange, onSub
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body space-y-6">
-        <div>
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <h2 className="card-title text-3xl">Dica da semana</h2>
+          <label className="flex items-center gap-3">
+            <span className="label-text font-semibold">Visibilidade:</span>
+            <input
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={form.active}
+              onChange={(e) => onFieldChange("active", e.target.checked)}
+            />
+          </label>
         </div>
         <form className="space-y-4" onSubmit={onSubmit}>
           <FieldGroup
-            label="Titulo"
+            label="Título"
             value={form.title}
             onChange={(value) => onFieldChange("title", value)}
             placeholder="Dica da semana"
@@ -19,30 +28,20 @@ export default function AppWeeklyTipSection({ form, saving, onFieldChange, onSub
 
           <div className="flex flex-col gap-4 md:flex-row">
             <FieldGroup
-              label="Texto do botao"
+              label="Texto do botão"
               value={form.primaryCtaLabel}
               onChange={(value) => onFieldChange("primaryCtaLabel", value)}
               placeholder="Ver mais"
               className="flex-1"
             />
             <FieldGroup
-              label="URL do botao"
+              label="URL do botão"
               value={form.primaryCtaUrl}
               onChange={(value) => onFieldChange("primaryCtaUrl", value)}
               placeholder="/dicas"
               className="flex-1"
             />
-          </div>
-
-          <label className="label cursor-pointer gap-3">
-            <input
-              type="checkbox"
-              className="toggle toggle-primary"
-              checked={form.active}
-              onChange={(e) => onFieldChange("active", e.target.checked)}
-            />
-            <span className="label-text">Mostrar secao</span>
-          </label>
+          </div>
 
           <div className="flex justify-end">
             <button type="submit" className="btn btn-primary" disabled={saving}>
@@ -52,7 +51,7 @@ export default function AppWeeklyTipSection({ form, saving, onFieldChange, onSub
                   A guardar...
                 </>
               ) : (
-                "Guardar alteracoes"
+                "Guardar alterações"
               )}
             </button>
           </div>

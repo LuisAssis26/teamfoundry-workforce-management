@@ -1,11 +1,10 @@
 import AppHeroSection from "./components/AppHeroSection.jsx";
-import AppNewsSection from "./components/AppNewsSection.jsx";
 import AppSectionOrderCard from "./components/AppSectionOrderCard.jsx";
 import AppWeeklyTipSection from "./components/AppWeeklyTipSection.jsx";
-import { APP_SECTION_TYPES } from "./constants.js";
+import PropTypes from "prop-types";
 import { useAppHome } from "./AppHomeContext.jsx";
 
-export default function AppHomeLayout() {
+export default function AppHomeLayout({ showOrderCard = true }) {
   const {
     banner,
     setBanner,
@@ -67,15 +66,17 @@ export default function AppHomeLayout() {
         onSubmit={(event) => handleSectionSubmit(event, "weeklyTip")}
       />
 
-      <AppNewsSection
-        form={forms.news}
-        section={sections.find((sectionItem) => sectionItem.type === APP_SECTION_TYPES.news)}
-        saving={savingSections.news}
-        onFieldChange={(field, value) => handleSectionFieldChange("news", field, value)}
-        onSubmit={(event) => handleSectionSubmit(event, "news")}
-      />
-
-      <AppSectionOrderCard sections={sections} onMove={handleSectionMove} onToggle={handleSectionToggle} />
+      {showOrderCard && (
+        <AppSectionOrderCard sections={sections} onMove={handleSectionMove} onToggle={handleSectionToggle} />
+      )}
     </div>
   );
 }
+
+AppHomeLayout.propTypes = {
+  showOrderCard: PropTypes.bool,
+};
+
+AppHomeLayout.defaultProps = {
+  showOrderCard: true,
+};

@@ -1,10 +1,13 @@
 import PropTypes from "prop-types";
 
 export default function FieldGroup({ label, value, onChange, placeholder, className }) {
-  const containerClass = className ? `form-control ${className}` : "form-control";
+  const containerClass = className
+    ? `flex flex-col gap-2 items-start ${className}`
+    : "flex flex-col gap-2 items-start";
+  const labelText = label?.trim().endsWith(":") ? label : `${label}:`;
   return (
     <label className={containerClass}>
-      <span className="label-text font-semibold">{label}</span>
+      <span className="label-text font-semibold">{labelText}</span>
       <input
         type="text"
         className="input input-bordered"

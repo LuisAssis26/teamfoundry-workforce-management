@@ -4,6 +4,7 @@ import ShowcasePreview from "./ShowcasePreview.jsx";
 export default function ShowcaseList({ title, description, items, onCreate, onEdit, onMove, type }) {
   const isIndustry = type === "industry";
   const safeItems = Array.isArray(items) ? items : [];
+
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body space-y-6">
@@ -16,6 +17,7 @@ export default function ShowcaseList({ title, description, items, onCreate, onEd
             Adicionar {isIndustry ? "industria" : "parceiro"}
           </button>
         </div>
+
         {safeItems.length ? (
           <div className="space-y-4">
             {safeItems.map((item, index) => (
@@ -33,51 +35,41 @@ export default function ShowcaseList({ title, description, items, onCreate, onEd
                       <span
                         className={`badge ${item.active ? "badge-success" : "badge-ghost"} uppercase`}
                       >
-                        {item.active ? "Visiðvel" : "Oculto"}
+                        {item.active ? "Visivel" : "Oculto"}
                       </span>
                       <div className="flex items-center gap-2 text-xs text-base-content/60">
                         <button
                           type="button"
-                          className="btn btn-xs btn-ghost"
-                          onClick={() => onMove(item.id, "up")}
+                          className="btn btn-ghost btn-xs"
                           disabled={index === 0}
-                          aria-label="Subir item"
+                          onClick={() => onMove(item.id, "up")}
                         >
                           <i className="bi bi-arrow-up" />
                         </button>
                         <button
                           type="button"
-                          className="btn btn-xs btn-ghost"
-                          onClick={() => onMove(item.id, "down")}
+                          className="btn btn-ghost btn-xs"
                           disabled={index === safeItems.length - 1}
-                          aria-label="Descer item"
+                          onClick={() => onMove(item.id, "down")}
                         >
                           <i className="bi bi-arrow-down" />
                         </button>
                       </div>
                     </div>
-                    {item.description && (
-                      <p className="text-sm text-base-content/70 leading-relaxed">
-                        {item.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex flex-wrap gap-2">
-                    <button type="button" className="btn btn-sm btn-outline" onClick={() => onEdit(item)}>
-                      Editar
-                    </button>
+                    <p className="text-sm text-base-content/70 line-clamp-3">{item.description}</p>
+                    <div className="flex flex-wrap gap-2">
+                      <button type="button" className="btn btn-sm btn-ghost" onClick={() => onEdit(item)}>
+                        Editar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </article>
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-base-300 p-10 text-center">
-            <p className="text-base-content/60">
-              Ainda nÆo existem {isIndustry ? "indÇ§strias" : "parceiros"} configurados.
-            </p>
+          <div className="rounded-2xl border border-dashed border-base-300 bg-base-100/60 p-8 text-center">
+            <p className="text-base-content/60">Nenhum registo adicionado ainda.</p>
           </div>
         )}
       </div>
@@ -87,14 +79,15 @@ export default function ShowcaseList({ title, description, items, onCreate, onEd
 
 ShowcaseList.propTypes = {
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  items: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]) })),
+  description: PropTypes.string,
+  items: PropTypes.arrayOf(PropTypes.object),
   onCreate: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
   onMove: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(["industry", "partner"]).isRequired,
 };
 
 ShowcaseList.defaultProps = {
+  description: "",
   items: [],
 };

@@ -79,26 +79,36 @@ public class TeamRequestSeeder {
     private List<TeamRequestSeed> defaultSeeds() {
         LocalDateTime now = LocalDateTime.now();
         return List.of(
-                // Ativos incompletos
-                new TeamRequestSeed("contact@blueorbitlabs.com", "Equipe Retrofit Norte",
-                        "Retrofit elétrico e solda leve.", "Lisboa", State.INCOMPLETE, "admin1",
-                        now.plusDays(7), now.plusDays(30), now.minusDays(2)),
-                new TeamRequestSeed("operacoes@ferromec.pt", "Task force Soldagem",
-                        "Soldagem MIG/MAG estrutural.", "Porto", State.INCOMPLETE, "admin2",
-                        now.plusDays(5), now.plusDays(25), now.minusDays(1)),
-                new TeamRequestSeed("talent@atlantic-robotics.eu", "Montagem Industrial Sul",
-                        "Montagem mecânica e canalização.", "Faro", State.INCOMPLETE, "admin3",
-                        now.plusDays(10), now.plusDays(40), now.minusDays(3)),
-                // Concluídos
-                new TeamRequestSeed("contact@blueorbitlabs.com", "Linha Robotizada A",
-                        "Instalação de célula robotizada.", "Lisboa", State.COMPLETE, "admin1",
-                        now.minusDays(60), now.minusDays(30), now.minusDays(70)),
-                new TeamRequestSeed("operacoes@ferromec.pt", "Squad SCADA Norte",
-                        "Rollout SCADA nas subestações.", "Porto", State.COMPLETE, "admin2",
-                        now.minusDays(50), now.minusDays(20), now.minusDays(55)),
-                new TeamRequestSeed("hr@iberiapower.com", "Equipa Solar Oeste",
-                        "Task force O&M solar.", "Braga", State.COMPLETE, "admin4",
-                        now.minusDays(40), now.minusDays(10), now.minusDays(45))
+                new TeamRequestSeed("operacoes@ferromec.pt", "Squad Retrofit Alfa",
+                        "Equipe para retrofit e soldagem leve.", "Porto", State.INCOMPLETE, "admin1",
+                        now.plusDays(7), now.plusDays(35), now.minusDays(3)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Equipe Manutencao Norte",
+                        "Manutencao preventiva em linha industrial.", "Braga", State.INCOMPLETE, "admin2",
+                        now.plusDays(5), now.plusDays(28), now.minusDays(2)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Time Soldagem Linha 2",
+                        "Soldagem estrutural em linha de producao.", "Aveiro", State.INCOMPLETE, "admin3",
+                        now.plusDays(12), now.plusDays(45), now.minusDays(4)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Equipe Montagem Sul",
+                        "Montagem mecanica e ajustes finais.", "Faro", State.INCOMPLETE, "admin4",
+                        now.plusDays(9), now.plusDays(38), now.minusDays(1)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Squad Eletrica Delta",
+                        "Instalacoes eletricas e testes de painel.", "Lisboa", State.INCOMPLETE, "admin5",
+                        now.plusDays(14), now.plusDays(50), now.minusDays(5)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Time Canalizacao Oeste",
+                        "Canalizacao industrial e suportes.", "Leiria", State.INCOMPLETE, "admin6",
+                        now.plusDays(6), now.plusDays(32), now.minusDays(2)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Equipe Automacao Leste",
+                        "Automacao de celulas e integracao de sensores.", "Coimbra", State.INCOMPLETE, "admin7",
+                        now.plusDays(11), now.plusDays(42), now.minusDays(3)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Time Inspecao 3D",
+                        "Inspecao dimensional e controle de qualidade.", "Setubal", State.INCOMPLETE, "admin8",
+                        now.plusDays(8), now.plusDays(36), now.minusDays(1)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Squad Logistica Turno B",
+                        "Apoio logistico e movimentacao interna.", "Vila Nova de Gaia", State.INCOMPLETE, "admin9",
+                        now.plusDays(15), now.plusDays(55), now.minusDays(6)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Equipe Montagem Beta",
+                        "Montagem de subconjuntos mecanicos.", "Porto", State.INCOMPLETE, "admin10",
+                        now.plusDays(10), now.plusDays(40), now.minusDays(2))
         );
     }
 

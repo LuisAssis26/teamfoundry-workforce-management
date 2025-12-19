@@ -22,7 +22,7 @@ export default function ShowcaseModal({ state, form, saving, onClose, onChange, 
       const result = await uploadImage(file);
       onChange("imageUrl", result.url);
     } catch (err) {
-      setUploadError(err.message || "Não foi possivel carregar a imagem.");
+      setUploadError(err.message || "Não foi possível carregar a imagem.");
     } finally {
       setUploadingImage(false);
     }
@@ -33,8 +33,8 @@ export default function ShowcaseModal({ state, form, saving, onClose, onChange, 
       open
       title={
         state.mode === "create"
-          ? `Adicionar ${isIndustry ? "industria" : "parceiro"}`
-          : `Editar ${isIndustry ? "industria" : "parceiro"}`
+          ? `Adicionar ${isIndustry ? "indústria" : "parceiro"}`
+          : `Editar ${isIndustry ? "indústria" : "parceiro"}`
       }
       onClose={onClose}
       actions={
@@ -56,7 +56,7 @@ export default function ShowcaseModal({ state, form, saving, onClose, onChange, 
             {saving ? (
               <>
                 <span className="loading loading-spinner loading-sm" />
-                A guardar!
+                A guardar...
               </>
             ) : (
               "Guardar"
@@ -67,7 +67,7 @@ export default function ShowcaseModal({ state, form, saving, onClose, onChange, 
     >
       <form id="showcase-form" className="space-y-5" onSubmit={onSubmit}>
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="form-control">
+          <label className="form-control gap-2">
             <span className="label-text font-semibold">Nome</span>
             <input
               type="text"
@@ -77,16 +77,16 @@ export default function ShowcaseModal({ state, form, saving, onClose, onChange, 
               onChange={(e) => onChange("name", e.target.value)}
             />
           </label>
-          <label className="form-control">
+          <label className="form-control gap-2">
             <div className="flex flex-col gap-1">
               <span className="label-text font-semibold">Visibilidade</span>
               <span className="text-xs text-base-content/60">
-                Controle se aparece na paigina inicial
+                Controle se aparece na página inicial
               </span>
             </div>
-            <div className="mt-3">
+            <div className="mt-1">
               <label className="label cursor-pointer gap-4 justify-start">
-                <span className="text-sm">{form.active ? "Visivel" : "Oculto"}</span>
+                <span className="text-sm">{form.active ? "Visível" : "Oculto"}</span>
                 <input
                   type="checkbox"
                   className="toggle toggle-primary"
@@ -116,11 +116,11 @@ export default function ShowcaseModal({ state, form, saving, onClose, onChange, 
               {uploadingImage && (
                 <div className="text-sm text-primary flex items-center gap-2">
                   <span className="loading loading-spinner loading-xs" />
-                  A enviar imagem!
+                  A enviar imagem...
                 </div>
               )}
               {uploadError && <p className="text-sm text-error">{uploadError}</p>}
-              <label className="form-control">
+              <label className="form-control gap-2">
                 <span className="label-text text-sm text-base-content/70">Ou cole um URL de imagem</span>
                 <input
                   type="text"
@@ -170,4 +170,3 @@ ShowcaseModal.defaultProps = {
   form: null,
   saving: false,
 };
-

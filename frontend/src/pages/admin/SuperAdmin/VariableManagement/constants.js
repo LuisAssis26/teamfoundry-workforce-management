@@ -1,19 +1,14 @@
 export const SECTION_LABELS = {
   HERO: "Hero (topo)",
-  INDUSTRIES: "Industrias",
+  INDUSTRIES: "Areas em que atuamos",
   PARTNERS: "Parceiros",
 };
 
 export const VIEW_TABS = [
   {
-    id: "publicHome",
-    label: "Home publica",
-    description: "Configura a landing page visivel antes do login.",
-  },
-  {
-    id: "appHome",
-    label: "Home autenticada",
-    description: "Conteudo mostrado quando o utilizador ja fez login.",
+    id: "home",
+    label: "Home",
+    description: "Hero autenticado + hero publico, areas e parceiros.",
   },
   {
     id: "weeklyTips",

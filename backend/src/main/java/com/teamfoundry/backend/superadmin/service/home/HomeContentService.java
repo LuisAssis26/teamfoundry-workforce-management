@@ -11,6 +11,8 @@ import com.teamfoundry.backend.superadmin.dto.home.showcase.PartnerShowcaseRespo
 import com.teamfoundry.backend.superadmin.dto.other.WeeklyTipRequest;
 import com.teamfoundry.backend.superadmin.dto.other.WeeklyTipResponse;
 import com.teamfoundry.backend.superadmin.dto.other.WeeklyTipsPageResponse;
+import com.teamfoundry.backend.superadmin.dto.home.HomeUnifiedResponse;
+import com.teamfoundry.backend.superadmin.dto.home.HomeUnifiedUpdateRequest;
 import com.teamfoundry.backend.superadmin.enums.HomeLoginSectionType;
 import com.teamfoundry.backend.superadmin.model.home.*;
 import com.teamfoundry.backend.superadmin.model.other.WeeklyTip;
@@ -20,7 +22,9 @@ import com.teamfoundry.backend.superadmin.repository.home.IndustryShowcaseReposi
 import com.teamfoundry.backend.superadmin.repository.home.PartnerShowcaseRepository;
 import com.teamfoundry.backend.superadmin.repository.other.WeeklyTipRepository;
 import com.teamfoundry.backend.common.service.CloudinaryService;
+import com.teamfoundry.backend.superadmin.service.home.GdeltNewsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +39,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class HomeContentService {
 
     private final HomeNoLoginSectionRepository sections;
@@ -42,7 +47,7 @@ public class HomeContentService {
     private final PartnerShowcaseRepository partners;
     private final HomeLoginSectionRepository appHomeSections;
     private final WeeklyTipRepository weeklyTips;
-    private final NewsApiService newsApiService;
+    private final GdeltNewsService gdeltNewsService;
     private final CloudinaryService cloudinaryService;
 
     /*
@@ -89,6 +94,31 @@ public class HomeContentService {
     @Transactional(readOnly = true)
     public HomeLoginConfigResponse getAdminHomeLogin() {
         return buildHomeLoginConfig(true, true);
+    }
+
+    @Transactional(readOnly = true)
+    public HomeUnifiedResponse getUnifiedHome() {
+        HomeNoLoginConfigResponse publicCfg = getAdminHomepage();
+        HomeLoginConfigResponse appCfg = getAdminHomeLogin();
+        WeeklyTipsPageResponse tips = getPublicWeeklyTips();
+        return new HomeUnifiedResponse(
+                publicCfg.sections(),
+                appCfg.sections(),
+                publicCfg.industries(),
+                publicCfg.partners(),
+                tips
+        );
+    }
+
+    @Transactional
+    public HomeUnifiedResponse updateUnifiedHome(HomeUnifiedUpdateRequest request) {
+        if (request.publicSectionIds() != null && !request.publicSectionIds().isEmpty()) {
+            reorderSections(request.publicSectionIds());
+        }
+        if (request.authenticatedSectionIds() != null && !request.authenticatedSectionIds().isEmpty()) {
+            reorderHomeLoginSections(request.authenticatedSectionIds());
+        }
+        return getUnifiedHome();
     }
 
     @Transactional(readOnly = true)
@@ -486,7 +516,12 @@ public class HomeContentService {
         List<HomeNewsArticleResponse> articles = Collections.emptyList();
         if (section.getType() == HomeLoginSectionType.NEWS) {
             int limit = Optional.ofNullable(section.getApiMaxItems()).orElse(6);
-            articles = newsApiService.getEmpregabilidadeNews(limit);
+            // Prioritize employment-related themes using GDELT
+            log.info("[HomeContentService] Fetching GDELT news for HomeLogin section id={} limit={}", section.getId(), limit);
+            articles = gdeltNewsService.getNewsByTopic("emprego").stream()
+                    .limit(Math.max(1, Math.min(limit, 6)))
+                    .toList();
+            log.info("[HomeContentService] GDELT returned {} articles for section id={}", articles.size(), section.getId());
         }
         return new HomeLoginSectionResponse(
                 section.getId(),

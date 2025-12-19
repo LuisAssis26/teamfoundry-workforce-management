@@ -60,6 +60,8 @@ app:
     base-url: ${CLOUDINARY_BASE_URL:https://res.cloudinary.com/teamfoundry/raw/upload/}
   password-reset:
     url: ${APP_PASSWORD_RESET_URL}
+  password-reset:
+    url: ${APP_PASSWORD_RESET_URL}
   site:
     media:
       storage-dir: ${APP_SITE_MEDIA_DIR:uploads/site}
