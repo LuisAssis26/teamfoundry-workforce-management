@@ -28,6 +28,7 @@ public class EmployeeRequestOfferSeeder {
     @Order(7)
     CommandLineRunner seedInvites(EmployeeRequestOfferRepository inviteRepository,
                                   EmployeeRequestRepository employeeRequestRepository,
+                                  com.teamfoundry.backend.teamRequests.repository.TeamRequestRepository teamRequestRepository,
                                   EmployeeAccountRepository employeeAccountRepository) {
         return args -> {
             if (inviteRepository.count() > 0) {
@@ -35,49 +36,67 @@ public class EmployeeRequestOfferSeeder {
                 return;
             }
 
-            List<InviteSeed> seeds = defaultSeeds();
+            // Define seeds using Team Name + Role + Candidate Email
+            List<SmartInviteSeed> seeds = List.of(
+                    // Retrofit Norte - Eletricista
+                    new SmartInviteSeed("Equipe Retrofit Norte", "Eletricista", "joao.silva@teamfoundry.com"),
+                    new SmartInviteSeed("Equipe Retrofit Norte", "Eletricista", "sofia.lima@teamfoundry.com"),
+                    // Retrofit Norte - Eletricista (2nd slot - just to sure)
+                    new SmartInviteSeed("Equipe Retrofit Norte", "Eletricista", "daniel.matos@teamfoundry.com"),
+                    // Retrofit Norte - Soldador
+                    new SmartInviteSeed("Equipe Retrofit Norte", "Soldador", "tiago.rocha@teamfoundry.com")
+            );
+
             List<EmployeeRequestOffer> toSave = new ArrayList<>();
 
-            for (InviteSeed seed : seeds) {
-                Optional<EmployeeRequest> requestOpt = employeeRequestRepository.findById(seed.requestId());
-                Optional<EmployeeAccount> employeeOpt = employeeAccountRepository.findByEmail(seed.employeeEmail());
-                if (requestOpt.isEmpty() || employeeOpt.isEmpty()) {
-                    LOGGER.warn("Invite seed skipped (request or employee not found): {} -> {}", seed.requestId(), seed.employeeEmail());
+            for (SmartInviteSeed seed : seeds) {
+                // 1. Find the Team
+                var teamOpt = teamRequestRepository.findByTeamName(seed.teamName());
+                if (teamOpt.isEmpty()) {
+                    LOGGER.warn("Seeder: Team '{}' not found", seed.teamName());
                     continue;
                 }
+                Integer teamId = teamOpt.get().getId();
+
+                // 2. Find an available request for the role in this team
+                List<EmployeeRequest> requests = employeeRequestRepository
+                        .findByTeamRequest_IdAndRequestedRoleIgnoreCaseAndEmployeeIsNull(teamId, seed.role());
+                
+                if (requests.isEmpty()) {
+                    LOGGER.warn("Seeder: No open requests for '{}' in team '{}'", seed.role(), seed.teamName());
+                    continue;
+                }
+                
+                // Use the first available request (or any, logic doesn't strictly matter for seeding invites, 
+                // but ideally we attach to one that isn't already "full" of invites? 
+                // Actually, one request can have multiple invites. We just pick the first one.)
+                EmployeeRequest targetRequest = requests.get(0);
+
+                // 3. Find the Employee
+                Optional<EmployeeAccount> employeeOpt = employeeAccountRepository.findByEmail(seed.employeeEmail());
+                if (employeeOpt.isEmpty()) {
+                    LOGGER.warn("Seeder: Employee '{}' not found", seed.employeeEmail());
+                    continue;
+                }
+
+                // 4. Create Invite
                 EmployeeRequestOffer invite = new EmployeeRequestOffer();
-                invite.setEmployeeRequest(requestOpt.get());
+                invite.setEmployeeRequest(targetRequest);
                 invite.setEmployee(employeeOpt.get());
                 invite.setActive(true);
                 toSave.add(invite);
             }
 
-            if (toSave.isEmpty()) {
-                LOGGER.warn("No invites were seeded.");
-                return;
+            if (!toSave.isEmpty()) {
+                inviteRepository.saveAll(toSave);
+                LOGGER.info("Seeded {} invites via Smart Seeder.", toSave.size());
+            } else {
+                LOGGER.warn("Smart Seeder generated 0 invites.");
             }
-
-            inviteRepository.saveAll(toSave);
-            LOGGER.info("Seeded {} invites.", toSave.size());
         };
     }
 
-    private List<InviteSeed> defaultSeeds() {
-        return List.of(
-                // Retrofit Norte
-                new InviteSeed(1, "joao.silva@teamfoundry.com"),
-                new InviteSeed(1, "sofia.lima@teamfoundry.com"),
-                new InviteSeed(2, "daniel.matos@teamfoundry.com"),
-                new InviteSeed(3, "tiago.rocha@teamfoundry.com"),
-                // Task force Soldagem
-                new InviteSeed(5, "patricia.medeiros@teamfoundry.com"),
-                new InviteSeed(6, "carlos.oliveira@teamfoundry.com"),
-                // Montagem Industrial Sul
-                new InviteSeed(8, "carla.ferreira@teamfoundry.com"),
-                new InviteSeed(9, "marta.ribeiro@teamfoundry.com"),
-                new InviteSeed(10, "ricardo.pires@teamfoundry.com")
-        );
-    }
+    private record SmartInviteSeed(String teamName, String role, String employeeEmail) {}
 
-    private record InviteSeed(int requestId, String employeeEmail) {}
+
 }

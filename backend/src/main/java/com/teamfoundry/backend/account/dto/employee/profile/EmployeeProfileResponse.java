@@ -18,7 +18,10 @@ public class EmployeeProfileResponse {
     String email;
     Boolean deactivated;
     String curriculumUrl;
+    String curriculumFileName;
     String identificationFrontUrl;
+    String identificationFrontFileName;
     String identificationBackUrl;
+    String identificationBackFileName;
     String profilePictureUrl;
 }

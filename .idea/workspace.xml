@@ -4,20 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Página de Logs">
+    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Modal de apresentação de funcionario refinado&#10;Preview de documentos">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/config/company/CompanyAccountInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/config/company/CompanyAccountInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/dto/employee/preferences/EmployeePreferencesUpdateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/dto/employee/preferences/EmployeePreferencesUpdateRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/dto/employee/profile/EmployeeProfileUpdateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/account/dto/employee/profile/EmployeeProfileUpdateRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/auth/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/auth/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/auth/service/login/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/teamfoundry/backend/auth/service/login/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/sections/Footer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/sections/Footer.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/sections/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/sections/Navbar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/AdminDataContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/AdminDataContext.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/AdminLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/AdminLayout.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/AppHome/components/AppHeroSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/AppHome/components/AppHeroSection.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/SuperAdmin/MetricsAndLogs/MetricsAndLogsLayout.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/BuildTeamSearch.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamEmployeeRequests.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamEmployeeRequests.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamManagement.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/TeamManagement/TeamManagement.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/home/HomeNoLogin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/home/HomeNoLogin.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/home/HomeAuthenticated/components/HeroPanel.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/home/HomeAuthenticated/components/HeroPanel.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/login/UserLogin/UserLogin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/login/UserLogin/UserLogin.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +40,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -90,6 +89,7 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/joaog/Desktop/TeamFoundry/teamfoundry-workforce-management/frontend/node_modules/jest&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -111,11 +111,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement" />
-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\backend\src\main\java\com\teamfoundry\backend\auth\service" />
-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\backend\src\main\java\com\teamfoundry\backend\auth\dto" />
-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\backend\src\main\java\com\teamfoundry\backend\auth\controller" />
-      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\backend\src\main\java\com\teamfoundry\backend\auth\config" />
+      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\TeamRequests\components" />
+      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\BuildTeamSearch\components" />
+      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\TeamRequests" />
+      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\BuildTeamSearch" />
+      <recent name="C:\Users\draga\Ambiente de Trabalho\Trabalhos Uni\teamfoundry-workforce-management\frontend\src\pages\admin\TeamManagement\BuildTeamSeach\components" />
     </key>
   </component>
   <component name="RunManager" selected="Docker.docker-compose.yml: Compose Deployment">
@@ -250,6 +250,14 @@
       <workItem from="1765395113142" duration="11183000" />
       <workItem from="1765459061512" duration="1182000" />
       <workItem from="1765460264915" duration="3973000" />
+      <workItem from="1765552855485" duration="29000" />
+      <workItem from="1765900904090" duration="10037000" />
+      <workItem from="1765913034927" duration="2187000" />
+      <workItem from="1765977292159" duration="6611000" />
+      <workItem from="1765991549473" duration="72000" />
+      <workItem from="1766060293454" duration="3424000" />
+      <workItem from="1766064441794" duration="35000" />
+      <workItem from="1766064507976" duration="4273000" />
     </task>
     <task id="LOCAL-00001" summary="paleta certa">
       <option name="closed" value="true" />
@@ -443,7 +451,31 @@
       <option name="project" value="LOCAL" />
       <updated>1765459233975</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Add filters and UI components for employee management and search functionality">
+      <option name="closed" value="true" />
+      <created>1765912955983</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1765912955983</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Filtros e Pesquisa de Funcionarios Remaginada&#10;Falta Modal de Apresentação do funcionario Refinado">
+      <option name="closed" value="true" />
+      <created>1765916210921</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1765916210921</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Modal de apresentação de funcionario refinado&#10;Preview de documentos">
+      <option name="closed" value="true" />
+      <created>1765986150154</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1765986150154</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -480,9 +512,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="small changes" />
-    <MESSAGE value="Implement password reset functionality and update email service" />
-    <MESSAGE value="Backend inicia, server email com problemas" />
     <MESSAGE value="correçao Navbar.jsx" />
     <MESSAGE value="Login e Register feitos&#10;Faltam logins por email e linkedin&#10;Aguarda testes estruturais" />
     <MESSAGE value="Verificaçoes Reset Password" />
@@ -505,7 +534,10 @@
     <MESSAGE value="Credencias Fix" />
     <MESSAGE value="Métricas e Logging&#10;Falta implementar visualização dos Logs&#10;Correçoes ao front das credenciais ainda necessario" />
     <MESSAGE value="Página de Logs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Página de Logs" />
+    <MESSAGE value="Add filters and UI components for employee management and search functionality" />
+    <MESSAGE value="Filtros e Pesquisa de Funcionarios Remaginada&#10;Falta Modal de Apresentação do funcionario Refinado" />
+    <MESSAGE value="Modal de apresentação de funcionario refinado&#10;Preview de documentos" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modal de apresentação de funcionario refinado&#10;Preview de documentos" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

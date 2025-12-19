@@ -5,13 +5,19 @@ import com.teamfoundry.backend.account.repository.employee.EmployeeAccountReposi
 import com.teamfoundry.backend.account.model.employee.profile.EmployeeSkill;
 import com.teamfoundry.backend.account.model.employee.profile.EmployeeRole;
 import com.teamfoundry.backend.account.model.employee.profile.EmployeeGeoArea;
+import com.teamfoundry.backend.account.model.employee.documents.EmployeeDocument;
 import com.teamfoundry.backend.account.repository.employee.profile.EmployeeSkillRepository;
 import com.teamfoundry.backend.account.repository.employee.profile.EmployeeRoleRepository;
 import com.teamfoundry.backend.account.repository.employee.profile.EmployeeGeoAreaRepository;
+import com.teamfoundry.backend.account.repository.employee.documents.EmployeeDocumentRepository;
+import com.teamfoundry.backend.account.repository.employee.documents.EmployeeCertificationRepository;
 import com.teamfoundry.backend.teamRequests.dto.search.AdminEmployeeProfileResponse;
 import com.teamfoundry.backend.teamRequests.enums.State;
 import com.teamfoundry.backend.teamRequests.model.EmployeeRequest;
 import com.teamfoundry.backend.teamRequests.repository.EmployeeRequestRepository;
+import com.teamfoundry.backend.account.enums.DocumentType;
+import com.teamfoundry.backend.account.dto.employee.documents.EmployeeCertificationResponse;
+import com.teamfoundry.backend.common.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,6 +41,9 @@ public class AdminEmployeeProfileService {
     private final EmployeeSkillRepository employeeSkillRepository;
     private final EmployeeGeoAreaRepository employeeGeoAreaRepository;
     private final EmployeeRequestRepository employeeRequestRepository;
+    private final EmployeeDocumentRepository employeeDocumentRepository;
+    private final EmployeeCertificationRepository employeeCertificationRepository;
+    private final CloudinaryService cloudinaryService;
 
     public AdminEmployeeProfileResponse getProfile(Integer employeeId) {
         EmployeeAccount employee = employeeAccountRepository.findById(employeeId)
@@ -65,6 +74,22 @@ public class AdminEmployeeProfileService {
                         .map(this::toExperienceLabel)
                         .toList();
 
+        EmployeeDocument cv = getDocument(employee, DocumentType.CURRICULUM);
+        EmployeeDocument idFront = getDocument(employee, DocumentType.IDENTIFICATION_FRONT);
+        EmployeeDocument idBack = getDocument(employee, DocumentType.IDENTIFICATION_BACK);
+
+        List<EmployeeCertificationResponse> certs = employeeCertificationRepository.findByEmployeeOrderByCompletionDateDescIdDesc(employee).stream()
+                .map(cert -> EmployeeCertificationResponse.builder()
+                        .id(cert.getId())
+                        .name(cert.getName())
+                        .institution(cert.getInstitution())
+                        .location(cert.getLocation())
+                        .completionDate(cert.getCompletionDate())
+                        .description(cert.getDescription())
+                        .certificateUrl(buildUrl(cert.getCertificatePublicId()))
+                        .build())
+                .toList();
+
         return new AdminEmployeeProfileResponse(
                 employee.getId(),
                 employee.getName(),
@@ -77,7 +102,15 @@ public class AdminEmployeeProfileService {
                 preferredRole,
                 skills,
                 areas,
-                experiences
+                experiences,
+                buildUrl(employee.getProfilePicturePublicId()),
+                buildUrl(docPublicId(cv)),
+                docFileName(cv),
+                buildUrl(docPublicId(idFront)),
+                docFileName(idFront),
+                buildUrl(docPublicId(idBack)),
+                docFileName(idBack),
+                certs
         );
     }
 
@@ -96,5 +129,22 @@ public class AdminEmployeeProfileService {
         if (tr.getState() == State.COMPLETE) return true;
         LocalDateTime end = tr.getEndDate();
         return end != null && end.isBefore(LocalDateTime.now());
+    }
+
+    private EmployeeDocument getDocument(EmployeeAccount employee, DocumentType type) {
+        return employeeDocumentRepository.findByEmployeeAndType(employee, type).orElse(null);
+    }
+
+    private String docPublicId(EmployeeDocument doc) {
+        return doc != null ? doc.getPublicId() : null;
+    }
+
+    private String docFileName(EmployeeDocument doc) {
+        return doc != null ? doc.getFileName() : null;
+    }
+
+    private String buildUrl(String publicId) {
+        if (!StringUtils.hasText(publicId)) return null;
+        return cloudinaryService.buildUrl(publicId);
     }
 }

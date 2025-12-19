@@ -4,6 +4,14 @@ import com.teamfoundry.backend.account.dto.employee.profile.EmployeeProfileRespo
 import com.teamfoundry.backend.account.dto.employee.profile.EmployeeProfileUpdateRequest;
 import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
+import com.teamfoundry.backend.account.repository.employee.documents.EmployeeDocumentRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeGeoAreaRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeRoleRepository;
+import com.teamfoundry.backend.account.repository.employee.profile.EmployeeSkillRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
+import com.teamfoundry.backend.common.service.ActionLogService;
+import com.teamfoundry.backend.common.service.CloudinaryService;
+import com.teamfoundry.backend.teamRequests.service.EmployeeJobHistoryService;
 import com.teamfoundry.backend.account.service.employee.EmployeeProfileAndDocumentsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -23,12 +32,23 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeProfileAndDocumentsServiceTest {
 
     @Mock
     private EmployeeAccountRepository employeeAccountRepository;
+
+    @Mock private EmployeeDocumentRepository employeeDocumentRepository;
+    @Mock private EmployeeRoleRepository employeeRoleRepository;
+    @Mock private EmployeeSkillRepository employeeSkillRepository;
+    @Mock private EmployeeGeoAreaRepository employeeGeoAreaRepository;
+    @Mock private EmployeeJobHistoryService employeeJobHistoryService;
+    @Mock private CloudinaryService cloudinaryService;
+    @Mock private ActionLogService actionLogService;
+    @Mock private PasswordEncoder passwordEncoder;
+    @Mock private AuthTokenRepository authTokenRepository;
 
     @InjectMocks
     private EmployeeProfileAndDocumentsService employeeProfileAndDocumentsService;
@@ -49,7 +69,9 @@ class EmployeeProfileAndDocumentsServiceTest {
     }
 
     @Test
-    void getProfile_returnsMappedResponse() {
+    void getProfileReturnsMappedResponse() {
+        lenient().when(employeeDocumentRepository.findByEmployeeAndType(any(), any()))
+                .thenReturn(Optional.empty());
         when(employeeAccountRepository.findByEmail("employee@example.com"))
                 .thenReturn(Optional.of(sampleAccount));
 
@@ -70,7 +92,9 @@ class EmployeeProfileAndDocumentsServiceTest {
     }
 
     @Test
-    void updateProfile_updatesAndPersistsEntity() {
+    void updateProfileUpdatesAndPersistsEntity() {
+        lenient().when(employeeDocumentRepository.findByEmployeeAndType(any(), any()))
+                .thenReturn(Optional.empty());
         when(employeeAccountRepository.findByEmail("employee@example.com"))
                 .thenReturn(Optional.of(sampleAccount));
         when(employeeAccountRepository.save(any(EmployeeAccount.class)))
@@ -105,9 +129,10 @@ class EmployeeProfileAndDocumentsServiceTest {
     }
 
     @Test
-    void getProfile_withoutEmailThrowsUnauthorized() {
+    void getProfileWithoutEmailThrowsUnauthorized() {
         assertThatThrownBy(() -> employeeProfileAndDocumentsService.getProfile("   "))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasFieldOrPropertyWithValue("statusCode", HttpStatus.UNAUTHORIZED);
     }
 }
+

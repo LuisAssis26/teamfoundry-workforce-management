@@ -4,6 +4,11 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import HomeLayout from "./pages/home/HomeLayout.jsx";
 import WeeklyTipsPage from "./pages/home/WeeklyTipsPage.jsx";
 import FAQs from "./pages/other/FAQs.jsx";
+import FaqMatchingProcess from "./pages/other/FAQs/FaqMatchingProcess.jsx";
+import FaqCompanyRequestsStatus from "./pages/other/FAQs/FaqCompanyRequestsStatus.jsx";
+import FaqCandidateDocuments from "./pages/other/FAQs/FaqCandidateDocuments.jsx";
+import FaqDeactivateAccount from "./pages/other/FAQs/FaqDeactivateAccount.jsx";
+import FaqDataProtection from "./pages/other/FAQs/FaqDataProtection.jsx";
 import About from "./pages/other/About.jsx";
 
 // Auth
@@ -49,10 +54,11 @@ import Staffing from "./pages/admin/SuperAdmin/Staffing/Staffing.jsx";
 import VariableManagement from "./pages/admin/SuperAdmin/VariableManagement/VariableManagement.jsx";
 import Metrics from "./pages/admin/SuperAdmin/MetricsAndLogs/Metrics.jsx";
 import Logs from "./pages/admin/SuperAdmin/MetricsAndLogs/Logs.jsx";
-import TeamManagement from "./pages/admin/TeamManagement/TeamManagement.jsx";
-import BuildTeamSearch from "./pages/admin/TeamManagement/BuildTeamSearch.jsx";
-import TeamEmployeeRequests from "./pages/admin/TeamManagement/TeamEmployeeRequests.jsx";
+import TeamManagement from "./pages/admin/TeamManagement/TeamRequests/TeamManagement.jsx";
+import BuildTeamSearch from "./pages/admin/TeamManagement/BuildTeamSearch/BuildTeamSearch.jsx";
+import TeamEmployeeRequests from "./pages/admin/TeamManagement/TeamRequests/TeamEmployeeRequests.jsx";
 import ProtectedRoute from "./auth/ProtectedRoute.jsx";
+import GoogleCallback from "./pages/login/UserLogin/GoogleCallback.jsx";
 
 function App() {
   return (
@@ -60,12 +66,18 @@ function App() {
       <Route path="/" element={<HomeLayout />} />
       <Route path="/dicas" element={<WeeklyTipsPage />} />
       <Route path="/faq" element={<FAQs />} />
+      <Route path="/faq/processo-matching" element={<FaqMatchingProcess />} />
+      <Route path="/faq/estado-requisicoes" element={<FaqCompanyRequestsStatus />} />
+      <Route path="/faq/documentos-candidato" element={<FaqCandidateDocuments />} />
+      <Route path="/faq/desativar-conta" element={<FaqDeactivateAccount />} />
+      <Route path="/faq/protecao-dados" element={<FaqDataProtection />} />
       <Route path="/sobre-nos" element={<About />} />
       <Route path="/login" element={<CandidateLogin />} />
       <Route
         path="/forgot-password"
         element={<Navigate to="/login" state={{ openForgotModal: true }} replace />}
       />
+      <Route path="/oauth/google/callback" element={<GoogleCallback />} />
 
       <Route path="/employee-register" element={<EmployeeRegisterLayout />}>
         <Route index element={<Navigate to="step1" replace />} />
@@ -83,12 +95,12 @@ function App() {
         <Route path="step4" element={<CompanyRegisterStep4 />} />
       </Route>
 
+      <Route path="admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="login" replace />} />
-        <Route path="login" element={<AdminLogin />} />
         <Route
           element={
-          <ProtectedRoute redirectTo="/admin/login" allowedTypes={["ADMIN", "SUPERADMIN"]} />
+            <ProtectedRoute redirectTo="/admin/login" allowedTypes={["ADMIN", "SUPERADMIN"]} />
           }
         >
           <Route path="team-management" element={<TeamManagement />} />
@@ -129,6 +141,7 @@ function App() {
         <Route path="ofertas" element={<JobOffers />} />
         <Route path="documentos" element={<Documentos />} />
         <Route path="proximos-passos" element={<NextSteps />} />
+
         <Route path="definicoes" element={<Settings />} />
       </Route>
 
@@ -142,6 +155,7 @@ function App() {
       >
         <Route index element={<CompanyIndexRedirect />} />
         <Route path="informacoes" element={<CompanyInfo />} />
+
         <Route path="requisicoes" element={<CompanyRequests />} />
         <Route path="definicoes" element={<CompanySettings />} />
       </Route>

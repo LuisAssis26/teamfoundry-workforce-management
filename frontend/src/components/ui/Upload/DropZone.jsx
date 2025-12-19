@@ -8,6 +8,7 @@ export default function DropZone({
   hasFile = false,
   fileName,
   onRemove,
+  onPreview,
   allowedTypes,
   maxSizeMB,
   onError,
@@ -42,6 +43,17 @@ export default function DropZone({
   }
   function prevent(e) { e.preventDefault(); }
 
+  const handleContainerClick = (e) => {
+    if (disabled) return;
+    const isRemove = e.target.closest("[data-action=\"remove\"]");
+    if (isRemove) return; // já tratado no botão
+    if (hasFile && onPreview) {
+      onPreview();
+      return;
+    }
+    inputRef.current?.click();
+  };
+
   return (
     <div className="relative">
       {label && (
@@ -52,32 +64,25 @@ export default function DropZone({
       {hasFile && onRemove && (
         <button
           type="button"
-          className="btn btn-ghost btn-xs absolute right-2 top-[38px] z-10"
-          onClick={(e) => { e.stopPropagation(); onRemove(); }}
+          className="cursor-pointer absolute right-2 top-[38px] right-[12px] z-10"
+          data-action="remove"
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onRemove(); }}
         >
-          <i className="bi bi-x" />
+          <i className="bi bi-x text-xl" />
         </button>
       )}
       <div
-        className={`border rounded-xl p-6 text-center bg-base-200/70 ${hasFile ? "border-base-300 bg-base-200" : "border-dashed border-base-300 bg-base-50"} ${disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
+        className={`border rounded-xl p-6 text-center bg-base-200/70 ${
+          hasFile ? "border-base-300 bg-base-200" : "border-dashed border-base-300 bg-base-50"
+        } ${disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
         onDragOver={prevent}
         onDragEnter={prevent}
         onDrop={handleDrop}
-        onClick={() => !disabled && inputRef.current?.click()}
+        onClick={handleContainerClick}
       >
         {hasFile ? (
-          <div className="flex flex-col items-center gap-2 text-base-content">
-            <span className="font-semibold text-sm truncate w-full">{fileName || "ficheiro.pdf"}</span>
-            <button
-              type="button"
-              className="btn btn-sm btn-accent btn-outline"
-              onClick={(e) => {
-                e.stopPropagation();
-                inputRef.current?.click();
-              }}
-            >
-              Alterar
-            </button>
+          <div className="flex flex-col items-center justify-center h-14 gap-2 text-base-content">
+            <span className="font-semibold text-md truncate w-full text-center ">{fileName || "ficheiro.pdf"}</span>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2 text-base-content/80">
@@ -108,4 +113,5 @@ DropZone.propTypes = {
   allowedTypes: PropTypes.arrayOf(PropTypes.string),
   maxSizeMB: PropTypes.number,
   onError: PropTypes.func,
+  onPreview: PropTypes.func,
 };

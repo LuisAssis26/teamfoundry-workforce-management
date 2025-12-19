@@ -58,19 +58,45 @@ public class AdminEmployeeSearchService {
         this.employeeRequestRepository = employeeRequestRepository;
     }
 
-    public List<AdminEmployeeSearchResponse> search(String role, List<String> areas, List<String> skills) {
+    public List<AdminEmployeeSearchResponse> search(String role,
+                                                    List<String> areas,
+                                                    List<String> skills,
+                                                    List<String> preferredRoles,
+                                                    List<String> statuses,
+                                                    Integer teamId) {
+
+        
+        
+        
         resolveAuthenticatedAdmin(); // garante que é admin
         List<String> normAreas = normalizeList(areas);
         List<String> normSkills = normalizeList(skills);
-        String normRole = normalize(role);
+        List<String> normRoles = normalizeList(preferredRoles);
+        List<String> normStatuses = normalizeList(statuses);
+        
+        String normVacancyRole = null;
+        if (StringUtils.hasText(role)) {
+            String normRole = role.trim().toLowerCase(Locale.ROOT);
+            normVacancyRole = normRole; 
+        }
+
+
+        List<String> validStatuses = statuses != null ? statuses.stream().filter(StringUtils::hasText).toList() : List.of();
 
         List<EmployeeAccount> results = employeeAccountRepository.searchCandidates(
-                normRole,
                 normAreas,
                 normAreas.isEmpty(),
                 normSkills,
-                normSkills.isEmpty()
+                normSkills.isEmpty(),
+                normRoles,
+                normRoles.isEmpty(),
+                validStatuses,
+                validStatuses.isEmpty(),
+                teamId,
+                normVacancyRole
         );
+        
+        
 
         return results.stream()
                 .map(this::toResponse)
@@ -118,7 +144,8 @@ public class AdminEmployeeSearchService {
                 role,
                 skills,
                 areas,
-                experiences
+                experiences,
+                employee.getProfilePicturePublicId()
         );
     }
 
@@ -142,10 +169,6 @@ public class AdminEmployeeSearchService {
         return adminAccountRepository.findByUsernameIgnoreCase(username)
                 .filter(admin -> admin.getRole() == UserType.ADMIN)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Administrador não encontrado."));
-    }
-
-    private String normalize(String value) {
-        return StringUtils.hasText(value) ? value.trim().toLowerCase(Locale.ROOT) : null;
     }
 
     private List<String> normalizeList(List<String> values) {

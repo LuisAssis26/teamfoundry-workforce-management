@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamfoundry.backend.account.enums.RegistrationStatus;
 import com.teamfoundry.backend.account.enums.UserType;
-import com.teamfoundry.backend.account.model.CompanyAccount;
-import com.teamfoundry.backend.account.model.CompanyAccountManager;
+import com.teamfoundry.backend.account.model.company.CompanyAccount;
+import com.teamfoundry.backend.account.model.company.CompanyAccountManager;
 import com.teamfoundry.backend.account.repository.AccountRepository;
-import com.teamfoundry.backend.account.repository.CompanyAccountOwnerRepository;
-import com.teamfoundry.backend.account.repository.CompanyAccountRepository;
+import com.teamfoundry.backend.account.repository.company.CompanyAccountOwnerRepository;
+import com.teamfoundry.backend.account.repository.company.CompanyAccountRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -47,6 +48,7 @@ class CompanyProfileControllerIntegrationTest {
     @Autowired CompanyAccountRepository companyAccountRepository;
     @Autowired CompanyAccountOwnerRepository ownerRepository;
     @Autowired AccountRepository accountRepository;
+    @Autowired AuthTokenRepository authTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
 
     private final String email = "company@test.com";
@@ -54,6 +56,7 @@ class CompanyProfileControllerIntegrationTest {
 
     @BeforeEach
     void setup() {
+        authTokenRepository.deleteAll();
         ownerRepository.deleteAll();
         companyAccountRepository.deleteAll();
         accountRepository.deleteAll();
@@ -63,7 +66,7 @@ class CompanyProfileControllerIntegrationTest {
         account.setPassword(passwordEncoder.encode(rawPassword));
         account.setNif(555666777);
         account.setRole(UserType.COMPANY);
-        account.setActive(true);
+        account.setVerified(true);
         account.setRegistrationStatus(RegistrationStatus.COMPLETED);
         account.setName("ACME Lda");
         account.setAddress("Rua Principal 123");
@@ -85,7 +88,7 @@ class CompanyProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("GET /api/company/profile devolve dados da empresa e responsavel")
-    void getProfile_returnsCompanyAndManagerData() throws Exception {
+    void getProfileReturnsCompanyAndManagerData() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         mockMvc.perform(get("/api/company/profile")
@@ -104,7 +107,7 @@ class CompanyProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("PUT /api/company/profile atualiza o responsavel e persiste alteracoes")
-    void updateProfile_updatesManager() throws Exception {
+    void updateProfileUpdatesManager() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         Map<String, Object> payload = Map.of(
@@ -132,7 +135,7 @@ class CompanyProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("Endpoints de perfil da empresa sem token devolvem 401 Unauthorized")
-    void profileEndpoints_withoutToken_returnsUnauthorized() throws Exception {
+    void profileEndpointsWithoutTokenReturnsUnauthorized() throws Exception {
         mockMvc.perform(get("/api/company/profile"))
                 .andExpect(status().isUnauthorized());
 
@@ -148,7 +151,7 @@ class CompanyProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("PUT profile da empresa com payload invalido devolve 400")
-    void updateProfile_withInvalidPayload_returnsBadRequest() throws Exception {
+    void updateProfileWithInvalidPayloadReturnsBadRequest() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         Map<String, Object> payload = Map.of(
@@ -182,3 +185,4 @@ class CompanyProfileControllerIntegrationTest {
         return json.get("accessToken").asText();
     }
 }
+

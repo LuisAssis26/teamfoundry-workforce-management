@@ -168,26 +168,7 @@ export function AdminDataProvider({ children }) {
                 setData: setOptions,
             },
         }),
-        [
-            assignedRequests,
-            assignedRequestsError,
-            assignedRequestsLoaded,
-            assignedRequestsLoading,
-            options,
-            optionsError,
-            optionsLoaded,
-            optionsLoading,
-            refreshAssignedRequests,
-            refreshOptions,
-            refreshRequestDetails,
-            refreshRoleSummaries,
-            requestDetailsById,
-            requestDetailsError,
-            requestDetailsLoading,
-            rolesByRequestId,
-            rolesError,
-            rolesLoading,
-        ]
+        [assignedRequests, options, refreshAssignedRequests, refreshOptions, refreshRequestDetails, refreshRoleSummaries, requestDetailsById, requestDetailsError, requestDetailsLoading, rolesByRequestId, rolesError, rolesLoading]
     );
 
     return <AdminDataContext.Provider value={value}>{children}</AdminDataContext.Provider>;

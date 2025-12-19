@@ -74,6 +74,9 @@ class EmployeeRegistrationIntegrationTest {
     @Autowired
     EmployeeSkillRepository employeeSkillRepository;
 
+    @MockBean
+    VerificationEmailService verificationEmailService;
+
 
     private final String email = "Candidate@Test.com";
     private final String password = "StrongPass123";
@@ -94,7 +97,7 @@ class EmployeeRegistrationIntegrationTest {
 
     @Test
     @DisplayName("Step1 creates pending employee account")
-    void step1_successful_registration() throws Exception {
+    void step1SuccessfulRegistration() throws Exception {
         performStep1(email, password);
 
         EmployeeAccount created = employeeAccountRepository.findByEmail(email.toLowerCase()).orElseThrow();
@@ -108,7 +111,7 @@ class EmployeeRegistrationIntegrationTest {
 
     @Test
     @DisplayName("Step1 allows restarting registration when account is still pending")
-    void step1_allows_restart_for_pending_account() throws Exception {
+    void step1AllowsRestartForPendingAccount() throws Exception {
         // primeiro registo
         performStep1(email, password);
         EmployeeAccount first = employeeAccountRepository.findByEmail(email.toLowerCase()).orElseThrow();
@@ -129,7 +132,7 @@ class EmployeeRegistrationIntegrationTest {
 
     @Test
     @DisplayName("Step2 updates personal data")
-    void step2_updates_personal_data() throws Exception {
+    void step2UpdatesPersonalData() throws Exception {
         performStep1(email, password);
         performStep2(email);
 
@@ -144,7 +147,7 @@ class EmployeeRegistrationIntegrationTest {
 
     @Test
     @DisplayName("Step3 stores preferences and generates token")
-    void step3_preferences_and_token() throws Exception {
+    void step3PreferencesAndToken() throws Exception {
         performStep1(email, password);
         performStep2(email);
 
@@ -176,7 +179,7 @@ class EmployeeRegistrationIntegrationTest {
 
     @Test
     @DisplayName("Step3 fails when terms not accepted")
-    void step3_terms_not_accepted() throws Exception {
+    void step3TermsNotAccepted() throws Exception {
         performStep1(email, password);
         performStep2(email);
 
@@ -196,7 +199,7 @@ class EmployeeRegistrationIntegrationTest {
 
     @Test
     @DisplayName("Step4 activates account with correct verification code")
-    void step4_completes_verification() throws Exception {
+    void step4CompletesVerification() throws Exception {
         performStep1(email, password);
         performStep2(email);
 
@@ -222,7 +225,7 @@ class EmployeeRegistrationIntegrationTest {
 
     @Test
     @DisplayName("Step4 keeps account inactive when code is wrong")
-    void step4_wrong_code_keeps_account_inactive() throws Exception {
+    void step4WrongCodeKeepsAccountInactive() throws Exception {
         performStep1(email, password);
         performStep2(email);
 
@@ -324,3 +327,4 @@ class EmployeeRegistrationIntegrationTest {
         prefSkillRepository.save(prefSkill);
     }
 }
+

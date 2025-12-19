@@ -113,7 +113,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Step1 cria conta nova com email normalizado e password encriptada")
-    void handleStep1_createsNewAccount() {
+    void handleStep1CreatesNewAccount() {
         when(accountRepository.findByEmail("candidate@test.com")).thenReturn(Optional.empty());
         when(employeeAccountRepository.findByEmail("candidate@test.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("StrongPass123")).thenReturn("encoded-pass");
@@ -143,7 +143,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Step1 recomeça registo pendente e limpa dados anteriores")
-    void handleStep1_restartsPendingRegistration() {
+    void handleStep1RestartsPendingRegistration() {
         EmployeeAccount existing = new EmployeeAccount();
         existing.setId(5);
         existing.setEmail("candidate@test.com");
@@ -183,7 +183,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Step1 falha com DuplicateEmailException quando conta já está ativa ou completa")
-    void handleStep1_throwsDuplicateForActiveAccount() {
+    void handleStep1ThrowsDuplicateForActiveAccount() {
         EmployeeAccount existing = new EmployeeAccount();
         existing.setEmail("candidate@test.com");
         existing.setRegistrationStatus(RegistrationStatus.COMPLETED);
@@ -200,7 +200,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Step1 falha com 409 quando email pertence a outro tipo de conta")
-    void handleStep1_throwsConflictForOtherAccountType() {
+    void handleStep1ThrowsConflictForOtherAccountType() {
         Account other = new Account();
         other.setEmail("candidate@test.com");
         other.setRole(UserType.ADMIN);
@@ -216,7 +216,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Step1 converte erro de integridade em conflito")
-    void handleStep1_translatesDataIntegrityViolation() {
+    void handleStep1TranslatesDataIntegrityViolation() {
         when(accountRepository.findByEmail("candidate@test.com")).thenReturn(Optional.empty());
         when(employeeAccountRepository.findByEmail("candidate@test.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("StrongPass123")).thenReturn("encoded");
@@ -230,7 +230,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Step2 atualiza dados pessoais")
-    void handleStep2_updatesPersonalData() {
+    void handleStep2UpdatesPersonalData() {
         Step2Request request = new Step2Request();
         request.setEmail("Candidate@Test.com");
         request.setFirstName("Alice");
@@ -256,7 +256,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Step3 guarda preferências e gera token de verificação")
-    void handleStep3_storesPreferencesAndIssuesToken() {
+    void handleStep3StoresPreferencesAndIssuesToken() {
         Step3Request request = new Step3Request();
         request.setEmail("Candidate@Test.com  ");
         request.setRole("Developer");
@@ -326,7 +326,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Step3 falha sem termos aceites")
-    void handleStep3_requiresTermsAccepted() {
+    void handleStep3RequiresTermsAccepted() {
         Step3Request request = new Step3Request();
         request.setEmail("candidate@test.com");
         request.setRole("Any");
@@ -345,7 +345,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Step4 ativa conta com código válido")
-    void handleStep4_completesVerification() {
+    void handleStep4CompletesVerification() {
         Step4Request request = new Step4Request();
         request.setEmail("candidate@test.com");
         request.setVerificationCode("123456");
@@ -370,7 +370,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Step4 falha com código errado")
-    void handleStep4_invalidCode() {
+    void handleStep4InvalidCode() {
         Step4Request request = new Step4Request();
         request.setEmail("candidate@test.com");
         request.setVerificationCode("000000");
@@ -388,7 +388,7 @@ class EmployeeRegistrationServiceTest {
 
     @Test
     @DisplayName("Reenvio de código gera novo token e envia email")
-    void resendVerificationCode_sendsNewToken() {
+    void resendVerificationCodeSendsNewToken() {
         VerificationResendRequest request = new VerificationResendRequest("Candidate@Test.com");
 
         when(employeeAccountRepository.findByEmail("candidate@test.com")).thenReturn(Optional.of(baseAccount));
@@ -404,3 +404,4 @@ class EmployeeRegistrationServiceTest {
         verify(verificationEmailService).sendVerificationCode(eq("candidate@test.com"), eq(tokenCaptor.getValue().getToken()));
     }
 }
+

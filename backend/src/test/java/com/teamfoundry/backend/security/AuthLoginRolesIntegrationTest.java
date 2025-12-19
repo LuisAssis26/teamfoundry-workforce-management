@@ -8,6 +8,7 @@ import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.AccountRepository;
 import com.teamfoundry.backend.account.repository.company.CompanyAccountRepository;
 import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -48,19 +49,23 @@ class AuthLoginRolesIntegrationTest {
     AccountRepository accountRepository;
 
     @Autowired
+    AuthTokenRepository authTokenRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     private final String rawPassword = "secret";
 
     @BeforeEach
     void cleanTables() {
+        authTokenRepository.deleteAll();
         companyAccountRepository.deleteAll();
         employeeAccountRepository.deleteAll();
         accountRepository.deleteAll();
     }
 
     @Test
-    void login_candidate_returns_access_token_and_role_employee() throws Exception {
+    void loginCandidateReturnsAccessTokenAndRoleEmployee() throws Exception {
         employeeAccountRepository.save(buildEmployee("candidate@test.com", true));
 
         var body = objectMapper.writeValueAsString(Map.of(
@@ -78,7 +83,7 @@ class AuthLoginRolesIntegrationTest {
     }
 
     @Test
-    void login_company_returns_access_token_and_role_company() throws Exception {
+    void loginCompanyReturnsAccessTokenAndRoleCompany() throws Exception {
         companyAccountRepository.save(buildCompany("company@test.com", true));
 
         var body = objectMapper.writeValueAsString(Map.of(
@@ -121,3 +126,4 @@ class AuthLoginRolesIntegrationTest {
         return account;
     }
 }
+

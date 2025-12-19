@@ -1,0 +1,120 @@
+    } else {
+      onChange([...selectedOptions, value]);
+    }
+    setIsOpen(false);
+    setQuery("");
+  };
+
+  const removeOption = (value) => {
+    onChange(selectedOptions.filter((item) => item !== value));
+  };
+
+  const handleTriggerKeyDown = (event) => {
+    if (disabled) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      setIsOpen((prev) => !prev);
+      if (!isOpen) setQuery("");
+    }
+  };
+
+  return (
+      <div className="form-control w-full" ref={containerRef}>
+        {label && (
+            <label className="label">
+              <span className="label-text font-medium">{label}</span>
+            </label>
+        )}
+
+        <div className="relative">
+          <div
+            role="button"
+            tabIndex={0}
+            className={`${DROPDOWN_TRIGGER_CLASS} ${disabled ? "opacity-60 cursor-not-allowed" : ""} ${
+              selectedOptions.length === 0 ? "text-base-content/70" : ""
+            }`}
+            onClick={() => !disabled && setIsOpen((prev) => !prev)}
+            onKeyDown={handleTriggerKeyDown}
+            aria-disabled={disabled}
+          >
+            <div
+                ref={chipsRef}
+                className="flex-1 flex items-center gap-2 overflow-hidden whitespace-nowrap"
+            >
+              {selectedOptions.length === 0 && <span>{placeholder}</span>}
+              {visibleChips.map((value) => (
+                  <span
+                      key={value}
+                      className="badge badge-primary gap-1 rounded-md px-2 py-3 text-sm"
+                      title={value}
+                  >
+                {value}
+                    <button
+                        type="button"
+                        aria-label={`Remover ${value}`}
+                        className="ml-1 h-5 w-5 flex items-center justify-center rounded-sm bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent cursor-pointer"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          removeOption(value);
+                        }}
+                    >
+                  ×
+                </button>
+              </span>
+              ))}
+              {hiddenChips.length > 0 && (
+                  <span
+                      className="badge badge-outline"
+                      title={`Também: ${hiddenChips.join(", ")}`}
+                  >
+                +{hiddenChips.length}
+              </span>
+              )}
+            </div>
+            <DropdownChevron open={isOpen} />
+          </div>
+          <DropdownPanel
+            open={isOpen && !disabled}
+            options={filteredOptions}
+            onSelect={toggleOption}
+            getOptionValue={(opt) => opt.value}
+            getOptionLabel={(opt) => opt.label}
+            showSearch
+            searchQuery={query}
+            onSearchChange={setQuery}
+            className="min-w-full max-w-full"
+            renderOption={({ value, label: optionLabel }, select) => (
+              <button type="button" className="btn btn-ghost justify-start w-full" onClick={select}>
+                <i
+                  className={`bi mr-2 ${
+                    selectedOptions.includes(value)
+                      ? "bi-check-circle-fill text-success"
+                      : "bi-plus-circle text-base-content/60"
+                  }`}
+                ></i>
+                {optionLabel}
+              </button>
+            )}
+          />
+        </div>
+      </div>
+  );
+}
+
+MultiSelectDropdown.propTypes = {
+  label: PropTypes.string,
+  options: PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+          label: PropTypes.string.isRequired,
+          value: PropTypes.string.isRequired,
+        }),
+      ]),
+  ).isRequired,
+  selectedOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  disabled: PropTypes.bool,
+  maxVisibleChips: PropTypes.number,
+};

@@ -21,6 +21,8 @@ const initialForm = {
   completionDate: "",
   description: "",
   file: null,
+  certificateUrl: null,
+  certificateFileName: "",
 };
 
 const ALLOWED_CERT_TYPES = [
@@ -93,7 +95,7 @@ export default function Certificates() {
     if (!form.name.trim()) newErrors.name = "O nome da formação é obrigatório.";
     if (!form.institution.trim()) newErrors.institution = "A instituição é obrigatória.";
     if (!form.completionDate) newErrors.completionDate = "Indique a data de conclusão.";
-    if (!form.file) newErrors.file = "É necessário anexar o certificado.";
+    if (!form.file && !form.certificateUrl) newErrors.file = "É necessário anexar o certificado.";
     return newErrors;
   };
 
@@ -114,10 +116,12 @@ export default function Certificates() {
       if (editingId) {
         const updated = await updateEmployeeCertification(editingId, payload);
         setEducations((prev) => prev.map((e) => (e.id === editingId ? updated : e)));
+        setEducationData((prev) => (prev ? prev.map((e) => (e.id === editingId ? updated : e)) : [updated]));
         setSuccessMessage("Certificação atualizada com sucesso.");
       } else {
         const created = await createEmployeeCertification(payload);
         setEducations((prev) => [created, ...prev]);
+        setEducationData((prev) => (prev ? [created, ...prev] : [created]));
         setSuccessMessage("Certificação adicionada com sucesso.");
       }
       closeModal();
@@ -137,6 +141,8 @@ export default function Certificates() {
       completionDate: education.completionDate || "",
       description: education.description || "",
       file: null,
+      certificateUrl: education.certificateUrl || null,
+      certificateFileName: education.certificateFileName || "",
     });
     setOpen(true);
   };
@@ -148,6 +154,7 @@ export default function Certificates() {
     try {
       await deleteEmployeeCertification(editingId);
       setEducations((prev) => prev.filter((e) => e.id !== editingId));
+      setEducationData((prev) => (prev ? prev.filter((e) => e.id !== editingId) : prev));
       setSuccessMessage("Certificação removida com sucesso.");
       closeModal();
     } catch (err) {
@@ -283,10 +290,17 @@ export default function Certificates() {
                 setErrors((prev) => ({ ...prev, file: "" }));
               }}
               onRemove={() => {
-                setForm((prev) => ({ ...prev, file: null }));
+                setForm((prev) => ({ ...prev, file: null, certificateUrl: null, certificateFileName: "" }));
               }}
-              hasFile={Boolean(form.file)}
-              fileName={form.file?.name}
+              hasFile={Boolean(form.file) || Boolean(form.certificateUrl)}
+              fileName={form.file?.name || form.certificateFileName || (form.certificateUrl ? "Certificado" : undefined)}
+              onPreview={
+                form.file
+                  ? undefined
+                  : form.certificateUrl
+                    ? () => window.open(form.certificateUrl, "_blank", "noopener,noreferrer")
+                    : undefined
+              }
               disabled={saving || deleting}
               allowedTypes={ALLOWED_CERT_TYPES}
               maxSizeMB={MAX_CERT_MB}
@@ -321,9 +335,11 @@ function EmptyState() {
 async function buildPayload(form) {
   const certificateFile = form.file ? await fileToBase64(form.file) : null;
   const fileName =
-    form.file?.name && form.file.name.trim()
+    (form.file?.name && form.file.name.trim())
       ? form.file.name
-      : (form.name ? `${form.name.trim().replace(/\s+/g, "_")}` : "certificado") + ".pdf";
+      : (form.certificateFileName && form.certificateFileName.trim())
+        ? form.certificateFileName
+        : (form.name ? `${form.name.trim().replace(/\s+/g, "_")}` : "certificado") + ".pdf";
   return {
     name: form.name.trim(),
     institution: form.institution.trim(),
@@ -343,5 +359,3 @@ function fileToBase64(file) {
     reader.readAsDataURL(file);
   });
 }
-
-

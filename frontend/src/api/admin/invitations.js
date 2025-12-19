@@ -23,8 +23,12 @@ export async function sendInvites(teamId, role, candidateIds) {
 }
 
 export async function listInvitedIds(teamId, role) {
+    const trimmedRole = role?.trim();
+    const path = trimmedRole
+        ? `/api/admin/work-requests/${teamId}/roles/${encodeURIComponent(trimmedRole)}/invites`
+        : `/api/admin/work-requests/${teamId}/invites`;
     const data = await handleResponse(
-        await apiFetch(`/api/admin/work-requests/${teamId}/roles/${encodeURIComponent(role)}/invites`),
+        await apiFetch(path),
         "Falha ao carregar convites."
     );
     return Array.isArray(data) ? data : [];

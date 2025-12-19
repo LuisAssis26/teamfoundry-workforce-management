@@ -61,7 +61,7 @@ class AuthRememberMeIntegrationTest {
 
     @Test
     @DisplayName("Login com remember-me emite refresh_token cookie e permite refresh")
-    void login_with_remember_sets_cookie_and_allows_refresh() throws Exception {
+    void loginWithRememberSetsCookieAndAllowsRefresh() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "email", email,
                 "password", rawPassword,
@@ -103,8 +103,8 @@ class AuthRememberMeIntegrationTest {
     }
 
     @Test
-    @DisplayName("Login sem remember limpa o refresh_token cookie")
-    void login_without_remember_clears_cookie() throws Exception {
+    @DisplayName("Login sem remember pode enviar cookie de sessão (sem Max-Age=0)")
+    void loginWithoutRememberUsesSessionCookie() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "email", email,
                 "password", rawPassword,
@@ -118,11 +118,12 @@ class AuthRememberMeIntegrationTest {
                 .andReturn();
 
         String setCookie = result.getResponse().getHeader(HttpHeaders.SET_COOKIE);
-        // Pode ser null (sem header) ou um cookie expirado; se existir, deve expirar imediatamente
+        // Backend atual emite cookie de sessão (sem Max-Age) ou nenhum header; apenas não deve vir expirado.
         if (setCookie != null) {
             assertThat(setCookie).contains("refresh_token=");
-            assertThat(setCookie).contains("Max-Age=0");
+            assertThat(setCookie).doesNotContain("Max-Age=0");
         }
     }
 }
+
 

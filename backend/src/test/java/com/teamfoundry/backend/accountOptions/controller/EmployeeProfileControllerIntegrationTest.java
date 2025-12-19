@@ -7,6 +7,7 @@ import com.teamfoundry.backend.account.enums.UserType;
 import com.teamfoundry.backend.account.model.employee.profile.EmployeeAccount;
 import com.teamfoundry.backend.account.repository.AccountRepository;
 import com.teamfoundry.backend.account.repository.employee.EmployeeAccountRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -43,6 +44,7 @@ class EmployeeProfileControllerIntegrationTest {
 
     @Autowired EmployeeAccountRepository employeeAccountRepository;
     @Autowired AccountRepository accountRepository;
+    @Autowired AuthTokenRepository authTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
 
     private final String email = "profile@test.com";
@@ -50,6 +52,7 @@ class EmployeeProfileControllerIntegrationTest {
 
     @BeforeEach
     void setupUser() {
+        authTokenRepository.deleteAll();
         employeeAccountRepository.deleteAll();
         accountRepository.deleteAll();
 
@@ -71,7 +74,7 @@ class EmployeeProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("GET /api/employee/profile devolve dados do perfil autenticado")
-    void getProfile_returnsAuthenticatedProfile() throws Exception {
+    void getProfileReturnsAuthenticatedProfile() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         mockMvc.perform(get("/api/employee/profile")
@@ -89,7 +92,7 @@ class EmployeeProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("PUT /api/employee/profile atualiza dados e persiste alteraÇõÇœes")
-    void updateProfile_updatesAndPersists() throws Exception {
+    void updateProfileUpdatesAndPersists() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         Map<String, Object> payload = Map.of(
@@ -126,7 +129,7 @@ class EmployeeProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("Endpoints de perfil sem token devolvem 401 Unauthorized")
-    void profileEndpoints_withoutToken_returnsUnauthorized() throws Exception {
+    void profileEndpointsWithoutTokenReturnsUnauthorized() throws Exception {
         mockMvc.perform(get("/api/employee/profile"))
                 .andExpect(status().isUnauthorized());
 
@@ -146,7 +149,7 @@ class EmployeeProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("PUT profile com payload invalido devolve 400 Bad Request")
-    void updateProfile_withInvalidPayload_returnsBadRequest() throws Exception {
+    void updateProfileWithInvalidPayloadReturnsBadRequest() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         Map<String, Object> payload = new java.util.HashMap<>();
@@ -183,3 +186,4 @@ class EmployeeProfileControllerIntegrationTest {
         return json.get("accessToken").asText();
     }
 }
+

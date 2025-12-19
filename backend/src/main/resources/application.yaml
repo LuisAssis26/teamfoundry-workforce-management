@@ -1,7 +1,7 @@
 # CONFIGURAÇÃO GLOBAL PADRÃO
 jwt:
   secret: ${JWT_SECRET:change-me-256-bit-secret-string-change-me}
-  expiration-seconds: 3600
+  expiration-seconds: 28800
 
 spring:
   config:
@@ -33,6 +33,24 @@ spring:
             enable: true
   flyway:
     enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:}
+            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
 
 app:
   mail:
@@ -42,20 +60,23 @@ app:
     base-url: ${CLOUDINARY_BASE_URL:https://res.cloudinary.com/teamfoundry/raw/upload/}
   password-reset:
     url: ${APP_PASSWORD_RESET_URL}
+  password-reset:
+    url: ${APP_PASSWORD_RESET_URL}
   site:
     media:
       storage-dir: ${APP_SITE_MEDIA_DIR:uploads/site}
       public-path: /media/site
-  gdelt:
-    enabled: ${GDELT_ENABLED:true}
-    base-url: ${GDELT_BASE_URL:https://api.gdeltproject.org/api/v2/doc/doc}
-    mode: ${GDELT_MODE:ArtList}
-    format: ${GDELT_FORMAT:json}
-    max-records: ${GDELT_MAX_RECORDS:50}
-    country: ${GDELT_COUNTRY:}
-    language: ${GDELT_LANGUAGE:POR}
-    fallback-enabled: ${GDELT_FALLBACK_ENABLED:true}
-    timeout-ms: ${GDELT_TIMEOUT_MS:0}
+  news:
+    enabled: ${NEWSAPI_ENABLED:false}
+    api-key: ${NEWSAPI_KEY:56ac4b5c930f41979fdf586909a7a7b8}
+    base-url: ${NEWSAPI_BASE_URL:https://newsapi.org/v2}
+    top-headlines-path: ${NEWSAPI_TOP_HEADLINES_PATH:/top-headlines}
+    everything-path: ${NEWSAPI_EVERYTHING_PATH:/everything}
+    country: ${NEWSAPI_COUNTRY:pt}
+    category: ${NEWSAPI_CATEGORY:business}
+    portuguese-sources: ${NEWSAPI_PORTUGUESE_SOURCES:publico,observador,jn}
+    language: ${NEWSAPI_LANGUAGE:pt}
+    query: ${NEWSAPI_QUERY:Portugal}
   employee:
     certificates-upload-dir: ${APP_CERTIFICATES_UPLOAD_DIR:uploads/certificates}
 
@@ -65,6 +86,8 @@ app:
       expiration-minutes: 30
     pending-retention-minutes: 60
     pending-cleanup-interval-ms: 300000
+  oauth2:
+    front-success-url: ${OAUTH2_FRONT_SUCCESS_URL:http://localhost:5173/oauth/google/callback}
 
 server:
   port: 8443
@@ -159,7 +182,7 @@ app:
 # JWT configuration
 jwt:
   secret: ${JWT_SECRET:change-me-32-bytes-minimum-change-me-change-me}
-  expiration-seconds: 3600
+  expiration-seconds: 28800
 
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME:}

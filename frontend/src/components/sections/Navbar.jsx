@@ -5,6 +5,7 @@ import Button from "../ui/Button/Button";
 import logo from "../../assets/images/logo/teamFoundry_LogoWhite.png";
 import { useAuthContext } from "../../auth/AuthContext.jsx";
 import { useEmployeeProfile } from "../../pages/profile/Employee/EmployeeProfileContext.jsx";
+import NotificationDropdown from "../ui/Notification/NotificationDropdown.jsx";
 
 const NAV_LINKS = [];
 
@@ -105,81 +106,82 @@ export default function Navbar({
             ))}
           </div>
         ) : (
-          <div className="relative " ref={profileRef}>
-            <button
-              type="button"
-              className="btn btn-ghost btn-circle h-12 w-12 text-3xl text-primary-content hover:bg-transparent active:bg-transparent focus:bg-transparent"
-              onClick={() => setIsProfileOpen((o) => !o)}
-              aria-haspopup="true"
-              aria-expanded={isProfileOpen}
-            >
-              {profileImageUrl ? (
-                <img
-                  src={profileImageUrl}
-                  alt="Foto do perfil"
-                  className="w-full h-full rounded-full object-cover border-2 border-primary-content/30"
-                />
-              ) : (
-                <i className="bi bi-person-circle" aria-hidden="true" />
-              )}
-              <span className="sr-only">Abrir menu do perfil</span>
-            </button>
+          <div className="flex items-center gap-4">
+            <NotificationDropdown />
+            <div className="relative " ref={profileRef}>
+              <button
+                type="button"
+                className="btn btn-ghost btn-circle h-12 w-12 text-3xl text-primary-content hover:bg-transparent active:bg-transparent focus:bg-transparent"
+                onClick={() => setIsProfileOpen((o) => !o)}
+                aria-haspopup="true"
+                aria-expanded={isProfileOpen}
+              >
+                {profileImageUrl ? (
+                  <img
+                    src={profileImageUrl}
+                    alt="Foto do perfil"
+                    className="w-full h-full rounded-full object-cover border-2 border-primary-content/30"
+                  />
+                ) : (
+                  <i className="bi bi-person-circle" aria-hidden="true" />
+                )}
+                <span className="sr-only">Abrir menu do perfil</span>
+              </button>
 
-            {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-56 rounded-xl border border-base-300 bg-base-100 text-base-content shadow-lg z-50">
-                <nav>
-                  {(userType === "COMPANY" ? COMPANY_MENU : EMPLOYEE_MENU).map(
-                    ({ to, label, icon }, idx, arr) => (
-                      <Link
-                        key={to}
-                        to={to}
-                        className={`flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition ${
-                          idx === 0 ? "rounded-t-xl" : ""
-                        } ${idx === arr.length - 1 ? "border-b border-base-200" : ""}`}
-                        onClick={() => setIsProfileOpen(false)}
-                      >
-                        <i className={`bi ${icon}`} aria-hidden="true" />
-                        <span>{label}</span>
-                      </Link>
-                    )
-                  )}
-                  <button
-                    type="button"
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-error hover:bg-error/10 transition-colors duration-150 cursor-pointer ${
-                      userType !== "COMPANY" ? "rounded-b-xl" : ""
-                    }`}
-                    onClick={() => {
-                      setIsProfileOpen(false);
-                      onLogout?.();
-                    }}
-                  >
-                    <i className="bi bi-box-arrow-right" aria-hidden="true" />
-                    <span>Terminar sessão</span>
-                  </button>
-                  {userType === "COMPANY" && (
-                    <>
-                      <div className="border-t border-base-200" />
-                      <Link
-                        to="/faq"
-                        className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition"
-                        onClick={() => setIsProfileOpen(false)}
-                      >
-                        <i className="bi bi-question-circle" aria-hidden="true" />
-                        <span>FAQ&apos;s</span>
-                      </Link>
-                      <Link
-                        to="/sobre-nos"
-                        className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition rounded-b-xl"
-                        onClick={() => setIsProfileOpen(false)}
-                      >
-                        <i className="bi bi-info-circle" aria-hidden="true" />
-                        <span>Sobre nós</span>
-                      </Link>
-                    </>
-                  )}
-                </nav>
-              </div>
-            )}
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-2 w-56 rounded-xl border border-base-300 bg-base-100 text-base-content shadow-lg z-50">
+                  <nav>
+                    {(userType === "COMPANY" ? COMPANY_MENU : EMPLOYEE_MENU).map(
+                      ({ to, label, icon }, idx, arr) => (
+                        <Link
+                          key={to}
+                          to={to}
+                          className={`flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition ${idx === 0 ? "rounded-t-xl" : ""
+                            } ${idx === arr.length - 1 ? "border-b border-base-200" : ""}`}
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <i className={`bi ${icon}`} aria-hidden="true" />
+                          <span>{label}</span>
+                        </Link>
+                      )
+                    )}
+                    <button
+                      type="button"
+                      className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-error hover:bg-error/10 transition-colors duration-150 cursor-pointer ${userType !== "COMPANY" ? "rounded-b-xl" : ""
+                        }`}
+                      onClick={() => {
+                        setIsProfileOpen(false);
+                        onLogout?.();
+                      }}
+                    >
+                      <i className="bi bi-box-arrow-right" aria-hidden="true" />
+                      <span>Terminar sessão</span>
+                    </button>
+                    {userType === "COMPANY" && (
+                      <>
+                        <div className="border-t border-base-200" />
+                        <Link
+                          to="/faq"
+                          className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <i className="bi bi-question-circle" aria-hidden="true" />
+                          <span>FAQ&apos;s</span>
+                        </Link>
+                        <Link
+                          to="/sobre-nos"
+                          className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-base-200 transition rounded-b-xl"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <i className="bi bi-info-circle" aria-hidden="true" />
+                          <span>Sobre nós</span>
+                        </Link>
+                      </>
+                    )}
+                  </nav>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -221,7 +223,6 @@ const EMPLOYEE_MENU = [
   { to: "/candidato/dados-pessoais", label: "Perfil", icon: "bi-person" },
   { to: "/candidato/ofertas", label: "Ofertas", icon: "bi-bell" },
   { to: "/candidato/documentos", label: "Documentos", icon: "bi-file-earmark-text" },
-  { to: "/candidato/proximos-passos", label: "Próximos passos", icon: "bi-flag" },
   { to: "/candidato/definicoes", label: "Definições", icon: "bi-gear" },
 ];
 

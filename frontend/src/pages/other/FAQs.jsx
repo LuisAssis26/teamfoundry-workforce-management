@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Navbar from "../../components/sections/Navbar.jsx";
 import Footer from "../../components/sections/Footer.jsx";
 import { useAuthContext } from "../../auth/AuthContext.jsx";
@@ -5,31 +6,36 @@ import { useAuthContext } from "../../auth/AuthContext.jsx";
 const faqs = [
   {
     question: "Como a TeamFoundry liga empresas a profissionais?",
+    link: "/faq/processo-matching",
     answer:
       "Empresas publicam requisições e a nossa plataforma recomenda perfis e equipas com base em competências, disponibilidade e geografia. Os administradores validam credenciais antes de qualquer atribuição.",
   },
   {
     question: "Posso acompanhar o estado das requisições?",
+    link: "/faq/estado-requisicoes",
     answer:
       "Sim. Cada requisição mostra estados como Incompleta, Em Progresso ou Concluída, datas previstas e responsável designado.",
   },
   {
     question: "Quais documentos posso enviar?",
+    link: "/faq/documentos-candidato",
     answer:
       "Currículo, certificações e foto de perfil. Os uploads são validados e podem ser substituídos a qualquer momento.",
   },
   {
     question: "Como funcionam as credenciais de empresa?",
     answer:
-      "Super administradores revêm NIF, dados de contacto e país. Uma conta só fica ativa após aprovação.",
+      "Super administradores revêem NIF, dados de contacto e país. Uma conta só fica ativa após aprovação.",
   },
   {
     question: "É possível desativar a conta?",
+    link: "/faq/desativar-conta",
     answer:
-      "Sim. Empresas e colaboradores podem desativar a conta, preservando dados e histórico. A reativação pode ser solicitada via suporte.",
+      "Sim. A desativação pode ser feita nas definições, com confirmação de palavra-passe e sem serviços ativos. A reativação pode ser solicitada via suporte.",
   },
   {
     question: "Como proteger meus dados?",
+    link: "/faq/protecao-dados",
     answer:
       "Nunca partilhe credenciais. Use passwords fortes (ou password manager) e, se possível, ative 2FA. Mantemos tokens por sessão e opções de lembrete só quando solicitado.",
   },
@@ -42,8 +48,8 @@ export default function FAQs() {
     userType === "COMPANY"
       ? "/empresa/informacoes"
       : userType === "EMPLOYEE"
-        ? "/candidato/dados-pessoais"
-        : "/";
+      ? "/candidato/dados-pessoais"
+      : "/";
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content">
@@ -64,7 +70,13 @@ export default function FAQs() {
               className="card bg-base-100 border border-base-200 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="card-body space-y-2">
-                <h2 className="text-lg font-semibold text-primary">{item.question}</h2>
+                {item.link ? (
+                  <Link className="text-lg font-semibold text-primary hover:underline" to={item.link}>
+                    {item.question}
+                  </Link>
+                ) : (
+                  <h2 className="text-lg font-semibold text-primary">{item.question}</h2>
+                )}
                 <p className="text-base-content/80 leading-relaxed">{item.answer}</p>
               </div>
             </article>

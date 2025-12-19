@@ -22,10 +22,15 @@ public class AdminEmployeeSearchController {
     public List<AdminEmployeeSearchResponse> search(
             @RequestParam(name = "role", required = false) String role,
             @RequestParam(name = "areas", required = false) List<String> areas,
-            @RequestParam(name = "skills", required = false) List<String> skills
+            @RequestParam(name = "skills", required = false) List<String> skills,
+            @RequestParam(name = "preferredRoles", required = false) List<String> preferredRoles,
+            @RequestParam(name = "statuses", required = false) List<String> statuses,
+            @RequestParam(name = "team", required = false) Integer teamId
     ) {
         List<String> safeAreas = areas != null ? areas : Collections.emptyList();
         List<String> safeSkills = skills != null ? skills : Collections.emptyList();
-        return adminEmployeeSearchService.search(role, safeAreas, safeSkills);
+        List<String> safePreferred = preferredRoles != null ? preferredRoles : Collections.emptyList();
+        List<String> safeStatuses = statuses != null ? statuses : Collections.emptyList();
+        return adminEmployeeSearchService.search(role, safeAreas, safeSkills, safePreferred, safeStatuses, teamId);
     }
 }

@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Vagas (EmployeeRequest): consultas para convites, contagens e hist┴ico.
+ * Vagas (EmployeeRequest): consultas para convites, contagens e historico.
  */
 public interface EmployeeRequestRepository extends JpaRepository<EmployeeRequest, Integer> {
 
@@ -33,6 +33,8 @@ public interface EmployeeRequestRepository extends JpaRepository<EmployeeRequest
             GROUP BY er.requestedRole
             """)
     List<RoleCount> countByRoleForTeam(@Param("teamRequestId") Integer teamRequestId);
+
+    List<EmployeeRequest> findByTeamRequest_IdAndRequestedRole(Integer teamId, String requestedRole);
 
     @EntityGraph(attributePaths = {"teamRequest"})
     List<EmployeeRequest> findByTeamRequest_IdAndRequestedRoleIgnoreCaseAndEmployeeIsNull(Integer teamRequestId, String role);
@@ -73,6 +75,8 @@ public interface EmployeeRequestRepository extends JpaRepository<EmployeeRequest
 
     @EntityGraph(attributePaths = {"teamRequest", "teamRequest.company"})
     List<EmployeeRequest> findByEmployee_IdOrderByAcceptedDateDesc(Integer employeeId);
+
+    long countByTeamRequest_IdAndEmployeeIsNull(Integer teamId);
 
     interface TeamRequestCount {
         Integer getRequestId();

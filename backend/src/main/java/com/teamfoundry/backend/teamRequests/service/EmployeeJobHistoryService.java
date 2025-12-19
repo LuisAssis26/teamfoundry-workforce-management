@@ -37,6 +37,8 @@ public class EmployeeJobHistoryService {
     private final EmployeeRequestRepository employeeRequestRepository;
     private final EmployeeAccountRepository employeeAccountRepository;
     private final EmployeeRequestOfferRepository employeeRequestOfferRepository;
+    private final com.teamfoundry.backend.teamRequests.repository.TeamRequestRepository teamRequestRepository;
+    private final com.teamfoundry.backend.notification.service.NotificationService notificationService;
     private final ActionLogService actionLogService;
 
     @Transactional(readOnly = true)
@@ -62,29 +64,61 @@ public class EmployeeJobHistoryService {
         List<EmployeeRequestOffer> invites = employeeRequestOfferRepository.findAllInvitesByEmployeeEmail(normalized);
         List<EmployeeRequest> acceptedByUser = employeeRequestRepository.findByEmployee_EmailOrderByAcceptedDateDesc(normalized);
 
-        Map<Integer, EmployeeJobSummary> summaries = new LinkedHashMap<>();
+        Map<String, EmployeeJobSummary> groupedSummaries = new LinkedHashMap<>();
 
-        // Convites (inclui fechados/aceites)
+
         for (EmployeeRequestOffer invite : invites) {
             EmployeeRequest req = invite.getEmployeeRequest();
             if (req == null || req.getTeamRequest() == null) continue;
 
-            String status = "OPEN";
-            if (req.getEmployee() != null) {
-                status = Objects.equals(req.getEmployee().getId(), employee.getId()) ? "ACCEPTED" : "CLOSED";
-            } else if (isConcluded(req.getTeamRequest())) {
-                status = "CLOSED";
+            TeamRequest teamRequest = req.getTeamRequest();
+            Integer teamId = teamRequest.getId();
+            String role = req.getRequestedRole();
+            String key = teamId + "::" + role;
+
+            boolean isPersonalAccept = req.getEmployee() != null && Objects.equals(req.getEmployee().getId(), employee.getId());
+            
+
+            if (isPersonalAccept) {
+                groupedSummaries.put("ACCEPTED_" + req.getId(), toSummary(req, "ACCEPTED"));
+                continue;
             }
-            summaries.put(req.getId(), toSummary(req, status));
+
+
+            boolean slotIsOpen = (req.getEmployee() == null) && !isConcluded(teamRequest);
+            
+            // Logica de agrupamento
+            // Logica de agrupamento
+            groupedSummaries.compute(key, (k, existing) -> {
+                if (existing == null) {
+
+                    String status = slotIsOpen ? "OPEN" : "CLOSED";
+                    return toSummary(req, status);
+                } else {
+
+                    if ("CLOSED".equals(existing.getStatus()) && slotIsOpen) {
+                        return toSummary(req, "OPEN");
+
+                    }
+                    return existing;
+                }
+            });
         }
 
-        // Garantir que aceites do proprio sempre aparecem
+
         for (EmployeeRequest req : acceptedByUser) {
             if (req.getTeamRequest() == null) continue;
-            summaries.put(req.getId(), toSummary(req, "ACCEPTED"));
+
+            groupedSummaries.put("ACCEPTED_" + req.getId(), toSummary(req, "ACCEPTED"));
+            
+
+            Integer teamId = req.getTeamRequest().getId();
+            String role = req.getRequestedRole();
+            String key = teamId + "::" + role;
+            groupedSummaries.remove(key);
         }
 
-        return summaries.values().stream().toList();
+        return groupedSummaries.values().stream().toList();
     }
 
     public EmployeeJobSummary acceptOffer(Integer requestId, String email) {
@@ -94,25 +128,61 @@ public class EmployeeJobHistoryService {
         String normalizedEmail = email.trim().toLowerCase();
         EmployeeAccount employee = findEmployee(normalizedEmail);
 
-        EmployeeRequest request = employeeRequestRepository.findById(requestId)
+
+        EmployeeRequest initialRequest = employeeRequestRepository.findById(requestId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Oferta nao encontrada."));
 
-        if (request.getEmployee() != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Vaga ja ocupada.");
+        final int targetTeamId = initialRequest.getTeamRequest().getId();
+        final String targetRole = initialRequest.getRequestedRole();
+
+
+        boolean invited = employeeRequestOfferRepository
+                .findActiveInvitesByEmployeeEmail(normalizedEmail)
+                .stream()
+                .anyMatch(inv -> inv.getEmployeeRequest() != null &&
+                        inv.getEmployeeRequest().getTeamRequest().getId() == targetTeamId &&
+                        inv.getEmployeeRequest().getRequestedRole().equals(targetRole));
+
+        if (!invited) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem convite para esta oferta.");
         }
 
-        TeamRequest teamRequest = request.getTeamRequest();
+        EmployeeRequest targetRequest = initialRequest;
+
+        if (targetRequest.getEmployee() != null) {
+            // Find another open slot in the same Team Request for the same Role
+            List<EmployeeRequest> siblings = employeeRequestRepository.findByTeamRequest_IdAndRequestedRole(
+                    targetRequest.getTeamRequest().getId(),
+                    targetRequest.getRequestedRole()
+            );
+
+            targetRequest = siblings.stream()
+                    .filter(r -> r.getEmployee() == null)
+                    .findFirst()
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "Vagas esgotadas."));
+        }
+
+
+
+        if (targetRequest.getEmployee() != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Todas as vagas para esta função foram preenchidas.");
+        }
+
+        TeamRequest teamRequest = targetRequest.getTeamRequest();
         Integer teamId = teamRequest != null ? teamRequest.getId() : null;
+        
+
         if (teamId != null && employeeRequestRepository.countAcceptedForTeam(teamId, employee.getId()) > 0) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Voce ja ocupa uma vaga nesta equipa.");
         }
+
 
         LocalDateTime startDate = teamRequest != null ? teamRequest.getStartDate() : null;
         LocalDateTime endDate = teamRequest != null ? teamRequest.getEndDate() : null;
         if (startDate != null && endDate != null) {
             long overlapping = employeeRequestRepository.countOverlappingAccepted(
                     employee.getId(),
-                    request.getId(),
+                    targetRequest.getId(),
                     startDate,
                     endDate
             );
@@ -121,20 +191,41 @@ public class EmployeeJobHistoryService {
             }
         }
 
-        boolean invited = employeeRequestOfferRepository
-                .findActiveInvitesByEmployeeEmail(normalizedEmail)
-                .stream()
-                .anyMatch(inv -> inv.getEmployeeRequest() != null && inv.getEmployeeRequest().getId() == requestId);
-        if (!invited) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem convite para esta oferta.");
+
+        targetRequest.setEmployee(employee);
+        targetRequest.setAcceptedDate(LocalDateTime.now());
+        EmployeeRequest saved = employeeRequestRepository.save(targetRequest);
+
+
+        List<EmployeeRequestOffer> userInvites = employeeRequestOfferRepository.findActiveInvitesByEmployeeEmail(normalizedEmail);
+        for (EmployeeRequestOffer offer : userInvites) {
+            if (offer.getEmployeeRequest().getTeamRequest().getId() == teamId && 
+                offer.getEmployeeRequest().getRequestedRole().equals(targetRequest.getRequestedRole())) {
+                offer.setActive(false);
+                employeeRequestOfferRepository.save(offer);
+            }
         }
 
-        request.setEmployee(employee);
-        request.setAcceptedDate(LocalDateTime.now());
-        EmployeeRequest saved = employeeRequestRepository.save(request);
+        actionLogService.logUser(employee, "Aceitou oferta " + saved.getId() + " (Pool)");
 
-        employeeRequestOfferRepository.deactivateInvitesForRequest(requestId, employee.getId());
-        actionLogService.logUser(employee, "Aceitou oferta " + requestId);
+
+        if (teamId != null) {
+            long openSpots = employeeRequestRepository.countByTeamRequest_IdAndEmployeeIsNull(teamId);
+            if (openSpots == 0) {
+                teamRequest.setState(State.COMPLETE);
+                teamRequestRepository.save(teamRequest);
+                
+                if (teamRequest.getCompany() != null) {
+                    notificationService.createNotification(
+                        teamRequest.getCompany(),
+                        "Sua requisição de equipa '" + teamRequest.getTeamName() + "' está completa!",
+                        com.teamfoundry.backend.notification.enums.NotificationType.REQUEST_COMPLETED,
+                        teamRequest.getId()
+                    );
+                }
+            }
+        }
+
         return toSummary(saved, "ACCEPTED");
     }
 

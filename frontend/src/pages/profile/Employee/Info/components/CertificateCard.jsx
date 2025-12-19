@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { formatDate } from "../../../../../utils/dateUtils.js";
 
 export default function CertificateCard({ education, onEdit }) {
-  const { name, institution, location, completionDate, description, certificateUrl } = education;
+  const { name, institution, location, completionDate, description, certificateUrl, certificateFileName } = education;
   const isHttpLink = certificateUrl && (certificateUrl.startsWith("http://") || certificateUrl.startsWith("https://"));
 
   return (
@@ -40,7 +40,7 @@ export default function CertificateCard({ education, onEdit }) {
             className="link link-primary text-sm mt-1 inline-flex items-center gap-1"
           >
             <i className="bi bi-paperclip" aria-hidden="true" />
-            Ver certificado
+            {certificateFileName || "Ver certificado"}
           </a>
         )}
       </div>
