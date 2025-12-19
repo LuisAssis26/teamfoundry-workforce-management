@@ -70,7 +70,7 @@ export default function BuildTeamSearch() {
 
         async function loadTeam() {
             if (!teamId) {
-                setTeamError("Selecione uma requisicao antes de montar a equipa.");
+                setTeamError("Selecione uma requisição antes de montar a equipa.");
                 setIsLoadingTeam(false);
                 return;
             }
@@ -174,7 +174,7 @@ export default function BuildTeamSearch() {
             return {
                 id: c.id,
                 name: fullName,
-                role: c.role || "Sem funcao",
+                role: c.role || "Sem função",
                 city: preferredArea,
                 skills,
                 experiences,
@@ -293,7 +293,7 @@ export default function BuildTeamSearch() {
                             <div className="flex flex-col gap-6 lg:flex-row">
                                 <FiltersPanel
                                     companyName={teamInfo?.companyName || "Empresa"}
-                                    role={role || "Funcao"}
+                                    role={role || "Função"}
                                     geoOptions={geoOptions}
                                     geoSelected={geoSelected}
                                     skillOptions={skillOptions}

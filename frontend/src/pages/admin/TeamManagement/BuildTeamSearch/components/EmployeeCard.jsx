@@ -24,17 +24,17 @@ export default function EmployeeCard({
   const buttonLabel = accepted
     ? "Aceite"
     : invited
-    ? "Enviado"
-    : selected
-    ? "Selecionado"
-    : "Escolher";
+      ? "Enviado"
+      : selected
+        ? "Selecionado"
+        : "Escolher";
   const buttonClasses = accepted
     ? "btn btn-success btn-sm text-success-content cursor-not-allowed"
     : invited
-    ? "btn btn-neutral btn-sm text-neutral-content cursor-not-allowed"
-    : selected
-    ? "btn btn-accent btn-sm text-primary-content"
-    : "btn btn-neutral btn-sm text-neutral-content";
+      ? "btn btn-neutral btn-sm text-neutral-content cursor-not-allowed"
+      : selected
+        ? "btn btn-accent btn-sm text-primary-content"
+        : "btn btn-neutral btn-sm text-neutral-content";
   const borderColor = selected ? "border-success" : "border-base-300";
 
   return (
@@ -49,22 +49,22 @@ export default function EmployeeCard({
         </div>
 
         <dl className="space-y-4 text-sm text-base-content w-full">
-          <InfoLine label="Funcoes preferenciais" value={preferredRoles || "N/A"} />
-          <InfoLine label="Preferencia geografica" value={city || "N/A"} />
+          <InfoLine label="Funções preferenciais" value={preferredRoles || "N/A"} />
+          <InfoLine label="Preferência geográfica" value={city || "N/A"} />
           {skills.length > 0 && (
             <InfoLine
-              label="Competencias"
+              label="Competências"
               value={hasMoreSkills ? `${displayedSkills}, ...` : displayedSkills}
             />
           )}
         </dl>
 
         <div className="space-y-2 text-sm w-full">
-          <p className="font-semibold text-primary">Ultima experiencia:</p>
+          <p className="font-semibold text-primary">Última experiência:</p>
           {lastExperience ? (
             <p className="text-base-content/70">{lastExperience}</p>
           ) : (
-            <p className="text-base-content/70">Sem experiencias anteriores.</p>
+            <p className="text-base-content/70">Sem experiências anteriores.</p>
           )}
         </div>
 
