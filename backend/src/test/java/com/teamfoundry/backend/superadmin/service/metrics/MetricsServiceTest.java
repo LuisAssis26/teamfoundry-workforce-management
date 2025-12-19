@@ -36,7 +36,7 @@ class MetricsServiceTest {
     @InjectMocks MetricsService service;
 
     @Test
-    void getOverview_returnsAggregatedCounts() {
+    void getOverviewReturnsAggregatedCounts() {
         when(companyAccountRepository.countByDeactivatedFalse()).thenReturn(5L);
         when(companyAccountRepository.countByStatusFalseAndDeactivatedFalse()).thenReturn(2L);
         when(employeeAccountRepository.countByDeactivatedFalse()).thenReturn(7L);
@@ -75,7 +75,7 @@ class MetricsServiceTest {
     }
 
     @Test
-    void getOverview_whenAdminNotFound_setsNameAsDefault() {
+    void getOverviewWhenAdminNotFoundSetsNameAsDefault() {
         when(companyAccountRepository.countByDeactivatedFalse()).thenReturn(0L);
         when(companyAccountRepository.countByStatusFalseAndDeactivatedFalse()).thenReturn(0L);
         when(employeeAccountRepository.countByDeactivatedFalse()).thenReturn(0L);
@@ -110,3 +110,4 @@ class MetricsServiceTest {
         };
     }
 }
+

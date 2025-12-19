@@ -54,7 +54,7 @@ class AdminWorkOfferServiceTest {
     }
 
     @Test
-    void sendInvites_createsInvitesForOpenRequests_andSkipsAcceptedAndDuplicates() {
+    void sendInvitesCreatesInvitesForOpenRequestsAndSkipsAcceptedAndDuplicates() {
         AdminAccount admin = new AdminAccount(5, "admin", "pwd", UserType.ADMIN, false);
         authenticate(admin);
         when(adminAccountRepository.findByUsernameIgnoreCase("admin")).thenReturn(Optional.of(admin));
@@ -92,14 +92,14 @@ class AdminWorkOfferServiceTest {
     }
 
     @Test
-    void sendInvites_whenNotAuthenticated_throwsUnauthorized() {
+    void sendInvitesWhenNotAuthenticatedThrowsUnauthorized() {
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> service.sendInvites(10, "dev", List.of(1)));
         assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
-    void sendInvites_whenRequestNotAssigned_throwsForbidden() {
+    void sendInvitesWhenRequestNotAssignedThrowsForbidden() {
         AdminAccount admin = new AdminAccount(5, "admin", "pwd", UserType.ADMIN, false);
         authenticate(admin);
         when(adminAccountRepository.findByUsernameIgnoreCase("admin")).thenReturn(Optional.of(admin));
@@ -116,7 +116,7 @@ class AdminWorkOfferServiceTest {
     }
 
     @Test
-    void sendInvites_whenTeamIsComplete_throwsConflict() {
+    void sendInvitesWhenTeamIsCompleteThrowsConflict() {
         AdminAccount admin = new AdminAccount(5, "admin", "pwd", UserType.ADMIN, false);
         authenticate(admin);
         when(adminAccountRepository.findByUsernameIgnoreCase("admin")).thenReturn(Optional.of(admin));
@@ -133,7 +133,7 @@ class AdminWorkOfferServiceTest {
     }
 
     @Test
-    void sendInvites_whenNoOpenRequestsForRole_throwsConflict() {
+    void sendInvitesWhenNoOpenRequestsForRoleThrowsConflict() {
         AdminAccount admin = new AdminAccount(5, "admin", "pwd", UserType.ADMIN, false);
         authenticate(admin);
         when(adminAccountRepository.findByUsernameIgnoreCase("admin")).thenReturn(Optional.of(admin));
@@ -154,7 +154,7 @@ class AdminWorkOfferServiceTest {
     }
 
     @Test
-    void listActiveInviteIds_requiresRoleAndAssignment() {
+    void listActiveInviteIdsRequiresRoleAndAssignment() {
         AdminAccount admin = new AdminAccount(5, "admin", "pwd", UserType.ADMIN, false);
         authenticate(admin);
         when(adminAccountRepository.findByUsernameIgnoreCase("admin")).thenReturn(Optional.of(admin));
@@ -175,7 +175,7 @@ class AdminWorkOfferServiceTest {
     }
 
     @Test
-    void listAcceptedIds_returnsRepositoryResults() {
+    void listAcceptedIdsReturnsRepositoryResults() {
         AdminAccount admin = new AdminAccount(5, "admin", "pwd", UserType.ADMIN, false);
         authenticate(admin);
         when(adminAccountRepository.findByUsernameIgnoreCase("admin")).thenReturn(Optional.of(admin));
@@ -215,3 +215,4 @@ class AdminWorkOfferServiceTest {
         return e;
     }
 }
+

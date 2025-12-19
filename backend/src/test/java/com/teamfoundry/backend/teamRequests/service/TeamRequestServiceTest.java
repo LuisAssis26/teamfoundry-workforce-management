@@ -58,7 +58,7 @@ class TeamRequestServiceTest {
     }
 
     @Test
-    void listAllWorkRequests_returnsSortedWithWorkforce() {
+    void listAllWorkRequestsReturnsSortedWithWorkforce() {
         TeamRequest first = buildRequest(1, "Alpha", LocalDateTime.now().minusDays(1));
         TeamRequest second = buildRequest(2, "Beta", LocalDateTime.now());
 
@@ -75,7 +75,7 @@ class TeamRequestServiceTest {
     }
 
     @Test
-    void listAssignableAdmins_filtersOnlyAdminsAndOrders() {
+    void listAssignableAdminsFiltersOnlyAdminsAndOrders() {
         AdminAccount adminA = new AdminAccount(1, "alpha", "pwd", UserType.ADMIN, false);
         AdminAccount adminB = new AdminAccount(2, "beta", "pwd", UserType.ADMIN, false);
         AdminAccount superAdmin = new AdminAccount(3, "super", "pwd", UserType.SUPERADMIN, false);
@@ -95,7 +95,7 @@ class TeamRequestServiceTest {
     }
 
     @Test
-    void assignResponsibleAdmin_setsAdminAndLogs() {
+    void assignResponsibleAdminSetsAdminAndLogs() {
         AdminAccount superAdmin = new AdminAccount(10, "superadmin", "pwd", UserType.SUPERADMIN, false);
         AdminAccount target = new AdminAccount(20, "admin", "pwd", UserType.ADMIN, false);
         authenticate(superAdmin);
@@ -119,7 +119,7 @@ class TeamRequestServiceTest {
     }
 
     @Test
-    void assignResponsibleAdmin_withNonAdmin_throwsBadRequest() {
+    void assignResponsibleAdminWithNonAdminThrowsBadRequest() {
         AdminAccount superAdmin = new AdminAccount(10, "superadmin", "pwd", UserType.SUPERADMIN, false);
         AdminAccount notAdmin = new AdminAccount(30, "other", "pwd", UserType.SUPERADMIN, false);
         authenticate(superAdmin);
@@ -137,7 +137,7 @@ class TeamRequestServiceTest {
     }
 
     @Test
-    void assignResponsibleAdmin_whenRequestMissing_throwsNotFound() {
+    void assignResponsibleAdminWhenRequestMissingThrowsNotFound() {
         AdminAccount superAdmin = new AdminAccount(10, "superadmin", "pwd", UserType.SUPERADMIN, false);
         authenticate(superAdmin);
 
@@ -150,7 +150,7 @@ class TeamRequestServiceTest {
     }
 
     @Test
-    void listAssignedRequestsForAuthenticatedAdmin_returnsOnlyAssignedWithWorkforce() {
+    void listAssignedRequestsForAuthenticatedAdminReturnsOnlyAssignedWithWorkforce() {
         AdminAccount admin = new AdminAccount(5, "alpha", "pwd", UserType.ADMIN, false);
         authenticate(admin);
         when(adminAccountRepository.findByUsernameIgnoreCase("alpha")).thenReturn(Optional.of(admin));
@@ -177,7 +177,7 @@ class TeamRequestServiceTest {
     }
 
     @Test
-    void getAssignedRequest_whenNotAssigned_throwsForbidden() {
+    void getAssignedRequestWhenNotAssignedThrowsForbidden() {
         AdminAccount admin = new AdminAccount(5, "alpha", "pwd", UserType.ADMIN, false);
         authenticate(admin);
         when(adminAccountRepository.findByUsernameIgnoreCase("alpha")).thenReturn(Optional.of(admin));
@@ -193,7 +193,7 @@ class TeamRequestServiceTest {
     }
 
     @Test
-    void listRoleSummariesForTeam_mergesRoleCountsAndInvites() {
+    void listRoleSummariesForTeamMergesRoleCountsAndInvites() {
         AdminAccount admin = new AdminAccount(5, "alpha", "pwd", UserType.ADMIN, false);
         authenticate(admin);
         when(adminAccountRepository.findByUsernameIgnoreCase("alpha")).thenReturn(Optional.of(admin));
@@ -311,3 +311,4 @@ class TeamRequestServiceTest {
         };
     }
 }
+

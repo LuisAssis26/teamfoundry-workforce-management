@@ -45,7 +45,7 @@ class LoginAdminControllerIntegrationTest {
     }
 
     @Test
-    void login_returnsTokenForValidCredentials() throws Exception {
+    void loginReturnsTokenForValidCredentials() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "username", "admin",
                 "password", "Admin#123"
@@ -61,7 +61,7 @@ class LoginAdminControllerIntegrationTest {
     }
 
     @Test
-    void login_returnsUnauthorizedForInvalidCredentials() throws Exception {
+    void loginReturnsUnauthorizedForInvalidCredentials() throws Exception {
         var body = objectMapper.writeValueAsString(Map.of(
                 "username", "admin",
                 "password", "wrong"
@@ -75,4 +75,5 @@ class LoginAdminControllerIntegrationTest {
                 .andExpect(jsonPath("$.error").value("Invalid credentials"));
     }
 }
+
 

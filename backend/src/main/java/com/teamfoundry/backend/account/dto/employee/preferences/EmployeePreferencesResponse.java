@@ -10,6 +10,7 @@ import java.util.List;
 public class EmployeePreferencesResponse {
 
     String role;
+    List<String> roles;
     List<String> skills;
     List<String> areas;
 }

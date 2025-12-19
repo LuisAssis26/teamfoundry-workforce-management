@@ -85,7 +85,7 @@ class CompanyProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("GET /api/company/profile devolve dados da empresa e responsavel")
-    void getProfile_returnsCompanyAndManagerData() throws Exception {
+    void getProfileReturnsCompanyAndManagerData() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         mockMvc.perform(get("/api/company/profile")
@@ -104,7 +104,7 @@ class CompanyProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("PUT /api/company/profile atualiza o responsavel e persiste alteracoes")
-    void updateProfile_updatesManager() throws Exception {
+    void updateProfileUpdatesManager() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         Map<String, Object> payload = Map.of(
@@ -132,7 +132,7 @@ class CompanyProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("Endpoints de perfil da empresa sem token devolvem 401 Unauthorized")
-    void profileEndpoints_withoutToken_returnsUnauthorized() throws Exception {
+    void profileEndpointsWithoutTokenReturnsUnauthorized() throws Exception {
         mockMvc.perform(get("/api/company/profile"))
                 .andExpect(status().isUnauthorized());
 
@@ -148,7 +148,7 @@ class CompanyProfileControllerIntegrationTest {
 
     @Test
     @DisplayName("PUT profile da empresa com payload invalido devolve 400")
-    void updateProfile_withInvalidPayload_returnsBadRequest() throws Exception {
+    void updateProfileWithInvalidPayloadReturnsBadRequest() throws Exception {
         String accessToken = loginAndGetAccessToken();
 
         Map<String, Object> payload = Map.of(
@@ -182,3 +182,4 @@ class CompanyProfileControllerIntegrationTest {
         return json.get("accessToken").asText();
     }
 }
+

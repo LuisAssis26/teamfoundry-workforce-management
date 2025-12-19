@@ -48,7 +48,7 @@ class AdminCredentialServiceTest {
     }
 
     @Test
-    void createAdmin_withMissingSuperAdminPassword_throwsBadRequest() {
+    void createAdminWithMissingSuperAdminPasswordThrowsBadRequest() {
         AdminCredentialRequest request = new AdminCredentialRequest(
                 "newadmin", "Password#1", UserType.ADMIN, "   "
         );
@@ -60,7 +60,7 @@ class AdminCredentialServiceTest {
     }
 
     @Test
-    void createAdmin_withNonSuperAdminUser_throwsForbidden() {
+    void createAdminWithNonSuperAdminUserThrowsForbidden() {
         AdminAccount admin = new AdminAccount(2, "admin", "hash", UserType.ADMIN, false);
         authenticate(admin);
 
@@ -76,7 +76,7 @@ class AdminCredentialServiceTest {
     }
 
     @Test
-    void disableAdmin_whenHasAssignments_throwsBadRequest() {
+    void disableAdminWhenHasAssignmentsThrowsBadRequest() {
         AdminAccount superAdmin = new AdminAccount(1, "superadmin", "encoded", UserType.SUPERADMIN, false);
         authenticate(superAdmin);
         when(passwordEncoder.matches("secret", "encoded")).thenReturn(true);
@@ -93,7 +93,7 @@ class AdminCredentialServiceTest {
     }
 
     @Test
-    void disableAdmin_withoutAssignments_marksAsDeactivated() {
+    void disableAdminWithoutAssignmentsMarksAsDeactivated() {
         AdminAccount superAdmin = new AdminAccount(1, "superadmin", "encoded", UserType.SUPERADMIN, false);
         authenticate(superAdmin);
         when(passwordEncoder.matches("secret", "encoded")).thenReturn(true);
@@ -125,3 +125,4 @@ class AdminCredentialServiceTest {
                 .thenReturn(Optional.of(admin));
     }
 }
+

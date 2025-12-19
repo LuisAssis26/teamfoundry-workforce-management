@@ -59,7 +59,7 @@ class AuthPasswordResetIntegrationTest {
 
     @Test
     @DisplayName("Forgot password cria token e reset com code funciona")
-    void forgot_and_reset_password_flow() throws Exception {
+    void forgotAndResetPasswordFlow() throws Exception {
         var forgotBody = objectMapper.writeValueAsString(Map.of(
                 "email", email
         ));
@@ -94,4 +94,5 @@ class AuthPasswordResetIntegrationTest {
         assertThat(passwordResetTokenRepository.findByUserAndToken(updated, prt.getToken())).isEmpty();
     }
 }
+
 

@@ -81,7 +81,7 @@ class CompanyCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("GET /companies lista apenas credenciais pendentes")
-    void listPendingCompanies_returnsOnlyPending() throws Exception {
+    void listPendingCompaniesReturnsOnlyPending() throws Exception {
         String token = login(superPassword);
 
         mockMvc.perform(get("/api/super-admin/credentials/companies")
@@ -96,7 +96,7 @@ class CompanyCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("POST /companies/{id}/approve marca empresa como aprovada")
-    void approveCompany_setsStatusTrue() throws Exception {
+    void approveCompanySetsStatusTrue() throws Exception {
         String token = login(superPassword);
 
         mockMvc.perform(post("/api/super-admin/credentials/companies/{id}/approve", firstPending.getId())
@@ -113,7 +113,7 @@ class CompanyCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("POST /companies/{id}/reject remove credencial pendente e respetivo responsavel")
-    void rejectCompany_removesCompanyAndManager() throws Exception {
+    void rejectCompanyRemovesCompanyAndManager() throws Exception {
         String token = login(superPassword);
 
         mockMvc.perform(post("/api/super-admin/credentials/companies/{id}/reject", secondPending.getId())
@@ -130,7 +130,7 @@ class CompanyCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("Endpoints de credenciais exigem autenticacao")
-    void credentialsEndpoints_withoutToken_returnsUnauthorized() throws Exception {
+    void credentialsEndpointsWithoutTokenReturnsUnauthorized() throws Exception {
         mockMvc.perform(get("/api/super-admin/credentials/companies"))
                 .andExpect(status().isUnauthorized());
 
@@ -144,7 +144,7 @@ class CompanyCredentialControllerIntegrationTest {
 
     @Test
     @DisplayName("Password errada do super admin devolve 403 no approve")
-    void approveCompany_withWrongPassword_returnsForbidden() throws Exception {
+    void approveCompanyWithWrongPasswordReturnsForbidden() throws Exception {
         String token = login(superPassword);
 
         mockMvc.perform(post("/api/super-admin/credentials/companies/{id}/approve", firstPending.getId())
@@ -197,3 +197,4 @@ class CompanyCredentialControllerIntegrationTest {
         ownerRepository.save(manager);
     }
 }
+

@@ -80,7 +80,7 @@ class HomeAdminControllerIntegrationTest {
 
     @Test
     @DisplayName("GET /site/homepage devolve todas as secoes para superadmin")
-    void homepage_returnsAllSections() throws Exception {
+    void homepageReturnsAllSections() throws Exception {
         var existing = homeNoLoginSectionRepository.findAll();
         if (existing.isEmpty()) {
             HomeNoLoginSection hero = new HomeNoLoginSection();
@@ -120,7 +120,7 @@ class HomeAdminControllerIntegrationTest {
 
     @Test
     @DisplayName("PUT /site/industries/{id} apaga imagem anterior e atualiza")
-    void updateIndustry_replacesImageAndDeletesOld() throws Exception {
+    void updateIndustryReplacesImageAndDeletesOld() throws Exception {
         IndustryShowcase industry = new IndustryShowcase();
         industry.setName("Health");
         industry.setDescription("Desc");
@@ -153,7 +153,7 @@ class HomeAdminControllerIntegrationTest {
 
     @Test
     @DisplayName("POST /site/weekly-tips limita a 11 registos")
-    void createWeeklyTip_whenLimitReached_returnsBadRequest() throws Exception {
+    void createWeeklyTipWhenLimitReachedReturnsBadRequest() throws Exception {
         for (int i = 0; i < 11; i++) {
             WeeklyTip tip = new WeeklyTip();
             tip.setCategory("Cat" + i);
@@ -184,7 +184,7 @@ class HomeAdminControllerIntegrationTest {
 
     @Test
     @DisplayName("PUT /site/weekly-tips/reorder devolve 400 se ids nao corresponderem")
-    void reorderWeeklyTips_withMissingIds_returnsBadRequest() throws Exception {
+    void reorderWeeklyTipsWithMissingIdsReturnsBadRequest() throws Exception {
         WeeklyTip tip1 = new WeeklyTip();
         tip1.setCategory("A");
         tip1.setTitle("One");
@@ -231,3 +231,4 @@ class HomeAdminControllerIntegrationTest {
         return objectMapper.readTree(response).get("accessToken").asText();
     }
 }
+

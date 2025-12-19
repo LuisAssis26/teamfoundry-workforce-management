@@ -78,7 +78,7 @@ class AdminWorkOfferControllerIntegrationTest {
     }
 
     @Test
-    void sendInvites_thenListInvitedAndAccepted() throws Exception {
+    void sendInvitesThenListInvitedAndAccepted() throws Exception {
         String token = login(adminUsername, adminPassword);
         CompanyAccount company = createCompany("invites@test.com", 101010101);
         TeamRequest assigned = createTeamRequest(company, "Invites", State.INCOMPLETE, LocalDateTime.now(), adminId);
@@ -179,3 +179,4 @@ class AdminWorkOfferControllerIntegrationTest {
         return e;
     }
 }
+
