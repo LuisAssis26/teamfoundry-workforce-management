@@ -31,11 +31,6 @@ public class TeamRequestSeeder {
                                        CompanyAccountRepository companyAccountRepository,
                                        AdminAccountRepository adminAccountRepository) {
         return args -> {
-            if (teamRequestRepository.count() > 0) {
-                LOGGER.debug("Team requests already exist; skipping seeding.");
-                return;
-            }
-
             Map<String, Integer> adminIds = adminAccountRepository.findAll().stream()
                     .collect(java.util.stream.Collectors.toMap(
                             a -> a.getUsername().toLowerCase(),
@@ -44,6 +39,10 @@ public class TeamRequestSeeder {
 
             List<TeamRequest> toPersist = new ArrayList<>();
             for (TeamRequestSeed seed : defaultSeeds()) {
+                if (teamRequestRepository.findByTeamName(seed.teamName()).isPresent()) {
+                    LOGGER.debug("Team request {} already exists; skipping seed.", seed.teamName());
+                    continue;
+                }
                 CompanyAccount company = companyAccountRepository.findByEmail(seed.companyEmail()).orElse(null);
                 if (company == null) {
                     LOGGER.warn("Company {} not found; skipping team request seed for {}.",

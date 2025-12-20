@@ -40,33 +40,54 @@ public class CompanyAccountInitializer {
 
             Map<String, PrefActivitySectors> sectorsByName = loadActivitySectors(prefActivitySectorsRepository);
             for (CompanySeed seed : defaultCompanySeeds()) {
-                if (accountRepository.existsByEmail(seed.email())) {
-                    LOGGER.debug("Company account {} already exists; skipping.", seed.email());
-                    continue;
+                CompanyAccount company = null;
+                var existing = accountRepository.findByEmail(seed.email());
+                if (existing.isPresent()) {
+                    if (existing.get() instanceof CompanyAccount) {
+                        company = (CompanyAccount) existing.get();
+                        LOGGER.debug("Company account {} already exists; skipping create.", seed.email());
+                    } else {
+                        LOGGER.warn("Account {} exists but is not a company; skipping company seed.", seed.email());
+                        continue;
+                    }
+                } else {
+                    company = new CompanyAccount();
+                    company.setEmail(seed.email());
+                    company.setNif(seed.nif());
+                    company.setPassword(passwordEncoder.encode(seed.rawPassword()));
+                    company.setRole(UserType.COMPANY);
+                    company.setName(seed.name());
+                    company.setAddress(seed.address());
+                    company.setCountry(seed.country());
+                    company.setPhone(seed.phone());
+                    company.setWebsite(seed.website());
+                    company.setDescription(seed.description());
+                    company.setStatus(seed.status());
+                    company.setVerified(true);
+                    company.setRegistrationStatus(RegistrationStatus.COMPLETED);
+
+                    company = accountRepository.save(company);
+                    LOGGER.info("Seeded company {}.", company.getEmail());
                 }
 
-                CompanyAccount company = new CompanyAccount();
-                company.setEmail(seed.email());
-                company.setNif(seed.nif());
-                company.setPassword(passwordEncoder.encode(seed.rawPassword()));
-                company.setRole(UserType.COMPANY);
-                company.setName(seed.name());
-                company.setAddress(seed.address());
-                company.setCountry(seed.country());
-                company.setPhone(seed.phone());
-                company.setWebsite(seed.website());
-                company.setDescription(seed.description());
-                company.setStatus(seed.status());
-                company.setVerified(true);
-                company.setRegistrationStatus(RegistrationStatus.COMPLETED);
-
-                CompanyAccount saved = accountRepository.save(company);
-                LOGGER.info("Seeded company {}.", saved.getEmail());
-
-                List<CompanyActivitySectors> relations = buildSectorRelations(saved, seed.defaultSectors(), sectorsByName);
+                List<CompanyActivitySectors> relations = buildSectorRelations(company, seed.defaultSectors(), sectorsByName);
                 if (!relations.isEmpty()) {
-                    companyActivitySectorsRepository.saveAll(relations);
-                    LOGGER.info("Seeded {} sector relations for {}.", relations.size(), saved.getEmail());
+                    var existingRelations = companyActivitySectorsRepository.findByCompany(company);
+                    var existingNames = existingRelations.stream()
+                            .map(relation -> relation.getSector().getName().toLowerCase())
+                            .collect(java.util.stream.Collectors.toSet());
+                    List<CompanyActivitySectors> toPersist = new ArrayList<>();
+                    for (CompanyActivitySectors relation : relations) {
+                        String sectorName = relation.getSector().getName().toLowerCase();
+                        if (existingNames.contains(sectorName)) {
+                            continue;
+                        }
+                        toPersist.add(relation);
+                    }
+                    if (!toPersist.isEmpty()) {
+                        companyActivitySectorsRepository.saveAll(toPersist);
+                        LOGGER.info("Seeded {} sector relations for {}.", toPersist.size(), company.getEmail());
+                    }
                 }
             }
         };

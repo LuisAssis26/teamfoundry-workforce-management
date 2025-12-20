@@ -10,8 +10,8 @@ export default function AppHeroSection({ form, saving, onFieldChange, onSubmit }
           <div className="flex flex-wrap items-center justify-between gap-4">
             <h2 className="card-title text-3xl">Hero</h2>
             <div className="flex flex-wrap items-center gap-6">
-              <label className="flex items-center gap-3">
-                <span className="label-text font-semibold">Visibilidade:</span>
+            <label className="flex items-center gap-3">
+              <span className="label-text font-semibold">Visibilidade:</span>
                 <input
                   type="checkbox"
                   className="toggle toggle-primary"

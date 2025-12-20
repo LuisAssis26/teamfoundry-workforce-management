@@ -18,7 +18,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Configuration
 @Profile("!test")
@@ -32,38 +34,60 @@ public class EmployeeRequestSeeder {
                                            TeamRequestRepository teamRequestRepository,
                                            EmployeeAccountRepository employeeAccountRepository) {
         return args -> {
-            if (employeeRequestRepository.count() > 0) {
-                LOGGER.debug("Employee requests already exist; skipping seeding.");
-                return;
-            }
-
             List<EmployeeRequestSeed> seeds = defaultSeeds();
             List<EmployeeRequest> toPersist = new ArrayList<>();
 
-            for (EmployeeRequestSeed seed : seeds) {
-                TeamRequest team = teamRequestRepository.findByTeamName(seed.teamName()).orElse(null);
+            Map<String, List<EmployeeRequestSeed>> seedsByTeam = seeds.stream()
+                    .collect(Collectors.groupingBy(EmployeeRequestSeed::teamName));
+
+            for (Map.Entry<String, List<EmployeeRequestSeed>> entry : seedsByTeam.entrySet()) {
+                String teamName = entry.getKey();
+                List<EmployeeRequestSeed> teamSeeds = entry.getValue();
+                TeamRequest team = teamRequestRepository.findByTeamName(teamName).orElse(null);
                 if (team == null) {
-                    LOGGER.warn("TeamRequest {} not found; skipping employee request seed.", seed.teamName());
+                    LOGGER.warn("TeamRequest {} not found; skipping employee request seed.", teamName);
                     continue;
                 }
 
-                EmployeeRequest request = new EmployeeRequest();
-                request.setTeamRequest(team);
-                request.setRequestedRole(seed.requestedRole());
-                request.setRequestedSalary(seed.salary());
-                request.setCreatedAt(seed.createdAt());
-
-                if (seed.employeeEmail() != null) {
-                    Optional<EmployeeAccount> employee = employeeAccountRepository.findByEmail(seed.employeeEmail());
-                    if (employee.isPresent()) {
-                        request.setEmployee(employee.get());
-                        request.setAcceptedDate(seed.acceptedDate());
-                    } else {
-                        LOGGER.warn("Employee {} not found; leaving request {} without employee.", seed.employeeEmail(), seed.teamName());
+                List<EmployeeRequestSeed> openSeeds = teamSeeds.stream()
+                        .filter(seed -> seed.employeeEmail() == null)
+                        .collect(Collectors.toList());
+                if (!openSeeds.isEmpty()) {
+                    long existingOpen = employeeRequestRepository.countByTeamRequest_IdAndEmployeeIsNull(team.getId());
+                    int startIndex = (int) Math.min(existingOpen, openSeeds.size());
+                    for (int i = startIndex; i < openSeeds.size(); i++) {
+                        EmployeeRequestSeed seed = openSeeds.get(i);
+                        EmployeeRequest request = new EmployeeRequest();
+                        request.setTeamRequest(team);
+                        request.setRequestedRole(seed.requestedRole());
+                        request.setRequestedSalary(seed.salary());
+                        request.setCreatedAt(seed.createdAt());
+                        toPersist.add(request);
                     }
                 }
 
-                toPersist.add(request);
+                for (EmployeeRequestSeed seed : teamSeeds) {
+                    if (seed.employeeEmail() == null) {
+                        continue;
+                    }
+                    Optional<EmployeeAccount> employee = employeeAccountRepository.findByEmail(seed.employeeEmail());
+                    if (employee.isEmpty()) {
+                        LOGGER.warn("Employee {} not found; leaving request {} without employee.", seed.employeeEmail(), teamName);
+                        continue;
+                    }
+                    if (employeeRequestRepository.countAcceptedForTeam(team.getId(), employee.get().getId()) > 0) {
+                        LOGGER.debug("Employee {} already accepted for {}; skipping seed.", seed.employeeEmail(), teamName);
+                        continue;
+                    }
+                    EmployeeRequest request = new EmployeeRequest();
+                    request.setTeamRequest(team);
+                    request.setRequestedRole(seed.requestedRole());
+                    request.setRequestedSalary(seed.salary());
+                    request.setCreatedAt(seed.createdAt());
+                    request.setEmployee(employee.get());
+                    request.setAcceptedDate(seed.acceptedDate());
+                    toPersist.add(request);
+                }
             }
 
             if (toPersist.isEmpty()) {

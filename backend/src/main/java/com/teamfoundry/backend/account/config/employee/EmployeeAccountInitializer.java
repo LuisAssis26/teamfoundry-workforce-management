@@ -65,11 +65,6 @@ public class EmployeeAccountInitializer {
             } catch (Exception e) {
                 LOGGER.warn("Could not normalize existing accounts defaults: {}", e.getMessage());
             }
-            if (accountRepository.countByRole(UserType.EMPLOYEE) > 0) {
-                LOGGER.debug("Employee accounts already present; skipping seed.");
-                return;
-            }
-
             Map<String, PrefRole> functionsByName = loadFunctions(prefRoleRepository);
             Map<String, PrefSkill> competencesByName = loadCompetences(prefSkillRepository);
             Map<String, PrefGeoArea> geoAreasByName = loadGeoAreas(prefGeoAreaRepository);
@@ -386,6 +381,10 @@ public class EmployeeAccountInitializer {
             List<EmployeeGeoArea> geoAreaRelations = new ArrayList<>();
 
             seeds.forEach(seed -> {
+                if (accountRepository.existsByEmail(seed.email())) {
+                    LOGGER.debug("Employee account {} already exists; skipping seed.", seed.email());
+                    return;
+                }
                 EmployeeAccount employee = new EmployeeAccount();
                 employee.setEmail(seed.email());
                 employee.setNif(seed.nif());

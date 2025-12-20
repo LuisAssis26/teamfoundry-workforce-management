@@ -32,11 +32,6 @@ public class AdminAccountInitializer {
     @Order(1)
     CommandLineRunner seedAdmins(AdminAccountRepository adminAccountRepository) {
         return args -> {
-            if (adminAccountRepository.count() > 0) {
-                LOGGER.debug("Admins already exist; skipping admin seeding.");
-                return;
-            }
-
             List<AdminAccount> admins = List.of(
                     admin("superadmin", "password123", UserType.SUPERADMIN),
                     admin("superadmin2", "password123", UserType.SUPERADMIN),
@@ -55,8 +50,22 @@ public class AdminAccountInitializer {
                     admin("admin10", "password123", UserType.ADMIN)
             );
 
-            adminAccountRepository.saveAll(admins);
-            LOGGER.info("Seeded {} admin accounts (including superadmin).", admins.size());
+            List<AdminAccount> toPersist = new java.util.ArrayList<>();
+            for (AdminAccount admin : admins) {
+                if (adminAccountRepository.findByUsernameIgnoreCase(admin.getUsername()).isPresent()) {
+                    LOGGER.debug("Admin {} already exists; skipping seed.", admin.getUsername());
+                    continue;
+                }
+                toPersist.add(admin);
+            }
+
+            if (toPersist.isEmpty()) {
+                LOGGER.debug("Admins already exist; skipping admin seeding.");
+                return;
+            }
+
+            adminAccountRepository.saveAll(toPersist);
+            LOGGER.info("Seeded {} admin accounts (including superadmin).", toPersist.size());
         };
     }
 
