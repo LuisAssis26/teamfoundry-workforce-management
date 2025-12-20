@@ -156,9 +156,9 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://<HOST_DO_PROFESSOR>:5432/<NOME_DA_BASE>
-    username: <USERNAME>
-    password: <PASSWORD>
+    url: jdbc:postgresql://estga-dev.ua.pt:5432/ptdw-2025-gr2
+    username: ptdw-2025-gr2
+    password: pfJgcIh!U}ZD/2ge
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
