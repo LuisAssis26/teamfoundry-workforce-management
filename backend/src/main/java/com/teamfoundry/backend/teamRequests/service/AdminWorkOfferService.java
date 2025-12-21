@@ -118,9 +118,9 @@ public class AdminWorkOfferService {
     public List<Integer> listActiveInviteIds(Integer teamId, String role) {
         AdminAccount admin = resolveAuthenticatedAdmin();
         TeamRequest request = teamRequestRepository.findById(teamId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requisi????o n??o encontrada."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requisição não encontrada."));
         if (!Objects.equals(request.getResponsibleAdminId(), admin.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Requisi????o n??o atribu??da a este administrador.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Requisição não atribuida a este administrador.");
         }
         String normRole = normalize(role);
         if (!StringUtils.hasText(normRole)) {
