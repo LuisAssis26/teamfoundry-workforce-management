@@ -170,8 +170,3 @@ app:
 jwt:
   secret: ${JWT_SECRET_PROD}
   expiration-seconds: ${JWT_EXPIRATION_SECONDS_PROD}
-
-cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME_PROD}
-  api-key: ${CLOUDINARY_API_KEY_PROD}
-  api-secret: ${CLOUDINARY_API_SECRET_PROD}
