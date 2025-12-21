@@ -6,6 +6,5 @@ package com.teamfoundry.backend.superadmin.enums;
 public enum HomeLoginSectionType {
     HERO,
     METRICS,
-    WEEKLY_TIP,
-    NEWS
+    WEEKLY_TIP
 }

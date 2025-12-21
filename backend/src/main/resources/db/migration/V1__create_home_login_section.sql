@@ -8,9 +8,5 @@ CREATE TABLE IF NOT EXISTS site_home_login_section (
     subtitle VARCHAR(500),
     content VARCHAR(2000),
     primary_cta_label VARCHAR(80),
-    primary_cta_url VARCHAR(300),
-    api_enabled BOOLEAN DEFAULT FALSE,
-    api_url VARCHAR(500),
-    api_token VARCHAR(500),
-    api_max_items INTEGER
+    primary_cta_url VARCHAR(300)
 );

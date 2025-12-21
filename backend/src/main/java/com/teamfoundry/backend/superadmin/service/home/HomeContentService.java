@@ -13,7 +13,6 @@ import com.teamfoundry.backend.superadmin.dto.other.WeeklyTipResponse;
 import com.teamfoundry.backend.superadmin.dto.other.WeeklyTipsPageResponse;
 import com.teamfoundry.backend.superadmin.dto.home.HomeUnifiedResponse;
 import com.teamfoundry.backend.superadmin.dto.home.HomeUnifiedUpdateRequest;
-import com.teamfoundry.backend.superadmin.enums.HomeLoginSectionType;
 import com.teamfoundry.backend.superadmin.model.home.*;
 import com.teamfoundry.backend.superadmin.model.other.WeeklyTip;
 import com.teamfoundry.backend.superadmin.repository.home.HomeLoginSectionRepository;
@@ -22,7 +21,6 @@ import com.teamfoundry.backend.superadmin.repository.home.IndustryShowcaseReposi
 import com.teamfoundry.backend.superadmin.repository.home.PartnerShowcaseRepository;
 import com.teamfoundry.backend.superadmin.repository.other.WeeklyTipRepository;
 import com.teamfoundry.backend.common.service.CloudinaryService;
-import com.teamfoundry.backend.superadmin.service.home.GdeltNewsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -47,7 +45,6 @@ public class HomeContentService {
     private final PartnerShowcaseRepository partners;
     private final HomeLoginSectionRepository appHomeSections;
     private final WeeklyTipRepository weeklyTips;
-    private final GdeltNewsService gdeltNewsService;
     private final CloudinaryService cloudinaryService;
 
     /*
@@ -88,12 +85,12 @@ public class HomeContentService {
 
     @Transactional(readOnly = true)
     public HomeLoginConfigResponse getPublicHomeLogin() {
-        return buildHomeLoginConfig(false, false);
+        return buildHomeLoginConfig(false);
     }
 
     @Transactional(readOnly = true)
     public HomeLoginConfigResponse getAdminHomeLogin() {
-        return buildHomeLoginConfig(true, true);
+        return buildHomeLoginConfig(true);
     }
 
     @Transactional(readOnly = true)
@@ -338,12 +335,6 @@ public class HomeContentService {
         if (request.active() != null) {
             section.setActive(request.active());
         }
-        if (request.apiEnabled() != null) {
-            section.setApiEnabled(request.apiEnabled());
-        }
-        section.setApiUrl(request.apiUrl());
-        section.setApiToken(request.apiToken());
-        section.setApiMaxItems(request.apiMaxItems());
         section.setGreetingPrefix(request.greetingPrefix());
         if (request.profileBarVisible() != null) {
             section.setProfileBarVisible(request.profileBarVisible());
@@ -351,7 +342,7 @@ public class HomeContentService {
         section.setLabelCurrentCompany(request.labelCurrentCompany());
         section.setLabelOffers(request.labelOffers());
 
-        return mapHomeLoginSection(appHomeSections.save(section), true);
+        return mapHomeLoginSection(appHomeSections.save(section));
     }
 
     public List<HomeLoginSectionResponse> reorderHomeLoginSections(List<Long> ids) {
@@ -363,7 +354,7 @@ public class HomeContentService {
 
         return current.stream()
                 .sorted(Comparator.comparingInt(HomeLoginSection::getDisplayOrder))
-                .map(section -> mapHomeLoginSection(section, true))
+                .map(this::mapHomeLoginSection)
                 .toList();
     }
 
@@ -501,28 +492,18 @@ public class HomeContentService {
         );
     }
 
-    private HomeLoginConfigResponse buildHomeLoginConfig(boolean includeInactive, boolean includeSecrets) {
+    private HomeLoginConfigResponse buildHomeLoginConfig(boolean includeInactive) {
         var sectionStream = appHomeSections.findAllByOrderByDisplayOrderAsc().stream();
         if (!includeInactive) {
             sectionStream = sectionStream.filter(HomeLoginSection::isActive);
         }
         List<HomeLoginSectionResponse> homeSections = sectionStream
-                .map(section -> mapHomeLoginSection(section, includeSecrets))
+                .map(this::mapHomeLoginSection)
                 .toList();
         return new HomeLoginConfigResponse(homeSections);
     }
 
-    private HomeLoginSectionResponse mapHomeLoginSection(HomeLoginSection section, boolean includeSecret) {
-        List<HomeNewsArticleResponse> articles = Collections.emptyList();
-        if (section.getType() == HomeLoginSectionType.NEWS) {
-            int limit = Optional.ofNullable(section.getApiMaxItems()).orElse(6);
-            // Prioritize employment-related themes using GDELT
-            log.info("[HomeContentService] Fetching GDELT news for HomeLogin section id={} limit={}", section.getId(), limit);
-            articles = gdeltNewsService.getNewsByTopic("emprego").stream()
-                    .limit(Math.max(1, Math.min(limit, 6)))
-                    .toList();
-            log.info("[HomeContentService] GDELT returned {} articles for section id={}", articles.size(), section.getId());
-        }
+    private HomeLoginSectionResponse mapHomeLoginSection(HomeLoginSection section) {
         return new HomeLoginSectionResponse(
                 section.getId(),
                 section.getType(),
@@ -533,11 +514,6 @@ public class HomeContentService {
                 section.getContent(),
                 section.getPrimaryCtaLabel(),
                 section.getPrimaryCtaUrl(),
-                section.isApiEnabled(),
-                section.getApiUrl(),
-                section.getApiMaxItems(),
-                includeSecret ? section.getApiToken() : null,
-                articles,
                 section.getGreetingPrefix(),
                 section.isProfileBarVisible(),
                 section.getLabelCurrentCompany(),

@@ -1,25 +1,25 @@
-# CONFIGURAÇÃO GLOBAL PADRÃO
+# CONFIGURAÇÎÇŸO GLOBAL PADRÇŸO
 jwt:
-  secret: ${JWT_SECRET:change-me-256-bit-secret-string-change-me}
-  expiration-seconds: 28800
+  secret: ${JWT_SECRET}
+  expiration-seconds: ${JWT_EXPIRATION_SECONDS}
 
 spring:
   config:
     import: optional:file:.env[.properties],optional:file:../.env[.properties]
   application:
-    name: teamfoundry
+    name: ${SPRING_APPLICATION_NAME}
   profiles:
-    active: docker  # perfil ativo por padrão
+    active: ${SPRING_PROFILES_ACTIVE}  # perfil ativo por padrÇœo
   jpa:
     properties:
       hibernate:
-        format_sql: true
+        format_sql: ${SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL}
   servlet:
     multipart:
-      max-file-size: 5MB
-      max-request-size: 5MB
+      max-file-size: ${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE}
+      max-request-size: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE}
   main:
-    allow-bean-definition-overriding: true
+    allow-bean-definition-overriding: ${SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING}
   mail:
     host: ${SPRING_MAIL_HOST}
     port: ${SPRING_MAIL_PORT}
@@ -28,100 +28,89 @@ spring:
     properties:
       mail:
         smtp:
-          auth: true
+          auth: ${SPRING_MAIL_SMTP_AUTH}
           starttls:
-            enable: true
+            enable: ${SPRING_MAIL_SMTP_STARTTLS_ENABLE}
   flyway:
-    enabled: false
+    enabled: ${SPRING_FLYWAY_ENABLED}
   security:
     oauth2:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID:}
-            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
-              - openid
-              - profile
-              - email
-            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+              - ${GOOGLE_OAUTH_SCOPE_OPENID}
+              - ${GOOGLE_OAUTH_SCOPE_PROFILE}
+              - ${GOOGLE_OAUTH_SCOPE_EMAIL}
+            redirect-uri: ${GOOGLE_REDIRECT_URI}
         provider:
           google:
-            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
-            token-uri: https://oauth2.googleapis.com/token
-            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-            user-name-attribute: sub
+            authorization-uri: ${GOOGLE_AUTHORIZATION_URI}
+            token-uri: ${GOOGLE_TOKEN_URI}
+            user-info-uri: ${GOOGLE_USER_INFO_URI}
+            user-name-attribute: ${GOOGLE_USER_NAME_ATTRIBUTE}
 
 app:
   mail:
     from: ${APP_MAIL_FROM}
     enabled: ${APP_MAIL_ENABLED}
   cloudinary:
-    base-url: ${CLOUDINARY_BASE_URL:https://res.cloudinary.com/teamfoundry/raw/upload/}
+    base-url: ${CLOUDINARY_BASE_URL}
   password-reset:
     url: ${APP_PASSWORD_RESET_URL}
   site:
     media:
-      storage-dir: ${APP_SITE_MEDIA_DIR:uploads/site}
-      public-path: /media/site
-  news:
-    enabled: ${NEWSAPI_ENABLED:false}
-    api-key: ${NEWSAPI_KEY:56ac4b5c930f41979fdf586909a7a7b8}
-    base-url: ${NEWSAPI_BASE_URL:https://newsapi.org/v2}
-    top-headlines-path: ${NEWSAPI_TOP_HEADLINES_PATH:/top-headlines}
-    everything-path: ${NEWSAPI_EVERYTHING_PATH:/everything}
-    country: ${NEWSAPI_COUNTRY:pt}
-    category: ${NEWSAPI_CATEGORY:business}
-    portuguese-sources: ${NEWSAPI_PORTUGUESE_SOURCES:publico,observador,jn}
-    language: ${NEWSAPI_LANGUAGE:pt}
-    query: ${NEWSAPI_QUERY:Portugal}
+      storage-dir: ${APP_SITE_MEDIA_DIR}
+      public-path: ${APP_SITE_MEDIA_PUBLIC_PATH}
   employee:
-    certificates-upload-dir: ${APP_CERTIFICATES_UPLOAD_DIR:uploads/certificates}
+    certificates-upload-dir: ${APP_CERTIFICATES_UPLOAD_DIR}
 
   registration:
-    cv-upload-dir: uploads/cv
+    cv-upload-dir: ${APP_CV_UPLOAD_DIR}
     verification:
-      expiration-minutes: 30
-    pending-retention-minutes: 60
-    pending-cleanup-interval-ms: 300000
+      expiration-minutes: ${APP_REGISTRATION_VERIFICATION_EXPIRATION_MINUTES}
+    pending-retention-minutes: ${APP_REGISTRATION_PENDING_RETENTION_MINUTES}
+    pending-cleanup-interval-ms: ${APP_REGISTRATION_PENDING_CLEANUP_INTERVAL_MS}
   oauth2:
-    front-success-url: ${OAUTH2_FRONT_SUCCESS_URL:http://localhost:5173/oauth/google/callback}
+    front-success-url: ${OAUTH2_FRONT_SUCCESS_URL}
 
 server:
-  port: 8443
+  port: ${SERVER_PORT}
   ssl:
-    enabled: true
-    key-store: classpath:keystore.p12
-    key-store-password: changeit
-    key-store-type: PKCS12
-    key-password: changeit
-    key-alias: teamfoundry-local
+    enabled: ${SERVER_SSL_ENABLED}
+    key-store: ${SERVER_SSL_KEY_STORE}
+    key-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
+    key-store-type: ${SERVER_SSL_KEY_STORE_TYPE}
+    key-password: ${SERVER_SSL_KEY_PASSWORD}
+    key-alias: ${SERVER_SSL_KEY_ALIAS}
 
 ---
 
-#  PERFIL DE TESTES (H2 - memória)
+#  PERFIL DE TESTES (H2 - memÇüria)
 spring:
   config:
     activate:
       on-profile: test
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ${SPRING_DATASOURCE_URL_TEST}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME_TEST}
+    username: ${SPRING_DATASOURCE_USERNAME_TEST}
+    password: ${SPRING_DATASOURCE_PASSWORD_TEST}
   h2:
     console:
-      enabled: true
+      enabled: ${SPRING_H2_CONSOLE_ENABLED_TEST}
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    show-sql: false
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO_TEST}
+    show-sql: ${SPRING_JPA_SHOW_SQL_TEST}
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT_TEST}
   sql:
     init:
-      mode: never
+      mode: ${SPRING_SQL_INIT_MODE_TEST}
 
 ---
 
@@ -131,58 +120,58 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: jdbc:postgresql://localhost:5432/teamfoundry_db
-    username: teamfoundry_user
-    password: teamfoundry_pass
-    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL_DOCKER}
+    username: ${SPRING_DATASOURCE_USERNAME_DOCKER}
+    password: ${SPRING_DATASOURCE_PASSWORD_DOCKER}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME_DOCKER}
   flyway:
-    enabled: false
+    enabled: ${SPRING_FLYWAY_ENABLED_DOCKER}
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO_DOCKER}
+    show-sql: ${SPRING_JPA_SHOW_SQL_DOCKER}
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT_DOCKER}
   sql:
     init:
-      mode: never
+      mode: ${SPRING_SQL_INIT_MODE_DOCKER}
 
 ---
 
-# PERFIL DE PRODUÇÃO
+# PERFIL DE PRODUÇÎÇŸO
 spring:
   config:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://<HOST_DO_PROFESSOR>:5432/<NOME_DA_BASE>
-    username: <USERNAME>
-    password: <PASSWORD>
-    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL_PROD}
+    username: ${SPRING_DATASOURCE_USERNAME_PROD}
+    password: ${SPRING_DATASOURCE_PASSWORD_PROD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME_PROD}
   jpa:
     hibernate:
-      ddl-auto: none
-    show-sql: false
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO_PROD}
+    show-sql: ${SPRING_JPA_SHOW_SQL_PROD}
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT_PROD}
   sql:
     init:
-      mode: never
+      mode: ${SPRING_SQL_INIT_MODE_PROD}
 server:
-  port: 8080
+  port: ${SERVER_PORT_PROD}
 
 app:
   mail:
-    enabled: true
+    enabled: ${APP_MAIL_ENABLED_PROD}
 
 # JWT configuration
 jwt:
-  secret: ${JWT_SECRET:change-me-32-bytes-minimum-change-me-change-me}
-  expiration-seconds: 28800
+  secret: ${JWT_SECRET_PROD}
+  expiration-seconds: ${JWT_EXPIRATION_SECONDS_PROD}
 
 cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
-  api-key: ${CLOUDINARY_API_KEY:}
-  api-secret: ${CLOUDINARY_API_SECRET:}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME_PROD}
+  api-key: ${CLOUDINARY_API_KEY_PROD}
+  api-secret: ${CLOUDINARY_API_SECRET_PROD}

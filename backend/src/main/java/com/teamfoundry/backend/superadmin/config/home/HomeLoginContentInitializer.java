@@ -44,10 +44,6 @@ public class HomeLoginContentInitializer implements CommandLineRunner {
                         "Equipa atual: Montagem - Empresa Alfa\nRequisicoes disponiveis: 2 novas oportunidades",
                         "Atualizar perfil",
                         "/candidato/dados-pessoais",
-                        false,
-                        null,
-                        null,
-                        6,
                         "Ola",
                         true,
                         "Empresa atual",
@@ -61,27 +57,6 @@ public class HomeLoginContentInitializer implements CommandLineRunner {
                         "Antes de comecares o turno, confirma se todos os equipamentos estao em boas condicoes.\nPequenos cuidados evitam grandes acidentes.",
                         "Ver mais dicas",
                         "/dicas",
-                        false,
-                        null,
-                        null,
-                        6,
-                        null,
-                        true,
-                        null,
-                        null
-                ),
-                createSection(
-                        HomeLoginSectionType.NEWS,
-                        2,
-                        "Noticias (GDELT)",
-                        "As manchetes sao sincronizadas automaticamente a partir do GDELT. Ajuste quantos cards deseja mostrar (maximo de 6).",
-                        null,
-                        "Ver mais",
-                        "#",
-                        true,
-                        null,
-                        null,
-                        6,
                         null,
                         true,
                         null,
@@ -98,10 +73,6 @@ public class HomeLoginContentInitializer implements CommandLineRunner {
             String content,
             String primaryLabel,
             String primaryUrl,
-            boolean apiEnabled,
-            String apiUrl,
-            String apiToken,
-            Integer apiMaxItems,
             String greetingPrefix,
             boolean profileBarVisible,
             String labelCurrentCompany,
@@ -116,10 +87,6 @@ public class HomeLoginContentInitializer implements CommandLineRunner {
         section.setContent(content);
         section.setPrimaryCtaLabel(primaryLabel);
         section.setPrimaryCtaUrl(primaryUrl);
-        section.setApiEnabled(apiEnabled);
-        section.setApiUrl(apiUrl);
-        section.setApiToken(apiToken);
-        section.setApiMaxItems(apiMaxItems);
         section.setGreetingPrefix(greetingPrefix);
         section.setProfileBarVisible(profileBarVisible);
         section.setLabelCurrentCompany(labelCurrentCompany);
