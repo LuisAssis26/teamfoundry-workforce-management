@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "EmployeeRequestOffer")
-@Table(name = "request_funcionario_oferta")
+@Table(name = "request_employee_offer")
 public class EmployeeRequestOffer {
 
     @Id

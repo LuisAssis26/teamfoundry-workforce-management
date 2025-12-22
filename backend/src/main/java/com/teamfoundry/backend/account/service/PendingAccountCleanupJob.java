@@ -34,10 +34,10 @@ public class PendingAccountCleanupJob {
     private final CompanyActivitySectorsRepository companyActivitySectorsRepository;
     private final CompanyAccountRepository companyAccountRepository;
 
-    @Value("${app.registration.pending-retention-minutes:60}")
+    @Value("${app.registration.pending-retention-minutes}")
     private long pendingRetentionMinutes;
 
-    @Scheduled(fixedDelayString = "${app.registration.pending-cleanup-interval-ms:300000}")
+    @Scheduled(fixedDelayString = "${app.registration.pending-cleanup-interval-ms}")
     @Transactional
     public void purgeStalePendingAccounts() {
         Instant threshold = Instant.now().minus(pendingRetentionMinutes, ChronoUnit.MINUTES);
