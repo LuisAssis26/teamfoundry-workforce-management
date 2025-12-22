@@ -88,57 +88,6 @@ server:
 
 ---
 
-#  PERFIL DE TESTES (H2 - memÇüria)
-spring:
-  config:
-    activate:
-      on-profile: test
-  datasource:
-    url: ${SPRING_DATASOURCE_URL_TEST}
-    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME_TEST}
-    username: ${SPRING_DATASOURCE_USERNAME_TEST}
-    password: ${SPRING_DATASOURCE_PASSWORD_TEST}
-  h2:
-    console:
-      enabled: ${SPRING_H2_CONSOLE_ENABLED_TEST}
-  jpa:
-    hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO_TEST}
-    show-sql: ${SPRING_JPA_SHOW_SQL_TEST}
-    properties:
-      hibernate:
-        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT_TEST}
-  sql:
-    init:
-      mode: ${SPRING_SQL_INIT_MODE_TEST}
-
----
-
-# PERFIL DE DESENVOLVIMENTO (DOCKER - PostgreSQL local)
-spring:
-  config:
-    activate:
-      on-profile: docker
-  datasource:
-    url: ${SPRING_DATASOURCE_URL_DOCKER}
-    username: ${SPRING_DATASOURCE_USERNAME_DOCKER}
-    password: ${SPRING_DATASOURCE_PASSWORD_DOCKER}
-    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME_DOCKER}
-  flyway:
-    enabled: ${SPRING_FLYWAY_ENABLED_DOCKER}
-  jpa:
-    hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO_DOCKER}
-    show-sql: ${SPRING_JPA_SHOW_SQL_DOCKER}
-    properties:
-      hibernate:
-        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT_DOCKER}
-  sql:
-    init:
-      mode: ${SPRING_SQL_INIT_MODE_DOCKER}
-
----
-
 # PERFIL DE PRODUÇÃO
 spring:
   config:
@@ -160,11 +109,15 @@ spring:
     init:
       mode: ${SPRING_SQL_INIT_MODE_PROD}
 server:
-  port: ${SERVER_PORT_PROD}
+  port: ${PORT:8080}
+  ssl:
+    enabled: false
+  forward-headers-strategy: native
 
 app:
   mail:
     enabled: ${APP_MAIL_ENABLED_PROD}
+  frontend-url: ${FRONTEND_URL}
 
 # JWT configuration
 jwt:

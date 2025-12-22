@@ -63,7 +63,7 @@ class AdminEmployeeSearchServiceTest {
     @Test
     void searchRequiresAuthenticatedAdmin() {
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,
-                () -> service.search("dev", List.of(), List.of()));
+                () -> service.search("dev", List.of(), List.of(), List.of(), List.of(), null));
         assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
@@ -80,7 +80,7 @@ class AdminEmployeeSearchServiceTest {
         employee.setEmail("ANA@EXAMPLE.COM");
         employee.setPhone("999");
 
-        when(employeeAccountRepository.searchCandidates(any(), anyList(), anyBoolean(), anyList(), anyBoolean()))
+        when(employeeAccountRepository.searchCandidates(any(), anyBoolean(), anyList(), anyBoolean(), anyList(), anyBoolean(), anyList(), anyBoolean(), any(), any()))
                 .thenReturn(List.of(employee));
 
         when(employeeRoleRepository.findFirstByEmployee(employee))
@@ -98,9 +98,9 @@ class AdminEmployeeSearchServiceTest {
         ));
 
         List<EmployeeRequest> history = List.of(
-                accepted("Dev", LocalDateTime.now().minusDays(2), concludedTeam(State.COMPLETE)),
+                accepted("Dev", LocalDateTime.now().minusDays(2), concludedTeam(State.COMPLETED)),
                 accepted("QA", LocalDateTime.now().minusDays(3), concludedTeamWithEndDate(LocalDateTime.now().minusDays(1))),
-                accepted("PM", null, concludedTeam(State.COMPLETE)),
+                accepted("PM", null, concludedTeam(State.COMPLETED)),
                 accepted("UX", LocalDateTime.now().minusDays(4), openTeam())
         );
         when(employeeRequestRepository.findByEmployee_EmailOrderByAcceptedDateDesc("ana@example.com"))
@@ -109,7 +109,8 @@ class AdminEmployeeSearchServiceTest {
         List<AdminEmployeeSearchResponse> results = service.search(
                 "  DEVELOPER ",
                 List.of("  Lisboa ", "Lisboa", "  "),
-                List.of(" JAVA ", "java")
+                List.of(" JAVA ", "java"),
+                List.of(), List.of(), null
         );
 
         ArgumentCaptor<String> roleCaptor = ArgumentCaptor.forClass(String.class);
@@ -117,13 +118,23 @@ class AdminEmployeeSearchServiceTest {
         ArgumentCaptor<Boolean> areasEmptyCaptor = ArgumentCaptor.forClass(Boolean.class);
         ArgumentCaptor<List<String>> skillsCaptor = ArgumentCaptor.forClass((Class) List.class);
         ArgumentCaptor<Boolean> skillsEmptyCaptor = ArgumentCaptor.forClass(Boolean.class);
+        ArgumentCaptor<List<String>> preferredRolesCaptor = ArgumentCaptor.forClass((Class) List.class);
+        ArgumentCaptor<Boolean> preferredRolesEmptyCaptor = ArgumentCaptor.forClass(Boolean.class);
+        ArgumentCaptor<List<String>> statusesCaptor = ArgumentCaptor.forClass((Class) List.class);
+        ArgumentCaptor<Boolean> statusesEmptyCaptor = ArgumentCaptor.forClass(Boolean.class);
+        ArgumentCaptor<Integer> teamIdCaptor = ArgumentCaptor.forClass(Integer.class);
 
         verify(employeeAccountRepository).searchCandidates(
-                roleCaptor.capture(),
                 areasCaptor.capture(),
                 areasEmptyCaptor.capture(),
                 skillsCaptor.capture(),
-                skillsEmptyCaptor.capture()
+                skillsEmptyCaptor.capture(),
+                preferredRolesCaptor.capture(),
+                preferredRolesEmptyCaptor.capture(),
+                statusesCaptor.capture(),
+                statusesEmptyCaptor.capture(),
+                teamIdCaptor.capture(),
+                roleCaptor.capture()
         );
 
         assertThat(roleCaptor.getValue()).isEqualTo("developer");

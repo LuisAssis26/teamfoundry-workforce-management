@@ -30,15 +30,15 @@ class AdminEmployeeSearchControllerTest {
     void searchWhenAreasAndSkillsNullPassesEmptyLists() {
         List<AdminEmployeeSearchResponse> expected = List.of(
                 new AdminEmployeeSearchResponse(1, "Ana", "Silva", "ana@test.com", "999",
-                        "dev", List.of(), List.of(), List.of())
+                        "dev", List.of(), List.of(), List.of(), null)
         );
-        when(adminEmployeeSearchService.search(eq("dev"), eq(Collections.emptyList()), eq(Collections.emptyList())))
+        when(adminEmployeeSearchService.search(eq("dev"), eq(Collections.emptyList()), eq(Collections.emptyList()), eq(Collections.emptyList()), eq(Collections.emptyList()), eq(null)))
                 .thenReturn(expected);
 
-        var result = controller.search("dev", null, null);
+        var result = controller.search("dev", null, null, null, null, null);
 
         assertThat(result).isEqualTo(expected);
-        verify(adminEmployeeSearchService).search("dev", Collections.emptyList(), Collections.emptyList());
+        verify(adminEmployeeSearchService).search("dev", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null);
     }
 }
 

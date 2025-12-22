@@ -41,4 +41,9 @@ public class EmployeeAccount extends Account {
 
     @Column(name = "profile_picture_public_id")
     private String profilePicturePublicId;
+
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    @jakarta.persistence.OneToMany(mappedBy = "employee", cascade = jakarta.persistence.CascadeType.REMOVE, orphanRemoval = true)
+    private java.util.List<EmployeeGeoArea> geoAreas;
 }

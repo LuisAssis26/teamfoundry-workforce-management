@@ -18,7 +18,7 @@ class AdminEmployeeProfileResponseTest {
         assertThat(AdminEmployeeProfileResponse.class.isRecord()).isTrue();
 
         RecordComponent[] components = AdminEmployeeProfileResponse.class.getRecordComponents();
-        assertThat(components).hasSize(12);
+        assertThat(components).hasSize(20);
 
         assertThat(components).extracting(RecordComponent::getName).containsExactly(
                 "id",
@@ -32,22 +32,15 @@ class AdminEmployeeProfileResponseTest {
                 "preferredRole",
                 "skills",
                 "areas",
-                "experiences"
-        );
-
-        assertThat(components).extracting(RecordComponent::getType).containsExactly(
-                Integer.class,
-                String.class,
-                String.class,
-                String.class,
-                LocalDate.class,
-                String.class,
-                String.class,
-                String.class,
-                String.class,
-                List.class,
-                List.class,
-                List.class
+                "experiences",
+                "profilePictureUrl",
+                "curriculumUrl",
+                "curriculumFileName",
+                "identificationFrontUrl",
+                "identificationFrontFileName",
+                "identificationBackUrl",
+                "identificationBackFileName",
+                "certifications"
         );
     }
 
@@ -57,6 +50,7 @@ class AdminEmployeeProfileResponseTest {
         List<String> skills = List.of("Java", "Spring");
         List<String> areas = List.of("Lisboa");
         List<String> experiences = List.of("Equipe X - Developer (2024-01-10)");
+        List<com.teamfoundry.backend.account.dto.employee.documents.EmployeeCertificationResponse> certs = List.of();
 
         AdminEmployeeProfileResponse response = new AdminEmployeeProfileResponse(
                 10,
@@ -70,7 +64,15 @@ class AdminEmployeeProfileResponseTest {
                 "Developer",
                 skills,
                 areas,
-                experiences
+                experiences,
+                "http://pic.url",
+                "http://cv.url",
+                "cv.pdf",
+                "http://id_front.url",
+                "id_front.jpg",
+                "http://id_back.url",
+                "id_back.jpg",
+                certs
         );
 
         assertThat(response.id()).isEqualTo(10);
@@ -85,6 +87,9 @@ class AdminEmployeeProfileResponseTest {
         assertThat(response.skills()).isSameAs(skills);
         assertThat(response.areas()).isSameAs(areas);
         assertThat(response.experiences()).isSameAs(experiences);
+        assertThat(response.profilePictureUrl()).isEqualTo("http://pic.url");
+        assertThat(response.curriculumUrl()).isEqualTo("http://cv.url");
+        assertThat(response.certifications()).isSameAs(certs);
     }
 
     @Test
@@ -93,50 +98,21 @@ class AdminEmployeeProfileResponseTest {
         List<String> skills = List.of("Java");
         List<String> areas = List.of("Porto");
         List<String> experiences = List.of("Equipe A - QA (2023-10-01)");
+        List<com.teamfoundry.backend.account.dto.employee.documents.EmployeeCertificationResponse> certs = List.of();
 
         AdminEmployeeProfileResponse a = new AdminEmployeeProfileResponse(
-                1,
-                "Joao",
-                "Pereira",
-                "M",
-                birthDate,
-                "PT",
-                "123",
-                "joao@example.com",
-                "QA",
-                skills,
-                areas,
-                experiences
+                1, "Joao", "Pereira", "M", birthDate, "PT", "123", "joao@example.com", "QA",
+                skills, areas, experiences, "url", "cv", "cv.pdf", "f", "f.jpg", "b", "b.jpg", certs
         );
 
         AdminEmployeeProfileResponse b = new AdminEmployeeProfileResponse(
-                1,
-                "Joao",
-                "Pereira",
-                "M",
-                birthDate,
-                "PT",
-                "123",
-                "joao@example.com",
-                "QA",
-                skills,
-                areas,
-                experiences
+                1, "Joao", "Pereira", "M", birthDate, "PT", "123", "joao@example.com", "QA",
+                skills, areas, experiences, "url", "cv", "cv.pdf", "f", "f.jpg", "b", "b.jpg", certs
         );
 
         AdminEmployeeProfileResponse different = new AdminEmployeeProfileResponse(
-                2,
-                "Joao",
-                "Pereira",
-                "M",
-                birthDate,
-                "PT",
-                "123",
-                "joao@example.com",
-                "QA",
-                skills,
-                areas,
-                experiences
+                2, "Joao", "Pereira", "M", birthDate, "PT", "123", "joao@example.com", "QA",
+                skills, areas, experiences, "url", "cv", "cv.pdf", "f", "f.jpg", "b", "b.jpg", certs
         );
 
         assertThat(a).isEqualTo(b);
@@ -144,4 +120,3 @@ class AdminEmployeeProfileResponseTest {
         assertThat(a).isNotEqualTo(different);
     }
 }
-

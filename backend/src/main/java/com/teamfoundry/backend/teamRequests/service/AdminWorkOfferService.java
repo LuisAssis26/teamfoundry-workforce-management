@@ -124,7 +124,7 @@ public class AdminWorkOfferService {
         }
         String normRole = normalize(role);
         if (!StringUtils.hasText(normRole)) {
-            return inviteRepository.findActiveInviteEmployeeIdsByTeam(teamId);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Função é obrigatória.");
         }
         return inviteRepository.findActiveInviteEmployeeIdsByTeamAndRole(teamId, normRole);
     }

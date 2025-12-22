@@ -80,7 +80,7 @@ class SuperAdminTeamRequestControllerIntegrationTest {
 
         TeamRequest older = createTeamRequest(company, "Alpha Team", State.INCOMPLETE,
                 LocalDateTime.now().minusDays(2), null);
-        TeamRequest newer = createTeamRequest(company, "Beta Team", State.COMPLETE,
+        TeamRequest newer = createTeamRequest(company, "Beta Team", State.COMPLETED,
                 LocalDateTime.now().minusDays(1), null);
 
         createEmployeeRequest(older, "Developer");

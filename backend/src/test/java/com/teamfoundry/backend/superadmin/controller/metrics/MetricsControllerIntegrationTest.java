@@ -86,7 +86,7 @@ class MetricsControllerIntegrationTest {
         createEmployee("emp2@user.com", true);
 
         createTeamRequest(activeCompany, State.INCOMPLETE, adminOne.getId());
-        createTeamRequest(activeCompany, State.COMPLETE, adminOne.getId());
+        createTeamRequest(activeCompany, State.COMPLETED, adminOne.getId());
         createTeamRequest(pendingCompany, State.INCOMPLETE, adminTwo.getId());
 
         String token = login(superUsername, superPassword);
@@ -100,7 +100,7 @@ class MetricsControllerIntegrationTest {
                 .andExpect(jsonPath("$.kpis.openRequests").value(2))
                 .andExpect(jsonPath("$.kpis.closedRequests").value(1))
                 .andExpect(jsonPath("$.requestsByState", hasSize(2)))
-                .andExpect(jsonPath("$.requestsByState[0].state").value("COMPLETE"))
+                .andExpect(jsonPath("$.requestsByState[0].state").value("COMPLETED"))
                 .andExpect(jsonPath("$.requestsByState[0].count").value(1))
                 .andExpect(jsonPath("$.requestsByState[1].state").value("INCOMPLETE"))
                 .andExpect(jsonPath("$.requestsByState[1].count").value(2))
