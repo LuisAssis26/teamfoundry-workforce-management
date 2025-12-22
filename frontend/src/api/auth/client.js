@@ -2,6 +2,9 @@ import { API_URL } from '../config/config.js';
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from '../../auth/tokenStorage.js';
 
 async function doFetch(path, options = {}) {
+  if (!API_URL && !path.startsWith('http')) {
+    throw new Error('VITE_API_BASE_URL (or VITE_API_URL) is not set.');
+  }
   const url = path.startsWith('http') ? path : `${API_URL}${path}`;
   const headers = new Headers(options.headers || {});
   const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;

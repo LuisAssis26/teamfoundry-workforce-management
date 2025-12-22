@@ -1,11 +1,11 @@
-// Permite configurar a API via .env. Se não houver valor, usamos caminhos relativos (útil em dev com proxy Vite).
+// API base URL must come from .env.
 import { getAccessToken, setTokens, clearTokens } from "../../auth/tokenStorage.js";
+import { API_URL } from "./config.js";
 
-const envBase = (import.meta.env.VITE_API_BASE_URL ?? "").trim().replace(/\/$/, "");
-const API_BASE = envBase;
+const API_BASE = API_URL;
 
 /**
- * Lê o corpo textual de uma response e tenta convertê-lo para JSON com segurança.
+ * Reads a response body and safely parses JSON.
  * @param {Response} res
  * @returns {Promise<any|null>}
  */
@@ -20,7 +20,7 @@ async function parseBody(res) {
 }
 
 /**
- * Executa um fetch contra o backend garantindo base URL, headers e tratamento de erros.
+ * Executes a fetch against the backend with base URL, headers and error handling.
  * @param {string} path
  * @param {RequestInit} [options]
  * @returns {Promise<any|null>}
@@ -30,11 +30,10 @@ async function request(path, options = {}) {
 }
 
 async function performRequest(path, options, { alreadyRetried }) {
-  const url = path.startsWith("http")
-    ? path
-    : API_BASE
-      ? `${API_BASE}${path}`
-      : path;
+  if (!API_BASE && !path.startsWith("http")) {
+    throw new Error("VITE_API_BASE_URL (or VITE_API_URL) is not set.");
+  }
+  const url = path.startsWith("http") ? path : `${API_BASE}${path}`;
   const headers = new Headers(options.headers || {});
   if (options.body && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
@@ -67,7 +66,8 @@ async function performRequest(path, options, { alreadyRetried }) {
 
 async function tryRefresh() {
   try {
-    const res = await fetch("/api/auth/refresh", {
+    if (!API_BASE) return false;
+    const res = await fetch(`${API_BASE}/api/auth/refresh`, {
       method: "POST",
       credentials: "include",
     });
