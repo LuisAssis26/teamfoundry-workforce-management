@@ -36,15 +36,50 @@ public class EmployeeRequestOfferSeeder {
                 return;
             }
 
-            // Define seeds using Team Name + Role + Candidate Email
+            // Define seeds using Team Name + Role + Candidate Email + Active Status
             List<SmartInviteSeed> seeds = List.of(
-                    // Retrofit Norte - Eletricista
-                    new SmartInviteSeed("Equipe Retrofit Norte", "Eletricista", "joao.silva@teamfoundry.com"),
-                    new SmartInviteSeed("Equipe Retrofit Norte", "Eletricista", "sofia.lima@teamfoundry.com"),
-                    // Retrofit Norte - Eletricista (2nd slot - just to sure)
-                    new SmartInviteSeed("Equipe Retrofit Norte", "Eletricista", "daniel.matos@teamfoundry.com"),
-                    // Retrofit Norte - Soldador
-                    new SmartInviteSeed("Equipe Retrofit Norte", "Soldador", "tiago.rocha@teamfoundry.com")
+                    // --- ACTIVE OFFERS (Pending/Active) ---
+                    // Squad Retrofit Alfa (FerroMec - Active)
+                    new SmartInviteSeed("Squad Retrofit Alfa", "Eletricista", "joao.silva@teamfoundry.com", true),
+                    new SmartInviteSeed("Squad Retrofit Alfa", "Soldador", "carlos.oliveira@teamfoundry.com", true),
+                    new SmartInviteSeed("Squad Retrofit Alfa", "Mecanico", "tiago.rocha@teamfoundry.com", true),
+
+                    // Squad DevOps Core (Blue Orbit - Active)
+                    new SmartInviteSeed("Squad DevOps Core", "Supervisor", "joao.silva@teamfoundry.com", true),
+                    new SmartInviteSeed("Squad DevOps Core", "Tecnico", "sofia.lima@teamfoundry.com", true),
+
+                    // Manutencao Sensores (NovaLink - Active)
+                    new SmartInviteSeed("Manutencao Sensores", "Inspetor", "ana.costa@teamfoundry.com", true),
+
+                    // --- HISTORICAL OFFERS (Completed/Rejected/Expired) ---
+                    // Equipe Manutencao Norte (FerroMec - Completed)
+                    new SmartInviteSeed("Equipe Manutencao Norte", "Eletricista", "sofia.lima@teamfoundry.com", false), // Rejected
+                    new SmartInviteSeed("Equipe Manutencao Norte", "Eletricista", "miguel.santos@teamfoundry.com", true), // Accepted
+                    new SmartInviteSeed("Equipe Manutencao Norte", "Mecanico", "tiago.rocha@teamfoundry.com", true), // Accepted
+                    new SmartInviteSeed("Equipe Manutencao Norte", "Mecanico", "diogo.pereira@teamfoundry.com", false), // Rejected
+                    new SmartInviteSeed("Equipe Manutencao Norte", "Canalizador", "joao.silva@teamfoundry.com", false), // Extra Rejected
+
+                    // Celula Robotica X1 (NovaLink - Completed)
+                    new SmartInviteSeed("Celula Robotica X1", "Soldador", "carlos.oliveira@teamfoundry.com", false), // Rejected
+                    new SmartInviteSeed("Celula Robotica X1", "Soldador", "bruno.martins@teamfoundry.com", true), // Accepted
+                    new SmartInviteSeed("Celula Robotica X1", "Montador", "hugo.almeida@teamfoundry.com", true), // Accepted
+                    new SmartInviteSeed("Celula Robotica X1", "Montador", "ana.martins@teamfoundry.com", false), // Extra Rejected
+
+                    // Equipe Analytics Beta (Blue Orbit - Completed)
+                    new SmartInviteSeed("Equipe Analytics Beta", "Tecnico", "ricardo.pires@teamfoundry.com", true), // Accepted
+                    new SmartInviteSeed("Equipe Analytics Beta", "Operador", "ana.martins@teamfoundry.com", true), // Accepted
+                    new SmartInviteSeed("Equipe Analytics Beta", "Tecnico", "joao.silva@teamfoundry.com", false), // Rejected
+                    new SmartInviteSeed("Equipe Analytics Beta", "Operador", "sofia.lima@teamfoundry.com", false), // Extra Rejected
+
+                    // Upgrade Subestacao Madrid (Iberia Power - Completed)
+                    new SmartInviteSeed("Upgrade Subestacao Madrid", "Eletricista", "joao.silva@teamfoundry.com", false), // Rejected
+                    new SmartInviteSeed("Upgrade Subestacao Madrid", "Eletricista", "pedro.ferreira@teamfoundry.com", true), // Accepted
+                    new SmartInviteSeed("Upgrade Subestacao Madrid", "Supervisor", "tiago.rocha@teamfoundry.com", false), // Extra Rejected (requires request for Supervisor in RequestSeeder, which exists)
+
+                    // Montagem Hidraulica Pesada (Atlantic Dynamics - Completed)
+                    new SmartInviteSeed("Montagem Hidraulica Pesada", "Mecanico", "tiago.rocha@teamfoundry.com", false), // Rejected
+                    new SmartInviteSeed("Montagem Hidraulica Pesada", "Mecanico", "andre.gomes@teamfoundry.com", true), // Accepted
+                    new SmartInviteSeed("Montagem Hidraulica Pesada", "Soldador", "miguel.santos@teamfoundry.com", false) // Extra Rejected (Matches Soldador request in RequestSeeder)
             );
 
             List<EmployeeRequestOffer> toSave = new ArrayList<>();
@@ -60,16 +95,14 @@ public class EmployeeRequestOfferSeeder {
 
                 // 2. Find an available request for the role in this team
                 List<EmployeeRequest> requests = employeeRequestRepository
-                        .findByTeamRequest_IdAndRequestedRoleIgnoreCaseAndEmployeeIsNull(teamId, seed.role());
+                        .findByTeamRequest_IdAndRequestedRoleIgnoreCase(teamId, seed.role());
                 
                 if (requests.isEmpty()) {
-                    LOGGER.warn("Seeder: No open requests for '{}' in team '{}'", seed.role(), seed.teamName());
+                    LOGGER.warn("Seeder: No requests for '{}' in team '{}'", seed.role(), seed.teamName());
                     continue;
                 }
                 
-                // Use the first available request (or any, logic doesn't strictly matter for seeding invites, 
-                // but ideally we attach to one that isn't already "full" of invites? 
-                // Actually, one request can have multiple invites. We just pick the first one.)
+                // Pick the first one (simplification: attach to any matching role request)
                 EmployeeRequest targetRequest = requests.get(0);
 
                 // 3. Find the Employee
@@ -83,7 +116,7 @@ public class EmployeeRequestOfferSeeder {
                 EmployeeRequestOffer invite = new EmployeeRequestOffer();
                 invite.setEmployeeRequest(targetRequest);
                 invite.setEmployee(employeeOpt.get());
-                invite.setActive(true);
+                invite.setActive(seed.active());
                 toSave.add(invite);
             }
 
@@ -96,7 +129,6 @@ public class EmployeeRequestOfferSeeder {
         };
     }
 
-    private record SmartInviteSeed(String teamName, String role, String employeeEmail) {}
-
+    private record SmartInviteSeed(String teamName, String role, String employeeEmail, boolean active) {}
 
 }

@@ -108,7 +108,7 @@ public class CompanyTeamRequestService {
      */
     private String deriveStatus(TeamRequest request) {
         LocalDateTime now = LocalDateTime.now();
-        if (request.getState() == State.COMPLETE || (request.getEndDate() != null && request.getEndDate().isBefore(now))) {
+        if (request.getState() == State.COMPLETED || (request.getEndDate() != null && request.getEndDate().isBefore(now))) {
             return "PAST";
         }
         if (request.getStartDate() != null && request.getStartDate().isAfter(now)) {

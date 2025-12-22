@@ -50,7 +50,7 @@ public class AdminWorkOfferService {
         if (!Objects.equals(request.getResponsibleAdminId(), admin.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Requisição não atribuída a este administrador.");
         }
-        if (request.getState() == State.COMPLETE) {
+        if (request.getState() == State.COMPLETED) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Requisição já concluída; não é possível enviar convites.");
         }
 

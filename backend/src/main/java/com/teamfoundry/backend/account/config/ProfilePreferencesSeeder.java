@@ -61,7 +61,13 @@ public class ProfilePreferencesSeeder {
                 prefRole("Canalizador"),
                 prefRole("Soldador"),
                 prefRole("Carpinteiro"),
-                prefRole("Pedreiro")
+                prefRole("Pedreiro"),
+                prefRole("Mecanico"),
+                prefRole("Montador"),
+                prefRole("Supervisor"),
+                prefRole("Tecnico"),
+                prefRole("Operador"),
+                prefRole("Inspetor")
         );
     }
 
