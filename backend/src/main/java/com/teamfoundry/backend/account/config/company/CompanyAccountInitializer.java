@@ -4,9 +4,11 @@ import com.teamfoundry.backend.account.enums.RegistrationStatus;
 import com.teamfoundry.backend.account.enums.UserType;
 import com.teamfoundry.backend.account.model.Account;
 import com.teamfoundry.backend.account.model.company.CompanyAccount;
+import com.teamfoundry.backend.account.model.company.CompanyAccountManager;
 import com.teamfoundry.backend.account.model.company.CompanyActivitySectors;
 import com.teamfoundry.backend.account.model.preferences.PrefActivitySectors;
 import com.teamfoundry.backend.account.repository.AccountRepository;
+import com.teamfoundry.backend.account.repository.company.CompanyAccountOwnerRepository;
 import com.teamfoundry.backend.account.repository.company.CompanyActivitySectorsRepository;
 import com.teamfoundry.backend.account.repository.preferences.PrefActivitySectorsRepository;
 import org.slf4j.Logger;
@@ -17,6 +19,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,28 +39,40 @@ public class CompanyAccountInitializer {
     CommandLineRunner seedCompanyAccounts(AccountRepository accountRepository,
                                           PasswordEncoder passwordEncoder,
                                           PrefActivitySectorsRepository prefActivitySectorsRepository,
-                                          CompanyActivitySectorsRepository companyActivitySectorsRepository) {
+                                          CompanyActivitySectorsRepository companyActivitySectorsRepository,
+                                          CompanyAccountOwnerRepository companyAccountOwnerRepository,
+                                          PlatformTransactionManager transactionManager) {
         return args -> {
             normalizeExistingAccounts(accountRepository);
 
             Map<String, PrefActivitySectors> sectorsByName = loadActivitySectors(prefActivitySectorsRepository);
+            TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+
             for (CompanySeed seed : defaultCompanySeeds()) {
-                CompanyAccount company = null;
-                var existing = accountRepository.findByEmail(seed.email());
-                if (existing.isPresent()) {
-                    if (existing.get() instanceof CompanyAccount) {
-                        company = (CompanyAccount) existing.get();
-                        LOGGER.debug("Company account {} already exists; skipping create.", seed.email());
+                transactionTemplate.executeWithoutResult(status -> {
+                    CompanyAccount company;
+                    var existing = accountRepository.findByEmail(seed.email());
+                    if (existing.isPresent()) {
+                        if (existing.get() instanceof CompanyAccount) {
+                            company = (CompanyAccount) existing.get();
+                            LOGGER.debug("Update existing company account {}.", seed.email());
+                        } else {
+                            LOGGER.warn("Account {} exists but is not a company; skipping company seed.", seed.email());
+                            return;
+                        }
                     } else {
-                        LOGGER.warn("Account {} exists but is not a company; skipping company seed.", seed.email());
-                        continue;
+                        company = new CompanyAccount();
+                        company.setRole(UserType.COMPANY);
+                        company.setVerified(true);
+                        company.setRegistrationStatus(RegistrationStatus.COMPLETED);
                     }
-                } else {
-                    company = new CompanyAccount();
+
+                    // Update/Set fields (Always sync with seed data)
                     company.setEmail(seed.email());
                     company.setNif(seed.nif());
-                    company.setPassword(passwordEncoder.encode(seed.rawPassword()));
-                    company.setRole(UserType.COMPANY);
+                    if (!existing.isPresent()) { // Only set password for new accounts to avoid overwrite
+                        company.setPassword(passwordEncoder.encode(seed.rawPassword()));
+                    }
                     company.setName(seed.name());
                     company.setAddress(seed.address());
                     company.setCountry(seed.country());
@@ -63,32 +80,43 @@ public class CompanyAccountInitializer {
                     company.setWebsite(seed.website());
                     company.setDescription(seed.description());
                     company.setStatus(seed.status());
-                    company.setVerified(true);
-                    company.setRegistrationStatus(RegistrationStatus.COMPLETED);
 
+                    // Save ensures entity is managed/attached
                     company = accountRepository.save(company);
-                    LOGGER.info("Seeded company {}.", company.getEmail());
-                }
+                    LOGGER.info("Seeded/Updated company {}.", company.getEmail());
 
-                List<CompanyActivitySectors> relations = buildSectorRelations(company, seed.defaultSectors(), sectorsByName);
-                if (!relations.isEmpty()) {
-                    var existingRelations = companyActivitySectorsRepository.findByCompany(company);
-                    var existingNames = existingRelations.stream()
-                            .map(relation -> relation.getSector().getName().toLowerCase())
-                            .collect(java.util.stream.Collectors.toSet());
-                    List<CompanyActivitySectors> toPersist = new ArrayList<>();
-                    for (CompanyActivitySectors relation : relations) {
-                        String sectorName = relation.getSector().getName().toLowerCase();
-                        if (existingNames.contains(sectorName)) {
-                            continue;
+                    // Seed Manager info (Executa para empresas novas E existentes)
+                    if (companyAccountOwnerRepository.findByCompanyAccount_Email(company.getEmail()).isEmpty()) {
+                        CompanyAccountManager manager = new CompanyAccountManager();
+                        manager.setCompanyAccount(company);
+                        manager.setName(seed.managerName());
+                        manager.setEmail(seed.managerEmail());
+                        manager.setPhone(seed.managerPhone());
+                        manager.setPosition(seed.managerPosition());
+                        companyAccountOwnerRepository.save(manager);
+                        LOGGER.info("Seeded manager {} for company {}.", seed.managerName(), company.getEmail());
+                    }
+
+                    List<CompanyActivitySectors> relations = buildSectorRelations(company, seed.defaultSectors(), sectorsByName);
+                    if (!relations.isEmpty()) {
+                        var existingRelations = companyActivitySectorsRepository.findByCompany(company);
+                        var existingNames = existingRelations.stream()
+                                .map(relation -> relation.getSector().getName().toLowerCase())
+                                .collect(java.util.stream.Collectors.toSet());
+                        List<CompanyActivitySectors> toPersist = new ArrayList<>();
+                        for (CompanyActivitySectors relation : relations) {
+                            String sectorName = relation.getSector().getName().toLowerCase();
+                            if (existingNames.contains(sectorName)) {
+                                continue;
+                            }
+                            toPersist.add(relation);
                         }
-                        toPersist.add(relation);
+                        if (!toPersist.isEmpty()) {
+                            companyActivitySectorsRepository.saveAll(toPersist);
+                            LOGGER.info("Seeded {} sector relations for {}.", toPersist.size(), company.getEmail());
+                        }
                     }
-                    if (!toPersist.isEmpty()) {
-                        companyActivitySectorsRepository.saveAll(toPersist);
-                        LOGGER.info("Seeded {} sector relations for {}.", toPersist.size(), company.getEmail());
-                    }
-                }
+                });
             }
         };
     }
@@ -145,102 +173,141 @@ public class CompanyAccountInitializer {
                         "Av. da Liberdade 100, Lisbon, Portugal", "Portugal", "+351213000000",
                         "https://www.blueorbitlabs.com",
                         "Growth-stage HR analytics platform providing workforce insights.",
-                        true, List.of("Fundicao", "Manutencao Industrial")),
+                        true, List.of("Fundicao", "Manutencao Industrial"),
+                        "Mariana Costa", "mariana.costa@blueorbit.com", "+351912345678", "CEO"),
+
                 new CompanySeed("operacoes@ferromec.pt", 508112233, "password123", "FerroMec Solutions",
                         "Rua das Oficinas 45, Porto, Portugal", "Portugal", "+351221998877",
                         "https://www.ferromec.pt",
                         "Integrador especializado em retrofit e modernizacao de linhas fabris.",
-                        true, List.of("Metalomecanica", "Automacao")),
+                        true, List.of("Metalomecanica", "Automacao"),
+                        "Carlos Ferreira", "carlos.ferreira@ferromec.pt", "+351923456789", "Diretor de Operações"),
+
                 new CompanySeed("contato@novalink-automation.com", 514882216, "password123", "NovaLink Automation",
                         "Parque Empreendedor 210, Aveiro, Portugal", "Portugal", "+351234330110",
                         "https://www.novalink-automation.com",
                         "Fornecedor de linhas modulares para montagem e inspecao 100% automatizada.",
-                        true, List.of("Automacao", "Eletronica")),
+                        true, List.of("Automacao", "Eletronica"),
+                        "Sofia Mendes", "sofia.mendes@novalink.com", "+351934567890", "Gestora de Projetos"),
+
                 new CompanySeed("hr@iberiapower.com", 504778899, "password123", "Iberia Power Systems",
                         "Av. Energia 250, Madrid, Espanha", "Espanha", "+34 915550000",
                         "https://www.iberiapower.com",
                         "Operador energetico com foco em manutencao e upgrades de subestacoes.",
-                        true, List.of("Energia", "Infraestruturas")),
+                        true, List.of("Energia", "Infraestruturas"),
+                        "Javier Rodriguez", "javier.rodriguez@iberiapower.com", "+34612345678", "HR Manager"),
+
                 new CompanySeed("talent@atlantic-dynamics.eu", 523198776, "password123", "Atlantic Dynamics",
                         "Via Atlantica 901, Faro, Portugal", "Portugal", "+351289776554",
                         "https://www.atlantic-dynamics.eu",
                         "Fabricante de manipuladores de alta carga para industria pesada.",
-                        true, List.of("Metalomecanica", "Logistica")),
+                        true, List.of("Metalomecanica", "Logistica"),
+                        "Pedro Nogueira", "pedro.nogueira@atlantic-dynamics.eu", "+351965432109", "Diretor Técnico"),
+
                 new CompanySeed("talent@atlantic-robotics.eu", 518654987, "password123", "Atlantic Robotics",
                         "Parque Tecnologico 12, Braga, Portugal", "Portugal", "+351253445566",
                         "https://www.atlantic-robotics.eu",
                         "Desenvolvimento de celulas colaborativas e sistemas de picking automatizado.",
-                        false, List.of("Robotica", "Logistica")),
+                        false, List.of("Robotica", "Logistica"),
+                        "Beatriz Lima", "beatriz.lima@atlantic-robotics.eu", "+351919876543", "Head of Robotics"),
+
                 new CompanySeed("contato@lusanaval.pt", 507441122, "password123", "Lusa Naval Services",
                         "Docas de Leixoes, Matosinhos, Portugal", "Portugal", "+351229880770",
                         "https://www.lusanaval.pt",
                         "Servicos de manutencao offshore e retrofit de embarcacoes.",
-                        false, List.of("Fabricacao Pesada", "Manutencao Industrial")),
+                        false, List.of("Fabricacao Pesada", "Manutencao Industrial"),
+                        "António Silva", "antonio.silva@lusanaval.pt", "+351939876543", "Engenheiro Chefe"),
+
                 new CompanySeed("credenciais@terrasol.com", 516221887, "password123", "TerraSol Renewables",
                         "Estrada das Serras 500, Evora, Portugal", "Portugal", "+351268882210",
                         "https://www.terrasol.com",
                         "Instalacao e manutencao de parques solares de grande escala.",
-                        false, List.of("Energia", "Infraestruturas")),
+                        false, List.of("Energia", "Infraestruturas"),
+                        "Rui Santos", "rui.santos@terrasol.com", "+351929876543", "Gestor de Instalações"),
+
                 new CompanySeed("contato@quantumlog.pt", 512903411, "password123", "Quantum Logistics",
                         "Centro Logistico 8, Vila Nova de Gaia, Portugal", "Portugal", "+351223884455",
                         "https://www.quantumlog.pt",
                         "Operador logistico com foco em armazens autonomos e AGVs.",
-                        false, List.of("Logistica", "Automacao")),
+                        false, List.of("Logistica", "Automacao"),
+                        "Catarina Dias", "catarina.dias@quantumlog.pt", "+351969876543", "Operations Manager"),
+
                 new CompanySeed("info@polartech-offshore.com", 525664320, "password123", "PolarTech Offshore",
                         "Terminal 4, Viana do Castelo, Portugal", "Portugal", "+351258887700",
                         "https://www.polartech-offshore.com",
                         "Servicos de manutencao e inspecao subaquatica para eolica offshore.",
-                        false, List.of("Energia", "Fabricacao Pesada")),
+                        false, List.of("Energia", "Fabricacao Pesada"),
+                        "Lars Hansen", "lars.hansen@polartech.com", "+351918887776", "Technical Director"),
+
                 new CompanySeed("contact@axiomechanics.com", 526331144, "password123", "Axio Mechanics",
                         "Rua das Engenharias 12, Porto, Portugal", "Portugal", "+351221555444",
                         "https://www.axiomechanics.com",
                         "Consultoria em integridade estrutural e testes nao destrutivos.",
-                        true, List.of("Metalomecanica", "Fabricacao Pesada")),
+                        true, List.of("Metalomecanica", "Fabricacao Pesada"),
+                        "Miguel Torres", "miguel.torres@axiomechanics.com", "+351938887776", "Consultor Sénior"),
+
                 new CompanySeed("talent@neovolt.pt", 527441155, "password123", "NeoVolt Systems",
                         "Campus Energia 88, Sines, Portugal", "Portugal", "+351269887744",
                         "https://www.neovolt.pt",
                         "Integrador de sistemas de armazenamento e conversao de energia.",
-                        true, List.of("Energia", "Automacao")),
+                        true, List.of("Energia", "Automacao"),
+                        "Diogo Meireles", "diogo.meireles@neovolt.pt", "+351928887776", "Engenheiro Eletrotécnico"),
+
                 new CompanySeed("careers@deltaproc.com", 528771166, "password123", "DeltaProc Logistics",
                         "Parque Industrial 45, Setubal, Portugal", "Portugal", "+351265778899",
                         "https://www.deltaproc.com",
                         "Operador logistico especializado em cadeia fria e rastreabilidade.",
-                        true, List.of("Logistica", "Infraestruturas")),
+                        true, List.of("Logistica", "Infraestruturas"),
+                        "Fernando Pessoa", "fernando.pessoa@deltaproc.com", "+351968887776", "Logistics Coordinator"),
+
                 new CompanySeed("hr@silverforge.eu", 529882177, "password123", "SilverForge",
                         "Zona Industrial 23, Guimaraes, Portugal", "Portugal", "+351253889900",
                         "https://www.silverforge.eu",
                         "Fundicao de precisao e tratamentos termicos para series curtas.",
-                        false, List.of("Fundicao", "Manutencao Industrial")),
+                        false, List.of("Fundicao", "Manutencao Industrial"),
+                        "Helena Sousa", "helena.sousa@silverforge.eu", "+351917776665", "Production Manager"),
+
                 new CompanySeed("contato@smartlift-pt.com", 530991188, "password123", "SmartLift Elevacao",
                         "Av. do Trabalho 300, Coimbra, Portugal", "Portugal", "+351239778800",
                         "https://www.smartlift-pt.com",
                         "Projetos e manutencao de sistemas de elevacao industrial.",
-                        false, List.of("Infraestruturas", "Automacao")),
+                        false, List.of("Infraestruturas", "Automacao"),
+                        "Paulo Gomes", "paulo.gomes@smartlift.com", "+351937776665", "Diretor Geral"),
+
                 new CompanySeed("jobs@oceantec.pt", 531002199, "password123", "OceanTec Services",
                         "Molhe Maritimo 5, Aveiro, Portugal", "Portugal", "+351234770011",
                         "https://www.oceantec.pt",
                         "Inspecao e reparacao de ativos costeiros e offshore.",
-                        false, List.of("Fabricacao Pesada", "Energia")),
+                        false, List.of("Fabricacao Pesada", "Energia"),
+                        "Ricardo Alves", "ricardo.alves@oceantec.pt", "+351927776665", "Supervisor de Mergulho"),
+
                 new CompanySeed("gente@andrade-robotics.com", 532113200, "password123", "Andrade Robotics",
                         "Parque Tecnologico 99, Braga, Portugal", "Portugal", "+351253889901",
                         "https://www.andrade-robotics.com",
                         "Celulas roboticas customizadas para pick-and-place e soldadura.",
-                        false, List.of("Robotica", "Automacao")),
+                        false, List.of("Robotica", "Automacao"),
+                        "Vitor Andrade", "vitor.andrade@andrade-robotics.com", "+351967776665", "CTO"),
+
                 new CompanySeed("talentos@flexipack.eu", 533224211, "password123", "FlexiPack Europe",
                         "Zona Industrial Embalagens 14, Viseu, Portugal", "Portugal", "+351232889922",
                         "https://www.flexipack.eu",
                         "Linhas de embalagem e paletizacao flexiveis para FMCG.",
-                        false, List.of("Logistica", "Metalomecanica")),
+                        false, List.of("Logistica", "Metalomecanica"),
+                        "Sónia Martins", "sonia.martins@flexipack.eu", "+351916665554", "Plant Manager"),
+
                 new CompanySeed("jobs@auroragrid.com", 534335222, "password123", "Aurora Grid",
                         "Av. das Redes 77, Lisboa, Portugal", "Portugal", "+351210778833",
                         "https://www.auroragrid.com",
                         "Modernizacao de redes de distribuicao com IoT e automacao.",
-                        false, List.of("Energia", "Infraestruturas")),
+                        false, List.of("Energia", "Infraestruturas"),
+                        "Tiago Rocha", "tiago.rocha@auroragrid.com", "+351936665554", "Inovação e Desenvolvimento"),
+
                 new CompanySeed("contato@fulgentmachines.com", 535446233, "password123", "Fulgent Machines",
                         "Polo Industrial 55, Setubal, Portugal", "Portugal", "+351265880990",
                         "https://www.fulgentmachines.com",
                         "Fabricacao de linhas especiais de montagem e teste.",
-                        false, List.of("Metalomecanica", "Automacao"))
+                        false, List.of("Metalomecanica", "Automacao"),
+                        "Andreia Costa", "andreia.costa@fulgentmachines.com", "+351926665554", "Engenheira de Processo")
         );
     }
 
@@ -255,6 +322,10 @@ public class CompanyAccountInitializer {
             String website,
             String description,
             boolean status,
-            List<String> defaultSectors
+            List<String> defaultSectors,
+            String managerName,
+            String managerEmail,
+            String managerPhone,
+            String managerPosition
     ) { }
 }
