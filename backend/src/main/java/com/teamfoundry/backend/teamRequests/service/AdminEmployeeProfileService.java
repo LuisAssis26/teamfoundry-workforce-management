@@ -126,7 +126,7 @@ public class AdminEmployeeProfileService {
     private boolean isConcluded(EmployeeRequest req) {
         if (req.getTeamRequest() == null) return false;
         var tr = req.getTeamRequest();
-        if (tr.getState() == State.COMPLETE) return true;
+        if (tr.getState() == State.COMPLETED) return true;
         LocalDateTime end = tr.getEndDate();
         return end != null && end.isBefore(LocalDateTime.now());
     }

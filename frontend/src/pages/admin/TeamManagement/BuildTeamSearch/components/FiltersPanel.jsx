@@ -33,26 +33,26 @@ export default function FiltersPanel({
         </div>
 
         <MultiSelectDropdown
-          label="Funcao preferencial"
+          label="Função preferencial"
           options={functionOptions}
           selectedOptions={preferredRolesSelected}
           onChange={onPreferredRolesChange}
-          placeholder="Selecione funcao(oes)"
+          placeholder="Selecione função(ões)"
         />
 
         <MultiSelectDropdown
-          label="Area Geografica"
+          label="Área Geográfica"
           options={geoOptions}
           selectedOptions={geoSelected}
           onChange={onGeoChange}
           placeholder="Selecione area(s)"
         />
         <MultiSelectDropdown
-          label="Competencias"
+          label="Competências"
           options={skillOptions}
           selectedOptions={skillsSelected}
           onChange={onSkillsChange}
-          placeholder="Selecione competencias"
+          placeholder="Selecione competências"
         />
         <SelectDropdown
           label="Estado da proposta"

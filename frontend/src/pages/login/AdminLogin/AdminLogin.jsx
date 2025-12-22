@@ -3,6 +3,7 @@ import InputField from "../../../components/ui/Input/InputField.jsx";
 import Button from "../../../components/ui/Button/Button.jsx";
 import { useNavigate } from "react-router-dom";
 import { setTokens } from "../../../auth/tokenStorage.js";
+import { API_URL } from "../../../api/config/config.js";
 
 /**
  * Tela de login para administradores com validacao usando HTTPS e senha com hash.
@@ -12,11 +13,9 @@ export default function AdminLogin() {
     const [credentials, setCredentials] = useState({ username: "", password: "" });
     const [feedback, setFeedback] = useState({ type: "", message: "" });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    // Permite definir um endpoint HTTPS via VITE_API_BASE_URL.
-    const envApiUrl = (import.meta.env.VITE_API_BASE_URL ?? "").trim().replace(/\/$/, "");
-    const isViteLocalhost = window.location.hostname === "localhost" && window.location.port === "5173";
-    const baseApiUrl = isViteLocalhost ? "" : envApiUrl;
-    const loginEndpoint = baseApiUrl ? `${baseApiUrl}/api/admin/login` : "/api/admin/login";
+    // API base URL comes from .env.
+    const baseApiUrl = API_URL;
+    const loginEndpoint = baseApiUrl ? `${baseApiUrl}/api/admin/login` : null;
 
     const handleChange = (field) => (event) => {
         setCredentials((prev) => ({
@@ -28,6 +27,10 @@ export default function AdminLogin() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setFeedback({ type: "", message: "" });
+        if (!loginEndpoint) {
+            setFeedback({ type: "error", message: "Defina VITE_API_BASE_URL no .env para fazer login." });
+            return;
+        }
         setIsSubmitting(true);
 
         try {

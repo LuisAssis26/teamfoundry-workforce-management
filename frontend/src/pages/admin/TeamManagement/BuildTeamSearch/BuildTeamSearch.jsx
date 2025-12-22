@@ -70,7 +70,7 @@ export default function BuildTeamSearch() {
 
         async function loadTeam() {
             if (!teamId) {
-                setTeamError("Selecione uma requisicao antes de montar a equipa.");
+                setTeamError("Selecione uma requisição antes de montar a equipa.");
                 setIsLoadingTeam(false);
                 return;
             }
@@ -107,7 +107,7 @@ export default function BuildTeamSearch() {
             setSearchError("");
             try {
                 const data = await searchCandidates({
-                    role: role, // Filtra pela função da vaga para escopar os convites
+                    role: role, 
                     areas: geoSelected,
                     skills: skillsSelected,
                     preferredRoles: preferredRolesSelected,

@@ -151,7 +151,7 @@ public class AdminEmployeeSearchService {
 
     private boolean isConcluded(TeamRequest tr) {
         if (tr == null) return false;
-        if (tr.getState() == State.COMPLETE) return true;
+        if (tr.getState() == State.COMPLETED) return true;
         LocalDateTime end = tr.getEndDate();
         return end != null && end.isBefore(LocalDateTime.now());
     }

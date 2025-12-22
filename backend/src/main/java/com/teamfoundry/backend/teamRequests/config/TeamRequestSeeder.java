@@ -78,15 +78,47 @@ public class TeamRequestSeeder {
     private List<TeamRequestSeed> defaultSeeds() {
         LocalDateTime now = LocalDateTime.now();
         return List.of(
+                // --- FerroMec (Existing) ---
                 new TeamRequestSeed("operacoes@ferromec.pt", "Squad Retrofit Alfa",
                         "Equipe para retrofit e soldagem leve.", "Porto", State.INCOMPLETE, "admin1",
                         now.plusDays(7), now.plusDays(35), now.minusDays(3)),
                 new TeamRequestSeed("operacoes@ferromec.pt", "Equipe Manutencao Norte",
-                        "Manutencao preventiva em linha industrial.", "Braga", State.INCOMPLETE, "admin2",
-                        now.plusDays(5), now.plusDays(28), now.minusDays(2)),
+                        "Manutencao preventiva em linha industrial.", "Braga", State.COMPLETED, "admin2",
+                        now.minusMonths(2), now.minusMonths(1), now.minusMonths(3)),
                 new TeamRequestSeed("operacoes@ferromec.pt", "Time Soldagem Linha 2",
                         "Soldagem estrutural em linha de producao.", "Aveiro", State.INCOMPLETE, "admin3",
                         now.plusDays(12), now.plusDays(45), now.minusDays(4)),
+
+                // --- Blue Orbit Labs ---
+                new TeamRequestSeed("contact@blueorbitlabs.com", "Equipe Analytics Beta",
+                        "Implementação de sensores IoT para analise de dados.", "Lisboa", State.COMPLETED, "admin1",
+                        now.minusMonths(5), now.minusMonths(2), now.minusMonths(6)),
+                new TeamRequestSeed("contact@blueorbitlabs.com", "Squad DevOps Core",
+                        "Infraestrutura de CI/CD para nova plataforma.", "Remoto", State.INCOMPLETE, "admin4",
+                        now.plusDays(5), now.plusMonths(2), now.minusDays(2)),
+
+                // --- NovaLink Automation ---
+                new TeamRequestSeed("contato@novalink-automation.com", "Celula Robotica X1",
+                        "Montagem de celula robotizada para linha automovel.", "Palmela", State.COMPLETED, "admin2",
+                        now.minusMonths(8), now.minusMonths(4), now.minusMonths(9)),
+                new TeamRequestSeed("contato@novalink-automation.com", "Manutencao Sensores",
+                        "Calibracao de sensores opticos em ambiente fabril.", "Aveiro", State.INCOMPLETE, "admin5",
+                        now.plusDays(10), now.plusDays(20), now.minusDays(1)),
+
+                // --- Iberia Power Systems ---
+                new TeamRequestSeed("hr@iberiapower.com", "Upgrade Subestacao Madrid",
+                        "Atualizacao de transformadores de alta tensao.", "Madrid", State.COMPLETED, "admin3",
+                        now.minusYears(1), now.minusMonths(10), now.minusYears(1).minusMonths(1)),
+                new TeamRequestSeed("hr@iberiapower.com", "Equipe Eolica Offshore",
+                        "Manutencao preventiva em parque eolico flutuante.", "Viana do Castelo", State.INCOMPLETE, "admin6",
+                        now.plusWeeks(2), now.plusMonths(3), now.minusDays(5)),
+
+                // --- Atlantic Dynamics ---
+                new TeamRequestSeed("talent@atlantic-dynamics.eu", "Montagem Hidraulica Pesada",
+                        "Sistema hidraulico para guindastes portuarios.", "Sines", State.COMPLETED, "admin4",
+                        now.minusMonths(3), now.minusMonths(1), now.minusMonths(4)),
+
+                // --- More Active/Incomplete for diversity ---
                 new TeamRequestSeed("operacoes@ferromec.pt", "Equipe Montagem Sul",
                         "Montagem mecanica e ajustes finais.", "Faro", State.INCOMPLETE, "admin4",
                         now.plusDays(9), now.plusDays(38), now.minusDays(1)),
