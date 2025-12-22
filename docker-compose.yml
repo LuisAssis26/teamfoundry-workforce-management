@@ -31,10 +31,6 @@ services:
       - "8080:8080"
     networks:
       - teamfoundry_network
-    profiles:
-      - manual
-    deploy:
-      replicas: 0
 
   teamfoundry_frontend:
     build:
@@ -44,10 +40,6 @@ services:
       - "5173:5173"
     networks:
       - teamfoundry_network
-    profiles:
-      - manual
-    deploy:
-      replicas: 0
 
 volumes:
   postgres_data:
