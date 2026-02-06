@@ -1,88 +1,88 @@
 # TeamFoundry
 
-Bem-vindo ao **TeamFoundry**. Esta aplicação é uma plataforma dedicada à gestão e recrutamento de equipas, permitindo a administração de perfis de utilizadores, competências, currículos e certificados. O sistema é composto por um backend robusto em Spring Boot e um frontend moderno em React.
+Welcome to **TeamFoundry**. This application is a platform dedicated to team management and recruitment, allowing the administration of user profiles, skills, resumes, and certificates. The system consists of a robust backend in Spring Boot and a modern frontend in React.
 
-## Visão Geral
+## Overview
 
--   **Backend**: Gerencia a lógica de negócios, autenticação (JWT e OAuth2 Google), upload de arquivos (Cloudinary) e persistência de dados.
--   **Frontend**: Interface de utilizador responsiva para interação com a plataforma.
+-   **Backend**: Manages business logic, authentication (JWT and Google OAuth2), file uploads (Cloudinary), and data persistence.
+-   **Frontend**: Responsive user interface for interacting with the platform.
 
-## Tecnologias Utilizadas
+## Technologies Used
 
 ### Backend
 -   **Java 21**
 -   **Spring Boot 3.5.7** (Web, Security, Data JPA, Mail, Validation, OAuth2 Client)
--   **PostgreSQL** (Banco de dados produção/dev)
--   **H2 Database** (Para testes)
--   **Flyway** (Migração de banco de dados, desativado por padrão)
--   **JJWT** (Autenticação via Token)
--   **Cloudinary** (Armazenamento de mídia)
+-   **PostgreSQL** (Production/Dev Database)
+-   **H2 Database** (For Tests)
+-   **Flyway** (Database Migration, disabled by default)
+-   **JJWT** (Token-based Authentication)
+-   **Cloudinary** (Media Storage)
 
 ### Frontend
 -   **React 19**
 -   **Vite**
 -   **TailwindCSS v4** & **daisyUI**
--   **Recharts** (Gráficos)
--   **Jest** (Testes)
+-   **Recharts** (Charts)
+-   **Jest** (Testing)
 
 ---
 
-## Pré-requisitos
+## Prerequisites
 
-Antes de começar, certifique-se de ter instalado na sua máquina:
+Before getting started, ensure you have the following installed on your machine:
 
 1.  **Java JDK 21**: [Download JDK 21](https://www.oracle.com/java/technologies/downloads/#java21)
-2.  **Node.js** (LTS recomendado): [Download Node.js](https://nodejs.org/)
+2.  **Node.js** (LTS recommended): [Download Node.js](https://nodejs.org/)
 3.  **PostgreSQL**: [Download PostgreSQL](https://www.postgresql.org/download/)
 4.  **Git**: [Download Git](https://git-scm.com/)
 
 ---
 
-## Guia de Instalação e Execução (Local)
+## Installation and Execution Guide (Local)
 
-Siga os passos abaixo para configurar o ambiente de desenvolvimento.
+Follow the steps below to configure the development environment.
 
-### 1. Clonar o Repositório
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/LuisAssis26/teamfoundry-workforce-management
 cd teamfoundry-workforce-management
 ```
 
-### 2. Configuração do Banco de Dados
+### 2. Database Configuration
 
-Crie uma base de dados PostgreSQL chamada `teamfoundry`. Você pode fazer isso via pgAdmin ou linha de comando.
+Create a PostgreSQL database named `teamfoundry`. You can do this via pgAdmin or the command line.
 
-### 3. Configuração do Backend
+### 3. Backend Configuration
 
-1.  Navegue até a pasta do backend:
+1.  Navigate to the backend folder:
     ```bash
     cd backend
     ```
     
-2.  Configure as variáveis de ambiente. Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`:
+2.  Configure the environment variables. Copy the example file `.env.example` to a new file named `.env`:
 
-3.  Abra o arquivo `.env` criado e preencha as variáveis com os seus dados locais. As mais importantes para rodar localmente são:
+3.  Open the created `.env` file and fill in the variables with your local data. The most important ones for running locally are:
 
     ```properties
-    # Configurações do Banco de Dados
+    # Database Configuration
     SPRING_DATASOURCE_URL_PROD="jdbc:postgresql://localhost:5432/teamfoundry"
-    SPRING_DATASOURCE_USERNAME_PROD="teu_user_postgres"
-    SPRING_DATASOURCE_PASSWORD_PROD="tua_senha_postgres"
+    SPRING_DATASOURCE_USERNAME_PROD="your_postgres_user"
+    SPRING_DATASOURCE_PASSWORD_PROD="your_postgres_password"
 
-    # JWT (Gere uma string segura)
-    JWT_SECRET="uma-chave-muito-secreta-com-pelo-menos-32-caracteres"
+    # JWT (Generate a secure string)
+    JWT_SECRET="a-very-secret-key-with-at-least-32-characters"
 
-    # Cloudinary (necessário para uploads)
+    # Cloudinary (required for uploads)
     CLOUDINARY_URL="cloudinary://api_key:api_secret@cloud_name"
 
-    # Google OAuth (necessário para login com Google)
-    GOOGLE_CLIENT_ID="seu-client-id-google"
-    GOOGLE_CLIENT_SECRET="seu-client-secret-google"
+    # Google OAuth (required for Google login)
+    GOOGLE_CLIENT_ID="your-google-client-id"
+    GOOGLE_CLIENT_SECRET="your-google-client-secret"
     ```
-    > **Nota**: Para o envio de e-mails funcionar, você precisará configurar as credenciais SMTP (ex: Gmail ou Brevo).
+    > **Note**: For email sending to work, you will need to configure SMTP credentials (e.g., Gmail or Brevo).
 
-4.  Execute a aplicação:
+4.  Run the application:
     -   **Windows**:
         ```bash
         .\gradlew bootRun
@@ -92,54 +92,59 @@ Crie uma base de dados PostgreSQL chamada `teamfoundry`. Você pode fazer isso v
         ./gradlew bootRun
         ```
 
-O backend iniciará na porta `8080` (padrão).
+The backend will start on port `8080` (default).
 
-### 4. Configuração do Frontend
+### 4. Frontend Configuration
 
-1.  Abra um novo terminal e navegue até a pasta do frontend:
+1.  Open a new terminal and navigate to the frontend folder:
     ```bash
     cd frontend
     ```
 
-2.  Instale as dependências:
+2.  Install dependencies:
     ```bash
     npm install
     ```
 
-3.  Configure as variáveis de ambiente. Crie um arquivo `.env` na raiz do frontend (ou renomeie `.env.example`) e defina:
+3.  Configure environment variables. Create a `.env` file in the frontend root (or rename `.env.example`) and define:
 
     ```properties
     VITE_API_BASE_URL=http://localhost:8080/api
-    VITE_CLOUDINARY_BASE_URL=https://res.cloudinary.com/seu-cloud-name/image/upload/
+    VITE_CLOUDINARY_BASE_URL=https://res.cloudinary.com/your-cloud-name/image/upload/
     ```
 
-4.  Execute o servidor de desenvolvimento:
+4.  Run the development server:
     ```bash
     npm run dev
     ```
 
-O frontend estará disponível em `http://localhost:517x`.
+The frontend will be available at `http://localhost:517x`.
 
 ---
 
-## Estrutura do Projeto
+## Project Structure
 
 ```
 teamfoundry-workforce-management/
-├── backend/               # Código fonte da API Java/Spring Boot
+├── backend/               # Java/Spring Boot API Source Code
 │   ├── src/
 │   ├── build.gradle
 │   └── Dockerfile
-└── frontend/              # Código fonte da Interface React
+└── frontend/              # React Interface Source Code
     ├── src/
     ├── package.json
     └── vite.config.js
 ```
 
-## Contribuir
+## Documentation (Portuguese)
 
-1.  Faça um Fork do projeto.
-2.  Crie uma Branch para sua Feature (`git checkout -b feature/MinhaFeature`).
-3.  Faça o Commit (`git commit -m 'Adicionando MinhaFeature'`).
-4.  Faça o Push (`git push origin feature/MinhaFeature`).
-5.  Abra um Pull Request.
+- Consult `Manual_utilização_TeamFoundry.pdf` for a end-user guide, including usage flows.
+- `Relatório Final Team Foundry.pdf` captures the academic context, architectural decisions, and evaluation criteria for the project.
+
+## Contributing
+
+1.  Fork the project.
+2.  Create a Branch for your Feature (`git checkout -b feature/MyFeature`).
+3.  Commit your changes (`git commit -m 'Adding MyFeature'`).
+4.  Push to the Branch (`git push origin feature/MyFeature`).
+5.  Open a Pull Request.
