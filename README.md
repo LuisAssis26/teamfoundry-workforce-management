@@ -59,18 +59,16 @@ Crie uma base de dados PostgreSQL chamada `teamfoundry`. Você pode fazer isso v
     ```bash
     cd backend
     ```
-
+    
 2.  Configure as variáveis de ambiente. Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`:
-    -   **Windows (PowerShell)**: `Copy-Item .env.example .env`
-    -   **Linux/Mac**: `cp .env.example .env`
 
 3.  Abra o arquivo `.env` criado e preencha as variáveis com os seus dados locais. As mais importantes para rodar localmente são:
 
     ```properties
     # Configurações do Banco de Dados
     SPRING_DATASOURCE_URL_PROD="jdbc:postgresql://localhost:5432/teamfoundry"
-    SPRING_DATASOURCE_USERNAME_PROD="seu_usuario_postgres"
-    SPRING_DATASOURCE_PASSWORD_PROD="sua_senha_postgres"
+    SPRING_DATASOURCE_USERNAME_PROD="teu_user_postgres"
+    SPRING_DATASOURCE_PASSWORD_PROD="tua_senha_postgres"
 
     # JWT (Gere uma string segura)
     JWT_SECRET="uma-chave-muito-secreta-com-pelo-menos-32-caracteres"
@@ -138,7 +136,7 @@ teamfoundry-workforce-management/
     └── vite.config.js
 ```
 
-## Contribuindo
+## Contribuir
 
 1.  Faça um Fork do projeto.
 2.  Crie uma Branch para sua Feature (`git checkout -b feature/MinhaFeature`).
