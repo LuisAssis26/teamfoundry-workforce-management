@@ -12,6 +12,7 @@ import com.teamfoundry.backend.superadmin.repository.credentials.AdminAccountRep
 import com.teamfoundry.backend.teamRequests.enums.State;
 import com.teamfoundry.backend.teamRequests.model.TeamRequest;
 import com.teamfoundry.backend.teamRequests.repository.TeamRequestRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -50,6 +51,7 @@ class MetricsControllerIntegrationTest {
     @Autowired CompanyAccountRepository companyAccountRepository;
     @Autowired EmployeeAccountRepository employeeAccountRepository;
     @Autowired TeamRequestRepository teamRequestRepository;
+    @Autowired AuthTokenRepository authTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
 
     private final String superUsername = "superadmin";
@@ -57,10 +59,12 @@ class MetricsControllerIntegrationTest {
 
     @BeforeEach
     void setup() {
+        authTokenRepository.deleteAll();
         teamRequestRepository.deleteAll();
         employeeAccountRepository.deleteAll();
         companyAccountRepository.deleteAll();
         adminAccountRepository.deleteAll();
+        adminAccountRepository.flush();
 
         adminAccountRepository.save(new AdminAccount(0, superUsername,
                 passwordEncoder.encode(superPassword), UserType.SUPERADMIN, false));
@@ -82,7 +86,7 @@ class MetricsControllerIntegrationTest {
         createEmployee("emp2@user.com", true);
 
         createTeamRequest(activeCompany, State.INCOMPLETE, adminOne.getId());
-        createTeamRequest(activeCompany, State.COMPLETE, adminOne.getId());
+        createTeamRequest(activeCompany, State.COMPLETED, adminOne.getId());
         createTeamRequest(pendingCompany, State.INCOMPLETE, adminTwo.getId());
 
         String token = login(superUsername, superPassword);
@@ -96,7 +100,7 @@ class MetricsControllerIntegrationTest {
                 .andExpect(jsonPath("$.kpis.openRequests").value(2))
                 .andExpect(jsonPath("$.kpis.closedRequests").value(1))
                 .andExpect(jsonPath("$.requestsByState", hasSize(2)))
-                .andExpect(jsonPath("$.requestsByState[0].state").value("COMPLETE"))
+                .andExpect(jsonPath("$.requestsByState[0].state").value("COMPLETED"))
                 .andExpect(jsonPath("$.requestsByState[0].count").value(1))
                 .andExpect(jsonPath("$.requestsByState[1].state").value("INCOMPLETE"))
                 .andExpect(jsonPath("$.requestsByState[1].count").value(2))

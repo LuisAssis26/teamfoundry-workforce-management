@@ -7,9 +7,31 @@ export default function AppHeroSection({ form, saving, onFieldChange, onSubmit }
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body space-y-6">
         <div>
-          <h2 className="card-title text-3xl">Hero</h2>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <h2 className="card-title text-3xl">Hero</h2>
+            <div className="flex flex-wrap items-center gap-6">
+            <label className="flex items-center gap-3">
+              <span className="label-text font-semibold">Visibilidade:</span>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={form.active}
+                  onChange={(e) => onFieldChange("active", e.target.checked)}
+                />
+              </label>
+              <label className="flex items-center gap-3">
+                <span className="label-text font-semibold">Mostrar barra de progresso:</span>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={form.profileBarVisible}
+                  onChange={(e) => onFieldChange("profileBarVisible", e.target.checked)}
+                />
+              </label>
+            </div>
+          </div>
           <p className="text-base-content/60 text-sm">
-            Personalize prefixo do cumprimento, visibilidade da barra, rotulos e botao.
+            Personalize o prefixo do cumprimento, a visibilidade da barra, os rótulos e o botão.
           </p>
         </div>
 
@@ -19,18 +41,10 @@ export default function AppHeroSection({ form, saving, onFieldChange, onSubmit }
               label="Frase antes do nome"
               value={form.greetingPrefix}
               onChange={(value) => onFieldChange("greetingPrefix", value)}
-              placeholder="Ola"
+              placeholder="Olá"
               className="w-full"
             />
-            <label className="form-control">
-              <span className="label-text font-semibold">Mostrar barra de progresso</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-primary mt-2"
-                checked={form.profileBarVisible}
-                onChange={(e) => onFieldChange("profileBarVisible", e.target.checked)}
-              />
-            </label>
+            <div />
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -41,23 +55,23 @@ export default function AppHeroSection({ form, saving, onFieldChange, onSubmit }
               placeholder="Empresa atual"
             />
             <FieldGroup
-              label="Etiqueta das ofertas disponiveis"
+              label="Etiqueta das ofertas disponíveis"
               value={form.labelOffers}
               onChange={(value) => onFieldChange("labelOffers", value)}
-              placeholder="Ofertas disponiveis"
+              placeholder="Ofertas disponíveis"
             />
           </div>
 
           <div className="flex flex-col gap-4 md:flex-row">
             <FieldGroup
-              label="Texto do botao"
+              label="Texto do botão"
               value={form.primaryCtaLabel}
               onChange={(value) => onFieldChange("primaryCtaLabel", value)}
               placeholder="Atualizar perfil"
               className="flex-1"
             />
             <FieldGroup
-              label="URL do botao"
+              label="URL do botão"
               value={form.primaryCtaUrl}
               onChange={(value) => onFieldChange("primaryCtaUrl", value)}
               placeholder="/candidato/dados-pessoais"
@@ -68,16 +82,6 @@ export default function AppHeroSection({ form, saving, onFieldChange, onSubmit }
           <input type="hidden" value={form.title} readOnly />
           <input type="hidden" value={form.subtitle} readOnly />
           <input type="hidden" value={form.content} readOnly />
-
-          <label className="label cursor-pointer gap-3">
-            <input
-              type="checkbox"
-              className="toggle toggle-primary"
-              checked={form.active}
-              onChange={(e) => onFieldChange("active", e.target.checked)}
-            />
-            <span className="label-text">Mostrar secao</span>
-          </label>
 
           <div className="flex justify-end">
             <button type="submit" className="btn btn-primary" disabled={saving}>

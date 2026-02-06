@@ -61,28 +61,45 @@ public class ProfilePreferencesSeeder {
                 prefRole("Canalizador"),
                 prefRole("Soldador"),
                 prefRole("Carpinteiro"),
-                prefRole("Pedreiro")
+                prefRole("Pedreiro"),
+                prefRole("Mecanico"),
+                prefRole("Montador"),
+                prefRole("Supervisor"),
+                prefRole("Tecnico"),
+                prefRole("Operador"),
+                prefRole("Inspetor")
         );
     }
 
-    private List<PrefSkill> defaultCompetences() {
+        private List<PrefSkill> defaultCompetences() {
         return List.of(
-                competence("Eletricista"),
-                competence("Canalizador"),
-                competence("Soldador"),
-                competence("Técnico de AVAC"),
-                competence("Pintor")
+                competence("Lideranca"),
+                competence("Comunicacao eficaz"),
+                competence("Resolucao de problemas"),
+                competence("Pensamento critico"),
+                competence("Adaptabilidade"),
+                competence("Aprendizado rapido"),
+                competence("Gestao de tempo"),
+                competence("Trabalho em equipa"),
+                competence("Atencao aos detalhes"),
+                competence("Tomada de decisao"),
+                competence("Gestao de conflitos"),
+                competence("Criatividade"),
+                competence("Proatividade"),
+                competence("Organizacao"),
+                competence("Orientacao para resultados")
         );
     }
 
     private List<PrefGeoArea> defaultGeoAreas() {
         return List.of(
-                prefGeoArea("Lisboa"),
-                prefGeoArea("Porto"),
-                prefGeoArea("Braga"),
-                prefGeoArea("Faro"),
-                prefGeoArea("Madeira"),
-                prefGeoArea("Açores")
+                prefGeoArea("Portugal"),
+                prefGeoArea("Espanha"),
+                prefGeoArea("Península Ibérica"),
+                prefGeoArea("Europa Ocidental"),
+                prefGeoArea("Europa Oriental"),
+                prefGeoArea("Europa inteira"),
+                prefGeoArea("Norte da África")
         );
     }
 
@@ -121,3 +138,4 @@ public class ProfilePreferencesSeeder {
         return area;
     }
 }
+

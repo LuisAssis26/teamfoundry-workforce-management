@@ -60,8 +60,6 @@ class HomeAdminControllerIntegrationTest {
     @Autowired PasswordEncoder passwordEncoder;
 
     @MockBean com.teamfoundry.backend.common.service.CloudinaryService cloudinaryService;
-    @MockBean com.teamfoundry.backend.superadmin.service.home.NewsApiService newsApiService;
-
     private final String superUsername = "superadmin";
     private final String superPassword = "Super#Site123";
 

@@ -140,9 +140,12 @@ export default function LoginCandidate() {
                             type="button"
                             className="btn bg-white text-black border-[#e5e5e5] gap-2"
                             onClick={() => {
-                                // usa a URL do backend; em dev, defina VITE_API_URL=https://localhost:8443 para garantir HTTPS
-                                const base = API_URL && API_URL.trim() ? API_URL : "https://localhost:8443";
-                                window.location.href = `${base}/oauth2/authorization/google`;
+                                // usa a URL do backend vinda do .env
+                                if (!API_URL) {
+                                    setError("Defina VITE_API_BASE_URL no .env para usar o login Google.");
+                                    return;
+                                }
+                                window.location.href = `${API_URL}/oauth2/authorization/google`;
                             }}
                         >
                             <i className="bi bi-google text-lg"></i>

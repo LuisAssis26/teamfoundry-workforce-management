@@ -31,11 +31,6 @@ public class TeamRequestSeeder {
                                        CompanyAccountRepository companyAccountRepository,
                                        AdminAccountRepository adminAccountRepository) {
         return args -> {
-            if (teamRequestRepository.count() > 0) {
-                LOGGER.debug("Team requests already exist; skipping seeding.");
-                return;
-            }
-
             Map<String, Integer> adminIds = adminAccountRepository.findAll().stream()
                     .collect(java.util.stream.Collectors.toMap(
                             a -> a.getUsername().toLowerCase(),
@@ -44,6 +39,10 @@ public class TeamRequestSeeder {
 
             List<TeamRequest> toPersist = new ArrayList<>();
             for (TeamRequestSeed seed : defaultSeeds()) {
+                if (teamRequestRepository.findByTeamName(seed.teamName()).isPresent()) {
+                    LOGGER.debug("Team request {} already exists; skipping seed.", seed.teamName());
+                    continue;
+                }
                 CompanyAccount company = companyAccountRepository.findByEmail(seed.companyEmail()).orElse(null);
                 if (company == null) {
                     LOGGER.warn("Company {} not found; skipping team request seed for {}.",
@@ -79,26 +78,68 @@ public class TeamRequestSeeder {
     private List<TeamRequestSeed> defaultSeeds() {
         LocalDateTime now = LocalDateTime.now();
         return List.of(
-                // Ativos incompletos
-                new TeamRequestSeed("contact@blueorbitlabs.com", "Equipe Retrofit Norte",
-                        "Retrofit elétrico e solda leve.", "Lisboa", State.INCOMPLETE, "admin1",
-                        now.plusDays(7), now.plusDays(30), now.minusDays(2)),
-                new TeamRequestSeed("operacoes@ferromec.pt", "Task force Soldagem",
-                        "Soldagem MIG/MAG estrutural.", "Porto", State.INCOMPLETE, "admin2",
-                        now.plusDays(5), now.plusDays(25), now.minusDays(1)),
-                new TeamRequestSeed("talent@atlantic-robotics.eu", "Montagem Industrial Sul",
-                        "Montagem mecânica e canalização.", "Faro", State.INCOMPLETE, "admin3",
-                        now.plusDays(10), now.plusDays(40), now.minusDays(3)),
-                // Concluídos
-                new TeamRequestSeed("contact@blueorbitlabs.com", "Linha Robotizada A",
-                        "Instalação de célula robotizada.", "Lisboa", State.COMPLETE, "admin1",
-                        now.minusDays(60), now.minusDays(30), now.minusDays(70)),
-                new TeamRequestSeed("operacoes@ferromec.pt", "Squad SCADA Norte",
-                        "Rollout SCADA nas subestações.", "Porto", State.COMPLETE, "admin2",
-                        now.minusDays(50), now.minusDays(20), now.minusDays(55)),
-                new TeamRequestSeed("hr@iberiapower.com", "Equipa Solar Oeste",
-                        "Task force O&M solar.", "Braga", State.COMPLETE, "admin4",
-                        now.minusDays(40), now.minusDays(10), now.minusDays(45))
+                // --- FerroMec (Existing) ---
+                new TeamRequestSeed("operacoes@ferromec.pt", "Squad Retrofit Alfa",
+                        "Equipe para retrofit e soldagem leve.", "Porto", State.INCOMPLETE, "admin1",
+                        now.plusDays(7), now.plusDays(35), now.minusDays(3)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Equipe Manutencao Norte",
+                        "Manutencao preventiva em linha industrial.", "Braga", State.COMPLETED, "admin2",
+                        now.minusMonths(2), now.minusMonths(1), now.minusMonths(3)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Time Soldagem Linha 2",
+                        "Soldagem estrutural em linha de producao.", "Aveiro", State.INCOMPLETE, "admin3",
+                        now.plusDays(12), now.plusDays(45), now.minusDays(4)),
+
+                // --- Blue Orbit Labs ---
+                new TeamRequestSeed("contact@blueorbitlabs.com", "Equipe Analytics Beta",
+                        "Implementação de sensores IoT para analise de dados.", "Lisboa", State.COMPLETED, "admin1",
+                        now.minusMonths(5), now.minusMonths(2), now.minusMonths(6)),
+                new TeamRequestSeed("contact@blueorbitlabs.com", "Squad DevOps Core",
+                        "Infraestrutura de CI/CD para nova plataforma.", "Remoto", State.INCOMPLETE, "admin4",
+                        now.plusDays(5), now.plusMonths(2), now.minusDays(2)),
+
+                // --- NovaLink Automation ---
+                new TeamRequestSeed("contato@novalink-automation.com", "Celula Robotica X1",
+                        "Montagem de celula robotizada para linha automovel.", "Palmela", State.COMPLETED, "admin2",
+                        now.minusMonths(8), now.minusMonths(4), now.minusMonths(9)),
+                new TeamRequestSeed("contato@novalink-automation.com", "Manutencao Sensores",
+                        "Calibracao de sensores opticos em ambiente fabril.", "Aveiro", State.INCOMPLETE, "admin5",
+                        now.plusDays(10), now.plusDays(20), now.minusDays(1)),
+
+                // --- Iberia Power Systems ---
+                new TeamRequestSeed("hr@iberiapower.com", "Upgrade Subestacao Madrid",
+                        "Atualizacao de transformadores de alta tensao.", "Madrid", State.COMPLETED, "admin3",
+                        now.minusYears(1), now.minusMonths(10), now.minusYears(1).minusMonths(1)),
+                new TeamRequestSeed("hr@iberiapower.com", "Equipe Eolica Offshore",
+                        "Manutencao preventiva em parque eolico flutuante.", "Viana do Castelo", State.INCOMPLETE, "admin6",
+                        now.plusWeeks(2), now.plusMonths(3), now.minusDays(5)),
+
+                // --- Atlantic Dynamics ---
+                new TeamRequestSeed("talent@atlantic-dynamics.eu", "Montagem Hidraulica Pesada",
+                        "Sistema hidraulico para guindastes portuarios.", "Sines", State.COMPLETED, "admin4",
+                        now.minusMonths(3), now.minusMonths(1), now.minusMonths(4)),
+
+                // --- More Active/Incomplete for diversity ---
+                new TeamRequestSeed("operacoes@ferromec.pt", "Equipe Montagem Sul",
+                        "Montagem mecanica e ajustes finais.", "Faro", State.INCOMPLETE, "admin4",
+                        now.plusDays(9), now.plusDays(38), now.minusDays(1)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Squad Eletrica Delta",
+                        "Instalacoes eletricas e testes de painel.", "Lisboa", State.INCOMPLETE, "admin5",
+                        now.plusDays(14), now.plusDays(50), now.minusDays(5)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Time Canalizacao Oeste",
+                        "Canalizacao industrial e suportes.", "Leiria", State.INCOMPLETE, "admin6",
+                        now.plusDays(6), now.plusDays(32), now.minusDays(2)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Equipe Automacao Leste",
+                        "Automacao de celulas e integracao de sensores.", "Coimbra", State.INCOMPLETE, "admin7",
+                        now.plusDays(11), now.plusDays(42), now.minusDays(3)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Time Inspecao 3D",
+                        "Inspecao dimensional e controle de qualidade.", "Setubal", State.INCOMPLETE, "admin8",
+                        now.plusDays(8), now.plusDays(36), now.minusDays(1)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Squad Logistica Turno B",
+                        "Apoio logistico e movimentacao interna.", "Vila Nova de Gaia", State.INCOMPLETE, "admin9",
+                        now.plusDays(15), now.plusDays(55), now.minusDays(6)),
+                new TeamRequestSeed("operacoes@ferromec.pt", "Equipe Montagem Beta",
+                        "Montagem de subconjuntos mecanicos.", "Porto", State.INCOMPLETE, "admin10",
+                        now.plusDays(10), now.plusDays(40), now.minusDays(2))
         );
     }
 

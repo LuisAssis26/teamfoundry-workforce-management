@@ -12,6 +12,7 @@ import com.teamfoundry.backend.teamRequests.model.EmployeeRequest;
 import com.teamfoundry.backend.teamRequests.model.TeamRequest;
 import com.teamfoundry.backend.teamRequests.repository.EmployeeRequestRepository;
 import com.teamfoundry.backend.teamRequests.repository.TeamRequestRepository;
+import com.teamfoundry.backend.auth.repository.AuthTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -50,6 +51,7 @@ class SuperAdminTeamRequestControllerIntegrationTest {
     @Autowired TeamRequestRepository teamRequestRepository;
     @Autowired EmployeeRequestRepository employeeRequestRepository;
     @Autowired CompanyAccountRepository companyAccountRepository;
+    @Autowired AuthTokenRepository authTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
 
     private final String superUsername = "superadmin";
@@ -58,10 +60,12 @@ class SuperAdminTeamRequestControllerIntegrationTest {
 
     @BeforeEach
     void setup() {
+        authTokenRepository.deleteAll();
         employeeRequestRepository.deleteAll();
         teamRequestRepository.deleteAll();
         companyAccountRepository.deleteAll();
         adminAccountRepository.deleteAll();
+        adminAccountRepository.flush();
 
         adminAccountRepository.save(new AdminAccount(0, superUsername,
                 passwordEncoder.encode(superPassword), UserType.SUPERADMIN, false));
@@ -76,7 +80,7 @@ class SuperAdminTeamRequestControllerIntegrationTest {
 
         TeamRequest older = createTeamRequest(company, "Alpha Team", State.INCOMPLETE,
                 LocalDateTime.now().minusDays(2), null);
-        TeamRequest newer = createTeamRequest(company, "Beta Team", State.COMPLETE,
+        TeamRequest newer = createTeamRequest(company, "Beta Team", State.COMPLETED,
                 LocalDateTime.now().minusDays(1), null);
 
         createEmployeeRequest(older, "Developer");

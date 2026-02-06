@@ -41,7 +41,7 @@ class MetricsServiceTest {
         when(companyAccountRepository.countByStatusFalseAndDeactivatedFalse()).thenReturn(2L);
         when(employeeAccountRepository.countByDeactivatedFalse()).thenReturn(7L);
 
-        when(teamRequestRepository.countByState(State.COMPLETE)).thenReturn(3L);
+        when(teamRequestRepository.countByState(State.COMPLETED)).thenReturn(3L);
         when(teamRequestRepository.countByState(State.INCOMPLETE)).thenReturn(4L);
 
         when(teamRequestRepository.countAssignmentsByState(State.INCOMPLETE)).thenReturn(List.of(
@@ -62,7 +62,7 @@ class MetricsServiceTest {
         assertThat(response.kpis().closedRequests()).isEqualTo(3);
 
         assertThat(response.requestsByState()).extracting(MetricsOverviewResponse.StateCount::state)
-                .containsExactly("COMPLETE", "INCOMPLETE");
+                .containsExactly("COMPLETED", "INCOMPLETE");
         assertThat(response.requestsByState()).extracting(MetricsOverviewResponse.StateCount::count)
                 .containsExactly(3L, 4L);
 

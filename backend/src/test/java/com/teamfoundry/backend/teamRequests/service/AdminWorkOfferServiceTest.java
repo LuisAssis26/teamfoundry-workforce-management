@@ -45,6 +45,7 @@ class AdminWorkOfferServiceTest {
     @Mock EmployeeRequestOfferRepository inviteRepository;
     @Mock EmployeeAccountRepository employeeAccountRepository;
     @Mock AdminAccountRepository adminAccountRepository;
+    @Mock com.teamfoundry.backend.notification.service.NotificationService notificationService;
 
     @InjectMocks AdminWorkOfferService service;
 
@@ -124,7 +125,7 @@ class AdminWorkOfferServiceTest {
         TeamRequest team = new TeamRequest();
         team.setId(10);
         team.setResponsibleAdminId(5);
-        team.setState(State.COMPLETE);
+        team.setState(State.COMPLETED);
         when(teamRequestRepository.findById(10)).thenReturn(Optional.of(team));
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,

@@ -39,6 +39,9 @@ public interface EmployeeRequestRepository extends JpaRepository<EmployeeRequest
     @EntityGraph(attributePaths = {"teamRequest"})
     List<EmployeeRequest> findByTeamRequest_IdAndRequestedRoleIgnoreCaseAndEmployeeIsNull(Integer teamRequestId, String role);
 
+    @EntityGraph(attributePaths = {"teamRequest"})
+    List<EmployeeRequest> findByTeamRequest_IdAndRequestedRoleIgnoreCase(Integer teamRequestId, String role);
+
     @Query("""
             SELECT DISTINCT er.employee.id
             FROM EmployeeRequest er

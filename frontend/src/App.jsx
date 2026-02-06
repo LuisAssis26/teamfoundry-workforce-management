@@ -41,6 +41,7 @@ import NextSteps from "./pages/profile/Employee/NextSteps/NextSteps.jsx";
 import Settings from "./pages/profile/Settings/Settings.jsx";
 
 // Profile - Company
+// Profile - Company
 import CompanyLayout, { CompanyIndexRedirect } from "./pages/profile/company/CompanyLayout.jsx";
 import CompanyInfo from "./pages/profile/company/CompanyInfo.jsx";
 import CompanyRequests from "./pages/profile/company/CompanyRequests.jsx";

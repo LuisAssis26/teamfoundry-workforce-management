@@ -96,7 +96,7 @@ public class CompanyProfileService {
         if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password incorreta.");
         }
-        long pendingRequests = teamRequestRepository.countByCompany_IdAndStateNot(account.getId(), State.COMPLETE);
+        long pendingRequests = teamRequestRepository.countByCompany_IdAndStateNot(account.getId(), State.COMPLETED);
         if (pendingRequests > 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Não é possível desativar a conta enquanto existirem requisições pendentes ou ativas.");

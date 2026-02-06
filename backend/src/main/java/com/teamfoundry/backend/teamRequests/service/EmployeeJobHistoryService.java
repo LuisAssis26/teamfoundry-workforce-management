@@ -212,7 +212,7 @@ public class EmployeeJobHistoryService {
         if (teamId != null) {
             long openSpots = employeeRequestRepository.countByTeamRequest_IdAndEmployeeIsNull(teamId);
             if (openSpots == 0) {
-                teamRequest.setState(State.COMPLETE);
+                teamRequest.setState(State.COMPLETED);
                 teamRequestRepository.save(teamRequest);
                 
                 if (teamRequest.getCompany() != null) {
@@ -280,7 +280,7 @@ public class EmployeeJobHistoryService {
 
     private boolean isConcluded(TeamRequest teamRequest) {
         if (teamRequest == null) return false;
-        if (teamRequest.getState() == State.COMPLETE) return true;
+        if (teamRequest.getState() == State.COMPLETED) return true;
         LocalDateTime end = teamRequest.getEndDate();
         return end != null && end.isBefore(LocalDateTime.now());
     }

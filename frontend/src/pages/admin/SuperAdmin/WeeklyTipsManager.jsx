@@ -107,7 +107,7 @@ export default function WeeklyTipsManager({ onUnauthorized }) {
     } catch (err) {
       setBanner({
         type: "error",
-        message: err.message || "N�o foi poss�vel guardar a dica.",
+        message: err.message || "Não foi possível guardar a dica.",
       });
     } finally {
       setSaving(false);
@@ -130,7 +130,7 @@ export default function WeeklyTipsManager({ onUnauthorized }) {
     } catch (err) {
       setBanner({
         type: "error",
-        message: err.message || "N�o foi poss�vel eliminar a dica.",
+        message: err.message || "Não foi possível eliminar a dica.",
       });
     } finally {
       setSaving(false);
@@ -152,7 +152,7 @@ export default function WeeklyTipsManager({ onUnauthorized }) {
     } catch (err) {
       setBanner({
         type: "error",
-        message: err.message || "N�o foi poss�vel atualizar a visibilidade.",
+        message: err.message || "Não foi possível atualizar a visibilidade.",
       });
     }
   };
@@ -172,7 +172,7 @@ export default function WeeklyTipsManager({ onUnauthorized }) {
     } catch (err) {
       setBanner({
         type: "error",
-        message: err.message || "N�o foi poss�vel definir a dica da semana.",
+        message: err.message || "Não foi possível definir a dica da semana.",
       });
     }
   };
@@ -190,7 +190,7 @@ export default function WeeklyTipsManager({ onUnauthorized }) {
       setTipsData(previous);
       setBanner({
         type: "error",
-        message: err.message || "N�o foi poss�vel reordenar as dicas.",
+        message: err.message || "Não foi possível reordenar as dicas.",
       });
     }
   };
@@ -220,8 +220,7 @@ export default function WeeklyTipsManager({ onUnauthorized }) {
             <div>
               <h2 className="card-title text-2xl">Dicas da semana</h2>
               <p className="text-sm text-base-content/70">
-                Cria, organiza e escolhe qual a dica em destaque na home
-                autenticada e na pagina de dicas.
+                Crie, organize e escolha qual a dica em destaque na home autenticada e na página de dicas.
               </p>
             </div>
             <button
@@ -252,8 +251,7 @@ export default function WeeklyTipsManager({ onUnauthorized }) {
             </div>
           ) : tipsList.length === 0 ? (
             <p className="text-sm text-base-content/70">
-              Ainda n�o existem dicas configuradas. Cria a primeira para a
-              destacar aos utilizadores.
+              Ainda não existem dicas configuradas. Crie a primeira para a destacar aos utilizadores.
             </p>
           ) : (
             <TipsTable
@@ -288,11 +286,11 @@ function TipsTable({ tips, onEdit, onMove, onToggle, onMarkFeatured }) {
           <tr className="text-xs uppercase tracking-wide text-base-content/60">
             <th />
             <th>Categoria</th>
-            <th>Titulo</th>
+            <th>Título</th>
             <th>Data</th>
             <th>Estado</th>
             <th>Destaque</th>
-            <th className="text-right">Acoes</th>
+            <th className="text-right">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -410,7 +408,7 @@ function WeeklyTipModal({ state, form, saving, onChange, onSubmit, onClose, onDe
     >
       <form id="weekly-tip-form" className="space-y-4" onSubmit={onSubmit}>
         <div className="grid gap-4 md:grid-cols-[1.5fr_1fr]">
-          <label className="form-control">
+          <label className="form-control gap-2">
             <span className="label-text font-semibold">Categoria</span>
             <input
               type="text"
@@ -421,7 +419,7 @@ function WeeklyTipModal({ state, form, saving, onChange, onSubmit, onClose, onDe
               onChange={(e) => onChange("category", e.target.value)}
             />
           </label>
-          <label className="form-control">
+          <label className="form-control gap-2">
             <span className="label-text font-semibold">Data</span>
             <input
               type="date"
@@ -433,8 +431,8 @@ function WeeklyTipModal({ state, form, saving, onChange, onSubmit, onClose, onDe
           </label>
         </div>
 
-        <label className="form-control">
-          <span className="label-text font-semibold">Titulo</span>
+        <label className="form-control gap-2">
+          <span className="label-text font-semibold">Título</span>
           <input
             type="text"
             className="input input-bordered"
@@ -445,16 +443,16 @@ function WeeklyTipModal({ state, form, saving, onChange, onSubmit, onClose, onDe
           />
         </label>
 
-        <label className="form-control">
-            <br /><span className="label-text font-semibold">Descrição</span>
-            <textarea
-              className="textarea textarea-bordered min-h-[140px]"
-              required
-              maxLength={2000}
-              value={form.description}
-              onChange={(e) => onChange("description", e.target.value)}
-            />
-          </label>
+        <label className="form-control gap-2">
+          <span className="label-text font-semibold">Descrição</span>
+          <textarea
+            className="textarea textarea-bordered min-h-[140px]"
+            required
+            maxLength={2000}
+            value={form.description}
+            onChange={(e) => onChange("description", e.target.value)}
+          />
+        </label>
 
         <div className="flex flex-wrap items-center gap-6">
           <label className="label cursor-pointer gap-3">
@@ -498,4 +496,3 @@ function formatDate(value) {
   if (Number.isNaN(date.getTime())) return "";
   return date.toLocaleDateString("pt-PT", { day: "2-digit", month: "short", year: "numeric" });
 }
-

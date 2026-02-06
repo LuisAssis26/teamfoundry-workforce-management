@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Configurable blocks for the authenticated home. Mirrors HomeNoLoginSection
- * but adds optional API metadata to power the news feed later on.
+ * Configurable blocks for the authenticated home. Mirrors HomeNoLoginSection.
  */
 @Getter
 @Setter
@@ -58,18 +57,4 @@ public class HomeLoginSection {
     @Column(name = "label_offers", length = 120)
     private String labelOffers;
 
-    /**
-     * Metadata for integrating with an external News API.
-     */
-    @Column(name = "api_enabled")
-    private boolean apiEnabled = false;
-
-    @Column(name = "api_url", length = 500)
-    private String apiUrl;
-
-    @Column(name = "api_token", length = 500)
-    private String apiToken;
-
-    @Column(name = "api_max_items")
-    private Integer apiMaxItems;
 }

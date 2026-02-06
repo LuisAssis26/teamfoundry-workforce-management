@@ -50,7 +50,7 @@ public class AdminWorkOfferService {
         if (!Objects.equals(request.getResponsibleAdminId(), admin.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Requisição não atribuída a este administrador.");
         }
-        if (request.getState() == State.COMPLETE) {
+        if (request.getState() == State.COMPLETED) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Requisição já concluída; não é possível enviar convites.");
         }
 
@@ -118,13 +118,13 @@ public class AdminWorkOfferService {
     public List<Integer> listActiveInviteIds(Integer teamId, String role) {
         AdminAccount admin = resolveAuthenticatedAdmin();
         TeamRequest request = teamRequestRepository.findById(teamId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requisicao nao encontrada."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requisição não encontrada."));
         if (!Objects.equals(request.getResponsibleAdminId(), admin.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Requisicao nao atribuida a este administrador.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Requisição não atribuida a este administrador.");
         }
         String normRole = normalize(role);
         if (!StringUtils.hasText(normRole)) {
-            return inviteRepository.findActiveInviteEmployeeIdsByTeam(teamId);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Função é obrigatória.");
         }
         return inviteRepository.findActiveInviteEmployeeIdsByTeamAndRole(teamId, normRole);
     }

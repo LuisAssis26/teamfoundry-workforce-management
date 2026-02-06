@@ -107,7 +107,7 @@ export default function BuildTeamSearch() {
             setSearchError("");
             try {
                 const data = await searchCandidates({
-                    role: role, // Filtra pela função da vaga para escopar os convites
+                    role: role, 
                     areas: geoSelected,
                     skills: skillsSelected,
                     preferredRoles: preferredRolesSelected,

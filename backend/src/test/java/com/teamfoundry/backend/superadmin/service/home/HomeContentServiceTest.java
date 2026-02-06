@@ -44,7 +44,6 @@ class HomeContentServiceTest {
     @Mock PartnerShowcaseRepository partners;
     @Mock HomeLoginSectionRepository appHomeSections;
     @Mock WeeklyTipRepository weeklyTips;
-    @Mock NewsApiService newsApiService;
     @Mock com.teamfoundry.backend.common.service.CloudinaryService cloudinaryService;
 
     @InjectMocks HomeContentService service;
@@ -130,26 +129,21 @@ class HomeContentServiceTest {
     void updateHomeLoginSectionUpdatesFields() {
         HomeLoginSection section = new HomeLoginSection();
         section.setId(10L);
-        section.setType(HomeLoginSectionType.NEWS);
+        section.setType(HomeLoginSectionType.HERO);
         section.setDisplayOrder(0);
         section.setActive(false);
-        section.setApiEnabled(false);
         section.setProfileBarVisible(false);
 
         when(appHomeSections.findById(10L)).thenReturn(Optional.of(section));
         when(appHomeSections.save(any(HomeLoginSection.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(newsApiService.getEmpregabilidadeNews(anyInt())).thenReturn(List.of());
-
         var request = new com.teamfoundry.backend.superadmin.dto.home.sections.LoggedIn.HomeLoginSectionUpdateRequest(
                 "Title", "Sub", "Content", "CTA", "https://cta",
-                true, true, "https://api", "secret", 3,
-                "Hello", true, "Current", "Offers"
+                true, "Hello", true, "Current", "Offers"
         );
 
         var response = service.updateHomeLoginSection(10L, request);
 
         assertThat(response.active()).isTrue();
-        assertThat(response.apiEnabled()).isTrue();
         assertThat(response.profileBarVisible()).isTrue();
         verify(appHomeSections).save(section);
     }

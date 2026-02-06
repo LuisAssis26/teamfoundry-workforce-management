@@ -27,6 +27,16 @@ export async function fetchPublicHomepage() {
   return toJsonOrThrow(resp, "Falha ao carregar a home publica.");
 }
 
+export async function fetchUnifiedHome() {
+  const resp = await apiFetch("/api/site/home", {}, { autoRefresh: false });
+  return toJsonOrThrow(resp, "Falha ao carregar a home.");
+}
+
+export async function updateUnifiedHome({ publicSectionIds = [], authenticatedSectionIds = [] }) {
+  const resp = await apiFetch("/api/site/home", jsonOptions("PUT", { publicSectionIds, authenticatedSectionIds }));
+  return toJsonOrThrow(resp, "Falha ao atualizar a home.");
+}
+
 // --- Homepage sections ---
 export async function fetchHomepageConfig() {
   const resp = await apiFetch(`${ADMIN_BASE}/homepage`);

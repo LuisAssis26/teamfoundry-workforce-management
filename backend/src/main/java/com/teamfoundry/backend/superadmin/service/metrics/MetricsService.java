@@ -33,7 +33,7 @@ public class MetricsService {
         long activeEmployees = employeeAccountRepository.countByDeactivatedFalse();
 
         long openRequests = teamRequestRepository.countByState(State.INCOMPLETE);
-        long closedRequests = teamRequestRepository.countByState(State.COMPLETE);
+        long closedRequests = teamRequestRepository.countByState(State.COMPLETED);
 
         List<MetricsOverviewResponse.StateCount> requestsByState = Arrays.stream(State.values())
                 .map(state -> new MetricsOverviewResponse.StateCount(state.name(), teamRequestRepository.countByState(state)))
