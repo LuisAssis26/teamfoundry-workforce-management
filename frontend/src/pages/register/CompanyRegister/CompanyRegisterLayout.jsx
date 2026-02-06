@@ -1,7 +1,9 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import registerIllustration from "../../../assets/images/logo/teamFoundry_LogoPrimary.png";
 import { CompanyRegistrationProvider, useCompanyRegistration } from "./CompanyRegisterContext.jsx";
+
+const registerIllustration =
+  "https://res.cloudinary.com/teamfoundry/image/upload/v1765288902/home/metal.avif_f7b5ed25-ada3-4906-bc53-cfe0463ed666.avif";
 
 // Configura o wizard da empresa (4 etapas).
 const steps = [
@@ -54,7 +56,7 @@ function CompanyRegisterLayoutInner() {
             <img
               src={registerIllustration}
               alt="Fluxo de registo de empresa"
-              className="h-full w-full object-contain p-8 bg-base-100"
+              className="h-full w-full object-cover"
             />
           </div>
 

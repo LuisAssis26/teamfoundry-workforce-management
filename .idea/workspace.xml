@@ -4,8 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="yaml">
+    <list default="true" id="a7dae958-fb9c-447a-93ab-f5d1d5d4e299" name="Changes" comment="Bleh">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273/storage_v2/_src_/database/teamfoundry_db.UWXKRg/schema/pg_catalog.0S1ZNQ.zip" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/0bcc5bfb-b187-4b8f-8655-480697605273/storage_v2/_src_/database/teamfoundry_db.UWXKRg/schema/pg_catalog.0S1ZNQ.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_12_2025_12_43_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_12_2025_12_43__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_12_2025_13_23_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_12_2025_13_23__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_22_12_2025_14_56_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_22_12_2025_14_56__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/register/CompanyRegister/CompanyRegisterLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/register/CompanyRegister/CompanyRegisterLayout.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/register/EmployeeRegister/EmployeeRegisterLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/register/EmployeeRegister/EmployeeRegisterLayout.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +23,11 @@
   </component>
   <component name="ComposerSettings">
     <execution />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/draga/Ambiente de Trabalho/teamfoundry-workforce-management" value="34vCubPTpiW0fbRzlf0VXysOloh" />
+    </persistenceIdMap>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -251,7 +265,12 @@
       <workItem from="1766064507976" duration="4273000" />
       <workItem from="1766343108799" duration="3223000" />
       <workItem from="1766403066460" duration="11745000" />
-      <workItem from="1766432300783" duration="3655000" />
+      <workItem from="1766432300783" duration="11048000" />
+      <workItem from="1766448529677" duration="833000" />
+      <workItem from="1766876190956" duration="24000" />
+      <workItem from="1767454025228" duration="60000" />
+      <workItem from="1768670876762" duration="1994000" />
+      <workItem from="1768819305412" duration="6000" />
     </task>
     <task id="LOCAL-00001" summary="paleta certa">
       <option name="closed" value="true" />
@@ -501,7 +520,23 @@
       <option name="project" value="LOCAL" />
       <updated>1766433828977</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="yaml">
+      <option name="closed" value="true" />
+      <created>1766436313353</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1766436313353</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Bleh">
+      <option name="closed" value="true" />
+      <created>1766436360426</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1766436360426</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -538,7 +573,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Comentários Login e Register" />
     <MESSAGE value="Ajustes Layout" />
     <MESSAGE value="Refactors e mais refactors" />
     <MESSAGE value="Seeders e Historico de Trabalho Perfil" />
@@ -563,7 +597,8 @@
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;backend/src/main/resources/application.yaml" />
     <MESSAGE value="Refactor HomeLoginSection to remove API-related fields and simplify structure" />
     <MESSAGE value="yaml" />
-    <option name="LAST_COMMIT_MESSAGE" value="yaml" />
+    <MESSAGE value="Bleh" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bleh" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

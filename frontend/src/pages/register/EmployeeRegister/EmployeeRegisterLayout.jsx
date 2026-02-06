@@ -1,7 +1,9 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import registerIllustration from "../../../assets/images/logo/teamFoundry_LogoPrimary.png";
 import { RegistrationProvider, useRegistration } from "./EmployeeRegisterContext.jsx";
+
+const registerIllustration =
+    "https://res.cloudinary.com/teamfoundry/image/upload/v1765288911/home/canalizador.webp_32a66fd8-99de-4734-bdbc-6885acb8aa6e.webp";
 
 // Representação declarativa das etapas visíveis no cabeçalho/guardas de rota.
 const registerSteps = [
@@ -70,7 +72,7 @@ function RegisterLayoutInner() {
                         <img
                             src={registerIllustration}
                             alt="Fluxo de registo de candidato"
-                            className="h-full w-full object-contain p-8 bg-base-100"
+                            className="h-full w-full object-cover"
                         />
                     </div>
 
