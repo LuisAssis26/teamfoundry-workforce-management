@@ -25,7 +25,7 @@ export default function CandidatesPanel({
           disabled={disabled || isLoading || isInviting || selectedIds.length === 0}
           onClick={onSendInvites}
         >
-          {isInviting ? "Enviando..." : disabled ? "Concluida" : "Enviar propostas"}
+          {isInviting ? "Enviando..." : disabled ? "Concluída" : "Enviar propostas"}
         </button>
       </div>
 
