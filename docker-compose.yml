@@ -16,25 +16,33 @@ services:
       - teamfoundry_network
 
   teamfoundry_backend:
+    env_file:
+      - .env
     build:
       context: ./backend
     container_name: teamfoundry_backend
     environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING: true
       SPRING_DATASOURCE_URL: jdbc:postgresql://teamfoundry_postgres:5432/teamfoundry_db
       SPRING_DATASOURCE_USERNAME: teamfoundry_user
       SPRING_DATASOURCE_PASSWORD: teamfoundry_pass
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_APPLICATION_NAME: teamfoundry-backend
+      SPRING_FLYWAY_ENABLED: false
     depends_on:
       - teamfoundry_postgres
     ports:
-      - "8080:8080"
+      - "8443:8443"
     networks:
       - teamfoundry_network
 
   teamfoundry_frontend:
     build:
       context: ./frontend
+    environment:
+      VITE_API_BASE_URL: https://localhost:8443
     container_name: teamfoundry_frontend
     ports:
       - "5173:5173"

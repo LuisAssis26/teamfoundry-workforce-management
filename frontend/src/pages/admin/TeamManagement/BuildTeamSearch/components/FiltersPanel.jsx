@@ -22,7 +22,7 @@ export default function FiltersPanel({
     <aside className="w-full rounded-2xl bg-base-100 p-6 shadow-md lg:w-80">
       <div className="space-y-4">
         <FilterTitle label="Empresa" value={companyName} />
-        <FilterTitle label="Funcao" value={role} />
+        <FilterTitle label="Função" value={role} />
       </div>
 
       <div className="mt-6 space-y-6">
@@ -45,7 +45,7 @@ export default function FiltersPanel({
           options={geoOptions}
           selectedOptions={geoSelected}
           onChange={onGeoChange}
-          placeholder="Selecione area(s)"
+          placeholder="Selecione área(s)"
         />
         <MultiSelectDropdown
           label="Competências"
