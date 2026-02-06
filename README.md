@@ -45,7 +45,7 @@ Siga os passos abaixo para configurar o ambiente de desenvolvimento.
 ### 1. Clonar o Repositório
 
 ```bash
-git clone <URL_DO_SEU_REPOSITORIO>
+git clone https://github.com/LuisAssis26/teamfoundry-workforce-management
 cd teamfoundry-workforce-management
 ```
 
